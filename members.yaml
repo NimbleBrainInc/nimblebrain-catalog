@@ -1,0 +1,13 @@
+# The servers in the NimbleBrain catalog at registry.nimblebrain.ai.
+#
+# Each entry names a server published to the official MCP Registry
+# (registry.modelcontextprotocol.io). Its server.json, versions, and status come
+# from there; this file only says which servers are in the catalog and adds the
+# fields that live under _meta["ai.nimblebrain/catalog"].
+#
+#   name                 the server's registry name, exactly as published upstream
+#   includedInPlatform   true when every NimbleBrain workspace already runs it,
+#                        so platform users need nothing to install
+
+- name: ai.bassethound/bassethound
+  includedInPlatform: false
