@@ -25,6 +25,8 @@ official registry ──(this repo: registry build)──► S3 ──► CloudF
   Registry names are permanent, so the namespace is chosen once, when a server first
   publishes.
 
+To list a server, or to decide whether one belongs here: `docs/publishing.md`.
+
 ## Layout
 
 | Path | What |
