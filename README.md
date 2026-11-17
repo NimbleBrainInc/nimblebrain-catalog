@@ -9,5 +9,5 @@ curl https://registry.nimblebrain.ai/v0.1/servers
 curl https://registry.nimblebrain.ai/v0.1/servers/ai.bassethound%2Fbassethound/versions/latest
 ```
 
-To add a server: publish it to the official registry from its own repo, then add its
-name to `members.yaml`. See `AGENTS.md` for how the build works.
+To list a server, follow `docs/publishing.md`: what belongs here, how publishing works,
+and the steps. `AGENTS.md` covers how the build works.
