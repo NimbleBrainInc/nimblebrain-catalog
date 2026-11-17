@@ -53,10 +53,7 @@ def test_server_block_is_unchanged_and_meta_is_added_beside_upstream() -> None:
 
     assert latest["server"] == upstream[0]["server"]
     assert latest["_meta"][OFFICIAL_META_KEY] == upstream[0]["_meta"][OFFICIAL_META_KEY]
-    assert latest["_meta"][CATALOG_META_KEY] == {
-        "includedInPlatform": True,
-        "catalogUrl": "https://nimblebrain.ai/registry/widget",
-    }
+    assert latest["_meta"][CATALOG_META_KEY] == {"includedInPlatform": True}
 
 
 def test_deleted_server_leaves_the_list_but_keeps_its_versions() -> None:

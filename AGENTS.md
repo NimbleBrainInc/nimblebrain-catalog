@@ -31,6 +31,7 @@ official registry ──(this repo: registry build)──► S3 ──► CloudF
 |---|---|
 | `members.yaml` | The catalog: which servers, and the fields NimbleBrain adds |
 | `src/nimblebrain_registry/build.py` | Pure: member list + upstream entries → objects keyed by API path |
+| `src/nimblebrain_registry/render.py` | Pure: the server list → the catalog page at `/` and the 404 body |
 | `src/nimblebrain_registry/cli.py` | `registry build` (fetch upstream, write `dist/`) and `registry publish` (upload to S3) |
 | `.github/workflows/deploy.yml` | Builds and publishes on push to `main`, hourly, and on `repository_dispatch` |
 
@@ -38,8 +39,16 @@ official registry ──(this repo: registry build)──► S3 ──► CloudF
 
 - **Served from S3 behind CloudFront, not a static file host.** `v0.1/servers` and the
   keys under `v0.1/servers/…` are separate objects, which a file tree cannot hold, and
-  every object is served as `application/json`. Locally each object is written as
-  `<key>.json`; `publish` strips the suffix.
+  every API object is served as `application/json`. Locally each one is written as
+  `dist/api/<key>.json`; `publish` strips the suffix.
+- **The catalog page at `/` is rendered by the same build, from the same list.** It is
+  `index.html`, which CloudFront serves for `/`, and needs no script to show the list.
+  It is the only catalog UI, so it cannot disagree with the API. Its brand tokens are
+  copied from the runtime's `web/src/theme/palette.ts`; change them there first.
+- **Unknown paths return 404 with the official registry's problem body.** S3 answers a
+  missing key with 403, since CloudFront cannot list the bucket; CloudFront maps that 403
+  to 404 and serves `errors/404.json`. The site files live in `dist/site/` under their
+  own keys.
 - **A server name's `/` is a literal `/` in the object key.** The API encodes it as
   `%2F`; S3 decodes the path, so `ai.bassethound%2Fbassethound` and the raw form reach
   the same object.
