@@ -1,8 +1,12 @@
 """`registry build` writes the registry to a folder; `registry publish` uploads that folder.
 
-Each object is written as `<key>.json`, because `v0.1/servers` and the folder
-`v0.1/servers/` cannot both exist as files. Publishing strips the suffix, so the
-object store holds the API paths exactly, each served as application/json.
+The folder has two parts:
+
+- `api/` holds each API object as `<key>.json`, because `v0.1/servers` and the
+  folder `v0.1/servers/` cannot both exist as files. Publishing strips the suffix,
+  so the object store holds the API paths exactly, each served as application/json.
+- `site/` holds the catalog page and the 404 body under their own keys, each served
+  with the content type `render.SITE_CONTENT_TYPES` gives it.
 """
 
 from __future__ import annotations
@@ -10,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -19,6 +24,7 @@ from typing import Any
 import yaml
 
 from nimblebrain_registry.build import API_PREFIX, BuildError, Entry, build, parse_members
+from nimblebrain_registry.render import SITE_CONTENT_TYPES, site
 
 UPSTREAM = "https://registry.modelcontextprotocol.io"
 SUFFIX = ".json"
@@ -44,36 +50,52 @@ def fetch_upstream_versions(name: str, base: str = UPSTREAM) -> list[Entry]:
 
 def write(objects: dict[str, Any], out: Path) -> None:
     for key, body in objects.items():
-        path = out / f"{key}{SUFFIX}"
+        path = out / "api" / f"{key}{SUFFIX}"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(body, indent=2, ensure_ascii=False) + "\n")
+    for key, text in site(objects[f"{API_PREFIX}/servers"]).items():
+        path = out / "site" / key
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
 
 
-def read(out: Path) -> dict[str, bytes]:
-    return {
-        path.relative_to(out).as_posix().removesuffix(SUFFIX): path.read_bytes()
-        for path in sorted(out.rglob(f"*{SUFFIX}"))
+def read(out: Path) -> dict[str, tuple[bytes, str]]:
+    """Every object in a built folder: key → (body, content type)."""
+    api = out / "api"
+    objects = {
+        path.relative_to(api).as_posix().removesuffix(SUFFIX): (
+            path.read_bytes(),
+            "application/json",
+        )
+        for path in sorted(api.rglob(f"*{SUFFIX}"))
     }
+    for key, content_type in SITE_CONTENT_TYPES.items():
+        path = out / "site" / key
+        if path.is_file():
+            objects[key] = (path.read_bytes(), content_type)
+    return objects
 
 
 def publish(out: Path, bucket: str, distribution: str | None) -> None:
     import boto3
 
     objects = read(out)
-    if f"{API_PREFIX}/servers" not in objects:
-        raise BuildError(f"{out} holds no built registry; run `registry build` first")
+    missing = [k for k in (f"{API_PREFIX}/servers", *SITE_CONTENT_TYPES) if k not in objects]
+    if missing:
+        raise BuildError(f"{out} is not a complete build (missing {missing}); run `registry build`")
 
     s3 = boto3.client("s3")
-    for key, body in objects.items():
+    for key, (body, content_type) in objects.items():
         s3.put_object(
             Bucket=bucket,
             Key=key,
             Body=body,
-            ContentType="application/json",
+            ContentType=content_type,
             CacheControl=CACHE_CONTROL,
         )
 
-    # Remove what the build no longer produces, such as a server dropped from the catalog.
+    # Remove API objects the build no longer produces, such as a server dropped from
+    # the catalog. The site keys are a fixed set, so nothing outside the API goes stale.
     stale: list[str] = []
     for page in s3.get_paginator("list_objects_v2").paginate(
         Bucket=bucket, Prefix=f"{API_PREFIX}/"
@@ -85,12 +107,10 @@ def publish(out: Path, bucket: str, distribution: str | None) -> None:
         )
 
     if distribution:
-        import time
-
         boto3.client("cloudfront").create_invalidation(
             DistributionId=distribution,
             InvalidationBatch={
-                "Paths": {"Quantity": 1, "Items": [f"/{API_PREFIX}/*"]},
+                "Paths": {"Quantity": 1, "Items": ["/*"]},
                 "CallerReference": str(time.time_ns()),
             },
         )
@@ -117,7 +137,7 @@ def main(argv: list[str] | None = None) -> int:
             members = parse_members(yaml.safe_load(args.members.read_text()))
             objects = build(members, lambda name: fetch_upstream_versions(name, args.upstream))
             write(objects, args.out)
-            print(f"built {len(objects)} objects for {len(members)} servers in {args.out}")
+            print(f"built {len(objects)} API objects for {len(members)} servers in {args.out}")
         else:
             publish(args.out, args.bucket, args.distribution)
     except BuildError as err:

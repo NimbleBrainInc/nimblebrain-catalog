@@ -1,6 +1,7 @@
 # nimblebrain-registry
 
-NimbleBrain's catalog of MCP servers, at `registry.nimblebrain.ai`, in the
+NimbleBrain's catalog of MCP servers. Browse it at
+[registry.nimblebrain.ai](https://registry.nimblebrain.ai), or read it through the
 [official MCP Registry API](https://registry.modelcontextprotocol.io/docs).
 
 ```sh

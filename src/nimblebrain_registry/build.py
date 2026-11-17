@@ -21,7 +21,6 @@ from typing import Any
 API_PREFIX = "v0.1"
 CATALOG_META_KEY = "ai.nimblebrain/catalog"
 OFFICIAL_META_KEY = "io.modelcontextprotocol.registry/official"
-CATALOG_PAGE_BASE = "https://nimblebrain.ai/registry"
 
 # Reverse-DNS namespace, one slash, server name: the official registry's name rule.
 NAME_RE = re.compile(r"^[a-zA-Z0-9.-]+/[a-zA-Z0-9._-]+$")
@@ -66,11 +65,7 @@ def parse_members(raw: object) -> list[Member]:
 
 
 def catalog_meta(member: Member) -> dict[str, Any]:
-    slug = member.name.split("/", 1)[1]
-    return {
-        "includedInPlatform": member.included_in_platform,
-        "catalogUrl": f"{CATALOG_PAGE_BASE}/{slug}",
-    }
+    return {"includedInPlatform": member.included_in_platform}
 
 
 def annotate(entry: Entry, member: Member) -> Entry:
