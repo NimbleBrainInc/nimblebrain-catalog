@@ -9,12 +9,18 @@ generated here, never stored:
   read by any Agent Plugins host. NimbleBrain's link from the plugin to its
   catalog server sits in `extensions["ai.nimblebrain"]`.
 - `.mcp.json`, the same server in Claude Code's own plugin format.
-- one zip per plugin, served at `plugins/<name>.zip`, which is the plugin's
-  install source: the catalog repo is private, so no host can clone it.
+- one zip per plugin, which is the plugin's install source: the catalog repo is
+  private, so no host can clone it. It is served at `plugins/<name>.zip`, which
+  moves with the plugin, and at `plugins/<name>/<sha256>.zip`, which never changes
+  and is the URL every index names, so a host that pinned a digest can fetch it
+  again after the plugin changes.
 - one install index per kind of reader, in Claude Code's marketplace format
   (ADR-0068). A listing promises its reader the plugin installs and signs in:
   `marketplace.json` lists the portable plugins, for any host, and
   `nimblebrain/marketplace.json` lists every plugin, for the NimbleBrain runtime.
+- `nimblebrain/marketplace/<sha256>.json`, the same bytes as
+  `nimblebrain/marketplace.json` under their own digest. A runtime pins the
+  catalog by that digest and reads the plugins it lists from there.
 - `.well-known/ai-catalog.json`, the AI Catalog index for discovery. It lists
   every plugin and marks the ones only NimbleBrain can run.
 - `nimblebrain/connectors.yaml`, the portable servers as a runtime catalog file
@@ -56,6 +62,8 @@ SITE_URL = "https://catalog.nimblebrain.ai"
 
 MARKETPLACE_KEY = "marketplace.json"
 NIMBLEBRAIN_MARKETPLACE_KEY = "nimblebrain/marketplace.json"
+# Where each NimbleBrain index is kept under its own sha256, for a runtime that pins it.
+PINNED_INDEX_PREFIX = "nimblebrain/marketplace/"
 ZERO_SETUP_CONNECTORS_KEY = "nimblebrain/connectors.yaml"
 ZERO_SETUP_HEADER = (
     "# The connectors a fresh NimbleBrain install starts with: the catalog's portable\n"
@@ -231,6 +239,11 @@ def zip_bytes(files: Mapping[str, bytes]) -> bytes:
     return buffer.getvalue()
 
 
+def archive_key(name: str, digest: str) -> str:
+    """The key that serves one version of a plugin's zip, by its sha256, for good."""
+    return f"plugins/{name}/{digest}.zip"
+
+
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -259,10 +272,11 @@ def distribution(
         if server is None:
             raise BuildError(f"plugin {plugin.name}: server {plugin.server} is not in the catalog")
         archive = zip_bytes(plugin_files(plugin, server, root))
-        key = f"plugins/{plugin.name}.zip"
-        url = f"{SITE_URL}/{key}"
         digest = _sha256(archive)
-        out[key] = archive
+        out[f"plugins/{plugin.name}.zip"] = archive
+        pinned = archive_key(plugin.name, digest)
+        out[pinned] = archive
+        url = f"{SITE_URL}/{pinned}"
 
         entry: dict[str, Any] = {
             "name": plugin.name,
@@ -310,11 +324,13 @@ def distribution(
             width=100,
         )
     ).encode()
-    out[NIMBLEBRAIN_MARKETPLACE_KEY] = _marketplace(
+    index = _marketplace(
         "Every connector NimbleBrain offers, each with the skill for using it,"
         " for the NimbleBrain runtime.",
         entries,
     )
+    out[NIMBLEBRAIN_MARKETPLACE_KEY] = index
+    out[f"{PINNED_INDEX_PREFIX}{_sha256(index)}.json"] = index
     out[AI_CATALOG_KEY] = _json(
         {
             "specVersion": "1.0",

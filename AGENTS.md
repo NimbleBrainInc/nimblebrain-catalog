@@ -14,7 +14,7 @@ sets what the catalog is for.
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
 official registry + servers/*.yaml ──(catalog build)──► /v0.1/servers, the catalog page
-servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>.zip, marketplace.json, nimblebrain/marketplace.json, nimblebrain/connectors.yaml, .well-known/ai-catalog.json
+servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>[/<sha256>].zip, marketplace.json, nimblebrain/marketplace[/<sha256>].json, nimblebrain/connectors.yaml, .well-known/ai-catalog.json
 dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog.nimblebrain.ai
 ```
 
@@ -60,14 +60,25 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
   runtime catalog file, `nimblebrain/connectors.yaml` (`{servers: [...]}`), which the
   runtime image takes at build as its in-image catalog. Every entry installs with
   nothing to configure, by the same `portable()` rule as `marketplace.json`.
-- **The zip is the install source.** This repo is private, so no host can clone it.
-  `marketplace.json` names each plugin's zip by URL with its sha256, and the AI Catalog
-  entry carries the same digest. Zips are built with fixed timestamps, so a plugin's
-  digest changes only when its content does.
-- **Nothing reads the catalog yet.** Hosted instances read their own copy of the
-  servers, a local install reads the example built into the runtime image, and the
-  runtime fetches connector skills from the `connector-skills` repo. Keep `servers/`
-  and the skills equal to those copies until instances read the catalog instead.
+- **The zip is the install source, and its URL is pinned content.** This repo is
+  private, so no host can clone it. Each zip is served at `plugins/<name>/<sha256>.zip`,
+  a key that never changes, and the indexes and the AI Catalog name it there with its
+  digest, so a host that recorded a digest can fetch those bytes again after the plugin
+  changes (ADR-0068: an install records a digest, never a bare URL). `plugins/<name>.zip`
+  serves the current zip for the catalog page. Zips are built with fixed timestamps, so a
+  plugin's digest changes only when its content does.
+- **A runtime pins the catalog by the digest of its NimbleBrain index.** Each build also
+  writes `nimblebrain/marketplace.json`'s bytes to `nimblebrain/marketplace/<sha256>.json`.
+  The runtime reads the index at the digest it is pinned to, and through it each
+  plugin's zip and the skill bound to its server. To move a runtime forward, take
+  `sha256sum` of the live `nimblebrain/marketplace.json` and set the runtime's pin to it.
+  `publish` never deletes a pinned index or a zip under its digest, since a runtime
+  that has not moved its pin still reads them.
+- **Instances read the catalog.** Hosted instances read `servers/`, the runtime image
+  ships `nimblebrain/connectors.yaml`, and the runtime fetches each connector's skill
+  from the pinned NimbleBrain index. A skill reaches a connector only when its plugin's
+  server is the connector's registry name and the skill names that server under
+  `metadata.nimblebrain.server`, so a skill that names no server is never bound to one.
 - **Namespace follows who sells the server.** A product sold on its own publishes under
   its own domain (`ai.bassethound/…`, `com.todosforagents/…`); a server that exists only
   as part of NimbleBrain publishes under `ai.nimblebrain/…`. The catalog lists both.
@@ -114,7 +125,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
   `latest`.
 - **A failed build publishes nothing**, so the catalog keeps serving the last good copy
   when upstream is down or a member is missing. `publish` deletes keys under `v0.1/`
-  and `plugins/` the build no longer produces.
+  and `plugins/` the build no longer produces, except a zip under its digest.
 - **Every site file's content type comes from its key**: the page and the 404 body by
   name, `.json` as `application/json`, `.yaml` as `application/yaml`, `.zip` as
   `application/zip`.

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 import urllib.error
@@ -42,6 +43,10 @@ CACHE_CONTROL = "public, max-age=300"
 # Key prefixes whose objects the build produces in full, so `publish` deletes any it
 # no longer produces. The site's fixed keys never go stale.
 MANAGED_PREFIXES = (f"{API_PREFIX}/", "plugins/")
+# A plugin zip under its digest is named by indexes a host may have pinned, so
+# `publish` keeps it after the build stops producing it. Pinned indexes live outside
+# the managed prefixes and are kept the same way.
+CONTENT_ADDRESSED = re.compile(r"^plugins/[^/]+/[0-9a-f]{64}\.zip$")
 
 SUFFIX_CONTENT_TYPES = {
     ".json": "application/json",
@@ -145,11 +150,16 @@ def publish(out: Path, bucket: str, distribution: str | None) -> None:
         )
 
     # Remove objects the build no longer produces, such as a server or plugin dropped
-    # from the catalog. Only the managed prefixes are swept.
+    # from the catalog. Only the managed prefixes are swept, and a zip under its
+    # digest is never removed.
     stale: list[str] = []
     for prefix in MANAGED_PREFIXES:
         for page in s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=prefix):
-            stale += [o["Key"] for o in page.get("Contents", []) if o["Key"] not in objects]
+            stale += [
+                o["Key"]
+                for o in page.get("Contents", [])
+                if o["Key"] not in objects and not CONTENT_ADDRESSED.match(o["Key"])
+            ]
     for i in range(0, len(stale), 1000):
         s3.delete_objects(
             Bucket=bucket, Delete={"Objects": [{"Key": k} for k in stale[i : i + 1000]]}
