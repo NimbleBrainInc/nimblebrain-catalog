@@ -7,4 +7,4 @@
 # A connector with no upstream entry under the name NimbleBrain installs it by is
 # authored in servers/*.yaml instead.
 
-- name: ai.bassethound/bassethound
+[]
