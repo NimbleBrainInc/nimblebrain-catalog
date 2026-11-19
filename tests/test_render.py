@@ -68,7 +68,6 @@ def test_brokered_connector_hides_its_placeholder_remote() -> None:
         _meta={"ai.nimblebrain/connector": {"auth": "composio"}},
     )
     page = render_index(listing(brokered))
-    assert "Connects through Composio" in page
     assert "broker.example" not in page
 
 

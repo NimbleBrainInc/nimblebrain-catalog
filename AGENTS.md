@@ -46,7 +46,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 | `members.yaml` | Servers mirrored from the official registry |
 | `servers/*.yaml` | Servers the catalog authors: `curated.yaml` (DCR and static OAuth), `composio.yaml` (brokered by Composio) |
 | `src/nimblebrain_registry/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
-| `src/nimblebrain_registry/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page shows a badge instead |
+| `src/nimblebrain_registry/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page does not show it |
 | `src/nimblebrain_registry/cli.py` | `registry build` (fetch upstream, write `dist/`) and `registry publish` (upload to S3) |
 | `.github/workflows/deploy.yml` | Builds and publishes on push to `main`, hourly, and on `repository_dispatch` |
 
