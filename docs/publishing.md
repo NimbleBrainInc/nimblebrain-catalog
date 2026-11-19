@@ -5,8 +5,20 @@ there, how the two registries fit together, and the steps to list one.
 
 ## What belongs in the registry
 
-List a server when someone outside NimbleBrain can connect to it or install it, and we
-stand behind it as a product.
+The catalog holds the connectors NimbleBrain offers: our own products' servers, and
+third-party remote servers we vouch for and configure (Notion, Linear, the Composio
+toolkits).
+
+- **Our own product's server** is published upstream from its product repo and mirrored
+  here by name. The rest of this guide covers that path.
+- **A third-party server** is mirrored the same way when its vendor publishes it upstream
+  under the name NimbleBrain installs it by. Otherwise it is authored in
+  `servers/curated.yaml` (DCR or static OAuth) or `servers/composio.yaml` (brokered), as
+  a `ServerDetail` with NimbleBrain's fields under `_meta["ai.nimblebrain/connector"]`.
+  It must be remote: the runtime connects to servers and never runs one.
+
+List one of our own servers when someone outside NimbleBrain can connect to it or
+install it, and we stand behind it as a product.
 
 | Publish | Do not publish |
 |---|---|
@@ -16,8 +28,8 @@ stand behind it as a product.
 | | A staging or preview endpoint (`*.preview.*`): the listing points at production only |
 
 A server that a NimbleBrain workspace already runs can still be listed, when it also
-stands alone (Todos for Agents is both). Mark it `includedInPlatform: true` in
-`members.yaml`, and the catalog shows "Included in NimbleBrain".
+stands alone (Todos for Agents is both). Which connectors an instance starts with is the
+instance's own configuration, not a field of the catalog.
 
 ### Naming
 
@@ -49,9 +61,9 @@ server.json ──release CI──►  registry.modelcontextprotocol.io  ──h
 - **The official registry owns identity and versions.** It checks that the publisher
   controls the namespace's domain, keeps every version, and marks one as latest.
 - **This repo owns membership.** `members.yaml` names the servers in the NimbleBrain
-  catalog. The build copies each one's records from the official registry unchanged, adds
-  `_meta["ai.nimblebrain/catalog"]`, and publishes the API and the catalog page. It runs
-  on every change to `members.yaml` and hourly, so a release appears within the hour.
+  catalog. The build copies each one's records from the official registry unchanged and
+  publishes the API and the catalog page. It runs on every change here and hourly, so a
+  release appears within the hour.
 
 This repo never publishes to the official registry and holds no signing key. A change to
 what a server says is a change to its `server.json`, released from its own repo.
@@ -147,7 +159,6 @@ In this repo, add the server to `members.yaml` and open a PR:
 
 ```yaml
 - name: com.todosforagents/todos
-  includedInPlatform: true
 ```
 
 CI builds against the live official registry, so a name that is not published there, or

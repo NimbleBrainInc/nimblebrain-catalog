@@ -3,11 +3,11 @@ from __future__ import annotations
 import pytest
 
 from nimblebrain_registry.build import (
-    CATALOG_META_KEY,
     OFFICIAL_META_KEY,
     BuildError,
     Member,
     build,
+    parse_authored,
     parse_members,
 )
 
@@ -26,7 +26,7 @@ def entry(version: str, *, latest: bool = False, status: str = "active") -> dict
     }
 
 
-MEMBER = Member(name=NAME, included_in_platform=True)
+MEMBER = Member(name=NAME)
 
 
 def test_builds_list_versions_and_each_version() -> None:
@@ -47,13 +47,11 @@ def test_builds_list_versions_and_each_version() -> None:
     assert objects[f"v0.1/servers/{NAME}/versions/latest"]["server"]["version"] == "0.2.0"
 
 
-def test_server_block_is_unchanged_and_meta_is_added_beside_upstream() -> None:
+def test_upstream_entry_is_mirrored_unchanged() -> None:
     upstream = [entry("1.0.0", latest=True)]
     latest = build([MEMBER], lambda _: upstream)[f"v0.1/servers/{NAME}/versions/latest"]
 
-    assert latest["server"] == upstream[0]["server"]
-    assert latest["_meta"][OFFICIAL_META_KEY] == upstream[0]["_meta"][OFFICIAL_META_KEY]
-    assert latest["_meta"][CATALOG_META_KEY] == {"includedInPlatform": True}
+    assert latest == upstream[0]
 
 
 def test_deleted_server_leaves_the_list_but_keeps_its_versions() -> None:
@@ -80,8 +78,8 @@ def test_entry_for_another_server_fails() -> None:
 
 
 def test_parse_members() -> None:
-    assert parse_members([{"name": NAME}]) == [Member(NAME, included_in_platform=False)]
-    assert parse_members([{"name": NAME, "includedInPlatform": True}])[0].included_in_platform
+    assert parse_members([{"name": NAME}]) == [Member(NAME)]
+    assert parse_members([]) == []
 
 
 @pytest.mark.parametrize(
@@ -91,9 +89,65 @@ def test_parse_members() -> None:
         ([{"name": "no-namespace"}], "not a registry name"),
         ([{"name": NAME}, {"name": NAME}], "listed twice"),
         ([{"name": NAME, "category": "x"}], "unknown fields"),
-        ([{"name": NAME, "includedInPlatform": "yes"}], "true or false"),
+        ([{"name": NAME, "includedInPlatform": True}], "unknown fields"),
     ],
 )
 def test_parse_members_rejects(raw: object, message: str) -> None:
     with pytest.raises(BuildError, match=message):
         parse_members(raw)
+
+
+AUTHORED = "com.vendor/mcp"
+
+
+def authored(**server: object) -> dict:
+    return {
+        "name": AUTHORED,
+        "version": "1.0.0",
+        "description": "A vendor's server.",
+        "remotes": [{"type": "streamable-http", "url": "https://mcp.vendor.com/mcp"}],
+        "_meta": {"ai.nimblebrain/connector": {"auth": "dcr", "tags": ["docs"]}},
+        **server,
+    }
+
+
+def test_authored_server_is_served_with_its_own_meta() -> None:
+    entries = parse_authored("x.yaml", {"servers": [authored()]})
+    objects = build([], lambda _: [], entries)
+
+    base = f"v0.1/servers/{AUTHORED}/versions"
+    assert set(objects) == {"v0.1/servers", base, f"{base}/latest", f"{base}/1.0.0"}
+    latest = objects[f"{base}/latest"]
+    assert latest["server"] == authored()
+    assert latest["server"]["_meta"]["ai.nimblebrain/connector"]["auth"] == "dcr"
+    assert objects["v0.1/servers"]["servers"] == [latest]
+
+
+def test_members_and_authored_servers_list_together() -> None:
+    entries = parse_authored("x.yaml", {"servers": [authored()]})
+    objects = build([MEMBER], lambda _: [entry("1.0.0", latest=True)], entries)
+    names = [s["server"]["name"] for s in objects["v0.1/servers"]["servers"]]
+    assert names == [NAME, AUTHORED]
+
+
+def test_a_name_listed_twice_fails() -> None:
+    entries = parse_authored("x.yaml", {"servers": [authored(name=NAME)]})
+    with pytest.raises(BuildError, match="more than once"):
+        build([MEMBER], lambda _: [entry("1.0.0", latest=True)], entries)
+
+
+@pytest.mark.parametrize(
+    ("raw", "message"),
+    [
+        ([authored()], "`servers` list"),
+        ({"servers": [authored(name="nope")]}, "not a registry name"),
+        ({"servers": [authored(version=1)]}, "version must be a string"),
+        ({"servers": [authored(remotes=[])]}, "at least one remote"),
+        ({"servers": [authored(remotes=[{"type": "stdio", "url": "x"}])]}, "type and a url"),
+        ({"servers": [authored(packages=[{"registryType": "npm"}])]}, "remote only"),
+        ({"servers": [authored(_meta=[])]}, "_meta must be a mapping"),
+    ],
+)
+def test_parse_authored_rejects(raw: object, message: str) -> None:
+    with pytest.raises(BuildError, match=message):
+        parse_authored("x.yaml", raw)

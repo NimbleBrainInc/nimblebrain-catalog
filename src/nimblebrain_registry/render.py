@@ -17,7 +17,9 @@ from collections.abc import Mapping
 from html import escape
 from typing import Any
 
-from nimblebrain_registry.build import API_PREFIX, CATALOG_META_KEY, OFFICIAL_META_KEY
+from nimblebrain_registry.build import API_PREFIX, OFFICIAL_META_KEY
+
+CONNECTOR_META_KEY = "ai.nimblebrain/connector"
 
 INDEX_KEY = "index.html"
 NOT_FOUND_KEY = "errors/404.json"
@@ -55,9 +57,16 @@ def _server_json_path(name: str) -> str:
     return f"/{API_PREFIX}/servers/{urllib.parse.quote(name, safe='')}/versions/latest"
 
 
+def _brokered(server: Mapping[str, Any]) -> bool:
+    """A Composio connector's remote is a placeholder replaced at install."""
+    connector = (server.get("_meta") or {}).get(CONNECTOR_META_KEY) or {}
+    return connector.get("auth") == "composio"
+
+
 def _endpoints(server: Mapping[str, Any]) -> str:
     rows: list[str] = []
-    for remote in server.get("remotes") or []:
+    remotes = [] if _brokered(server) else server.get("remotes") or []
+    for remote in remotes:
         url = _safe_url(remote.get("url"))
         if not url:
             continue
@@ -88,13 +97,12 @@ def _card(entry: Mapping[str, Any]) -> str:
     server = entry["server"]
     meta = entry.get("_meta", {})
     official = meta.get(OFFICIAL_META_KEY, {})
-    catalog = meta.get(CATALOG_META_KEY, {})
     name = server["name"]
     title = server.get("title") or name
 
     badges = []
-    if catalog.get("includedInPlatform"):
-        badges.append('<span class="badge">Included in NimbleBrain</span>')
+    if _brokered(server):
+        badges.append('<span class="badge">Connects through Composio</span>')
     if official.get("status") == "deprecated":
         badges.append('<span class="badge warn">Deprecated</span>')
 

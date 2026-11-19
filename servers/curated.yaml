@@ -1,0 +1,339 @@
+# Curated connectors NimbleBrain offers: remote servers that authorize by DCR or by
+# a static OAuth app. Each entry is the upstream MCP registry's `ServerDetail`, with
+# NimbleBrain's fields under `_meta["ai.nimblebrain/connector"]`. Secrets stay out:
+# an `auth: static` entry names its credential with `oauthClientSetup.clientSecretKey`,
+# which a workspace admin sets.
+#
+# Bassethound is listed by its upstream registry name in members.yaml, so it is not
+# repeated here.
+
+servers:
+  - name: com.notion/mcp
+    title: Notion (org)
+    description: Read & write workspace pages — shared workspace identity
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/notion.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.notion.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [docs, knowledge]
+
+  - name: app.linear/mcp
+    title: Linear
+    description: Issues, projects, and product roadmaps
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/linear.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.linear.app/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [issues, project-mgmt]
+
+  # com.canva/mcp: dropped pending vendor host allowlisting. Canva's
+  # /authorize independently rejects non-allowlisted redirect URIs
+  # (DCR /register accepts but install fails at the browser redirect
+  # with "Invalid redirect URI. It must be from an allowed host.").
+  # Re-add once #200 outreach lands.
+
+  - name: com.cloudflare/mcp
+    title: Cloudflare
+    description: DNS, Workers, R2 storage, and account bindings
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/cloudflare.png
+        sizes: ["any"]
+    remotes:
+      - type: sse
+        url: https://bindings.mcp.cloudflare.com/sse
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [infra, devops]
+
+  # Dropbox advertises DCR but only honors it for a curated partner
+  # allowlist (Claude Desktop, Cursor, ChatGPT) — `/register` rejects
+  # everyone else with "Dynamic client registration is not supported."
+  # Wired here as `auth: static` so operators can bring their own
+  # OAuth app from the Dropbox App Console. Drop back to `auth: dcr`
+  # once #200 outreach lands.
+
+  - name: com.dropbox/mcp
+    title: Dropbox
+    description: Files, folders, and shared links
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/dropbox.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.dropbox.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: static
+        # Dropbox issues a refresh token ONLY when the authorize request carries
+        # token_access_type=offline. Without it, the authorization_code exchange
+        # returns a ~4h access token and NO refresh token, so the connection dies
+        # every access-token lifetime and requires a full manual reconnect. This
+        # is Dropbox's equivalent of Google's access_type=offline.
+        additionalAuthorizationParams:
+          token_access_type: offline
+        requiredScopes:
+          - files.metadata.read
+          - files.content.read
+          - files.content.write
+          - sharing.write
+          - account_info.read
+        oauthClientSetup:
+          portalUrl: https://www.dropbox.com/developers/apps
+          hint: Create a Scoped Access app in the Dropbox App Console, enable the listed scopes, add the NimbleBrain redirect URI, then paste App key + App secret here
+          clientSecretKey: dropbox.client_secret
+        tags: [storage, files]
+
+  # com.intercom/mcp: dropped pending vendor host allowlisting.
+  # Intercom rejects DCR /register itself with "Redirect URI ... is
+  # not in the allowlist, reach out to Intercom Customer Support if
+  # you believe we should support it." Re-add once #200 lands.
+
+  - name: com.mercury/mcp
+    title: Mercury
+    description: Banking accounts, transactions, and balances (read-only)
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/mercury.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.mercury.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [banking, finance]
+
+  - name: com.neon/mcp
+    title: Neon
+    description: Serverless Postgres branches and queries
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/neon.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.neon.tech/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [database, postgres]
+
+  - name: com.paypal/mcp
+    title: PayPal
+    description: Payments, invoices, and merchant accounts
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/paypal.png
+        sizes: ["any"]
+    remotes:
+      - type: sse
+        url: https://mcp.paypal.com/sse
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [payments]
+
+  - name: com.sentry/mcp
+    title: Sentry
+    description: Errors, performance, and release tracking
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/sentry.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.sentry.dev/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [observability, errors]
+
+  - name: com.stripe/mcp
+    title: Stripe
+    description: Payments, customers, and subscriptions
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/stripe.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.stripe.com/
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [payments, billing]
+
+  # Supabase: advertises OAuth metadata via WWW-Authenticate's
+  # resource_metadata header (RFC 9728 §3.1) at a non-default path
+  # (/.well-known/oauth-protected-resource/mcp). Platform's discovery
+  # only honors the well-known root today — install would fail. Re-add
+  # once issue #196 lands the WWW-Authenticate fallback.
+
+  # com.vercel/mcp: dropped pending vendor host allowlisting. Vercel
+  # rejects DCR /register with "The provided redirect URIs are not
+  # approved for use by this authorization server." Re-add once #200
+  # lands.
+
+  - name: com.webflow/mcp
+    title: Webflow
+    description: Visual website builder and CMS
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/webflow.png
+        sizes: ["any"]
+    remotes:
+      - type: sse
+        url: https://mcp.webflow.com/sse
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [design, cms]
+
+  - name: com.wix/mcp
+    title: Wix
+    description: Website builder and online store platform
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/wix.png
+        sizes: ["any"]
+    remotes:
+      - type: sse
+        url: https://mcp.wix.com/sse
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [website, cms]
+
+  - name: ai.exa/mcp
+    title: Exa
+    description: Web search, page fetching, and multi-step research agents
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/exa.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.exa.ai/mcp?login
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [search, research]
+
+  - name: ai.granola/mcp
+    title: Granola
+    description: Meeting notes and transcripts
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/granola.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.granola.ai/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [meetings, notes]
+        # Offered on the Profile → Connectors page as a personal (identity-plane)
+        # connection, grantable into any workspace.
+        personal: true
+
+  - name: ai.fireflies/mcp
+    title: Fireflies
+    description: Meeting transcripts, summaries, and action items
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/fireflies/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://api.fireflies.ai/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [meetings, notes]
+        # Fireflies grants no read-only scope, so its write tools (share a
+        # meeting by email, retitle, move) arrive with the connection; narrow
+        # them with per-tool permissions on the Configure page, starting with
+        # fireflies_share_meeting, which sends a transcript to any address.
+        personal: true
+
+  - name: com.close/mcp
+    title: Close
+    description: CRM leads, contacts, opportunities, and tasks
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/close/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.close.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        # Close grades tools by scope. write_safe creates leads, contacts,
+        # opportunities, notes, tasks, and draft emails; write_destructive
+        # (updates, deletes, voice-agent calls) is deliberately not requested.
+        # offline_access issues a refresh token.
+        requiredScopes: [mcp.read, mcp.write_safe, offline_access]
+        # Close's sign-in names no account, so the label on a connected Close
+        # comes from asking it who the user is (org_info takes no arguments).
+        account:
+          tool: org_info
+          field: current_user.email
+        tags: [crm, sales]
+        personal: true
+
+  # Sage Intacct runs its MCP server on its own OAuth issuer (api-mcp.intacct.com)
+  # with no dynamic client registration, so each customer brings a client from
+  # the Sage Developer Console. That client is tied to the customer's Web
+  # Services sender ID (so a tenant declares it once, under
+  # config.connectors.oauthClients, rather than per workspace), needs the AI Gateway add-on, and must be authorized in
+  # the Intacct company (Company > Security > Authorized client applications).
+  # A client created minutes earlier fails tool calls with GW-0011 until it
+  # propagates; reconnecting later clears it.
+  - name: com.intacct/mcp
+    title: Sage Intacct
+    description: Read-only accounting data — GL, AP, AR, and reports
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/mcp.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.intacct.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: static
+        # offline_access is the only scope Sage advertises; it issues the
+        # refresh token. Access tokens last 8 hours (expires_in 28800).
+        requiredScopes: [offline_access]
+        # Sage can reject an access token before its expiry with an error result
+        # instead of a 401, so the runtime would neither refresh nor offer
+        # Reconnect. Naming its wording makes the runtime refresh and retry; a
+        # runtime that predates the key ignores it.
+        inBandAuthErrors:
+          - "authentication token has expired or is invalid"
+        oauthClientSetup:
+          portalUrl: https://developer.sage.com/intacct/
+          hint: In the Sage Developer Console, create a Sage Intacct application on the AI-enabled sender ID, add the NimbleBrain redirect URI, then paste its client ID and secret here
+          clientSecretKey: intacct.client_secret
+        tags: [accounting, finance]
+        # Offered as a personal connection only on a tenant that declares the
+        # client in config.connectors.oauthClients, so each person signs in with
+        # their own Intacct user. Elsewhere the runtime leaves it out.
+        personal: true

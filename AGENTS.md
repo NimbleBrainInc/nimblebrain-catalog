@@ -1,24 +1,36 @@
 # nimblebrain-registry
 
-Builds `registry.nimblebrain.ai`: NimbleBrain's catalog of MCP servers, served in the
-official MCP Registry API (`/v0.1/servers`). It is a subregistry: it reads the official
-registry (`registry.modelcontextprotocol.io`), keeps the servers named in
-`members.yaml`, adds NimbleBrain's metadata, and serves the same API.
+Builds `registry.nimblebrain.ai`: NimbleBrain's catalog of the connectors it offers,
+served in the official MCP Registry API (`/v0.1/servers`). It is a subregistry: it
+mirrors the servers named in `members.yaml` from the official registry
+(`registry.modelcontextprotocol.io`), publishes the ones authored in `servers/`, and
+serves both through the same API. ADR-0068 in the runtime repo (`adr/`) sets what the
+catalog is for.
 
 ## How data flows
 
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
-official registry ──(this repo: registry build)──► S3 ──► CloudFront ──► registry.nimblebrain.ai
+official registry + servers/*.yaml ──(this repo: registry build)──► S3 ──► CloudFront ──► registry.nimblebrain.ai
 ```
 
 - **A server's identity, versions, and status belong to the official registry.** Each
   product publishes its own `server.json` there from its own release CI. This repo
   never publishes upstream and holds no upstream credentials. To change what a server
   says, change its `server.json` in the product repo and release.
-- **This repo decides membership and NimbleBrain's metadata.** Adding a server is one
-  entry in `members.yaml`. The `server` block is copied unchanged; NimbleBrain's fields
-  go under `_meta["ai.nimblebrain/catalog"]`, beside upstream's own `_meta`.
+- **A mirrored server is copied unchanged.** Adding one is one entry in `members.yaml`;
+  its records, upstream `_meta` included, are served as upstream serves them.
+- **An authored server is a `ServerDetail` in `servers/*.yaml`.** It is for a connector
+  whose vendor has not published a server under the name NimbleBrain installs it by.
+  NimbleBrain's fields sit in the server's own `_meta`, under `ai.nimblebrain/connector`
+  (auth, tags, OAuth setup, brokering) and `ai.nimblebrain/host` (placements), which is
+  where the runtime reads them. The file shape (`{servers: [...]}`) is the one the
+  runtime's catalog directory reads. Only remote servers are accepted.
+- **A name appears once.** The build fails when a name is both mirrored and authored,
+  or authored twice.
+- **Nothing reads the catalog yet.** Hosted instances read their own copy of these
+  entries, and a local install reads the example built into the runtime image. Keep
+  `servers/` equal to the hosted copy until instances read the catalog instead.
 - **Namespace follows who sells the server.** A product sold on its own publishes under
   its own domain (`ai.bassethound/…`, `com.todosforagents/…`); a server that exists only
   as part of NimbleBrain publishes under `ai.nimblebrain/…`. The catalog lists both.
@@ -31,9 +43,10 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 
 | Path | What |
 |---|---|
-| `members.yaml` | The catalog: which servers, and the fields NimbleBrain adds |
-| `src/nimblebrain_registry/build.py` | Pure: member list + upstream entries → objects keyed by API path |
-| `src/nimblebrain_registry/render.py` | Pure: the server list → the catalog page at `/` and the 404 body |
+| `members.yaml` | Servers mirrored from the official registry |
+| `servers/*.yaml` | Servers the catalog authors: `curated.yaml` (DCR and static OAuth), `composio.yaml` (brokered by Composio) |
+| `src/nimblebrain_registry/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
+| `src/nimblebrain_registry/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page shows a badge instead |
 | `src/nimblebrain_registry/cli.py` | `registry build` (fetch upstream, write `dist/`) and `registry publish` (upload to S3) |
 | `.github/workflows/deploy.yml` | Builds and publishes on push to `main`, hourly, and on `repository_dispatch` |
 
@@ -57,6 +70,8 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 - **The list holds each server's latest version only**, since a static object cannot
   honor `?version=latest`. Query parameters are ignored, and the catalog is small
   enough that no client needs `cursor` or `search`.
+- **An authored server has one version**, the one its entry states, served as its
+  `latest`.
 - **A failed build publishes nothing**, so the registry keeps serving the last good copy
   when upstream is down or a member is missing. `publish` deletes keys the build no
   longer produces.
@@ -69,7 +84,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 uv sync
 uv run pytest -q
 uv run ruff format . && uv run ruff check . && uv run ty check src tests
-uv run registry build          # writes dist/ from members.yaml and the live upstream
+uv run registry build          # writes dist/ from members.yaml, servers/, and the live upstream
 ```
 
 Publishing runs in CI only (`deploy.yml`), with the role in the

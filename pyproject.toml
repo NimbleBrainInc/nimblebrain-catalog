@@ -1,7 +1,7 @@
 [project]
 name = "nimblebrain-registry"
 version = "0.1.0"
-description = "Builds registry.nimblebrain.ai, a subregistry of the official MCP Registry"
+description = "Builds registry.nimblebrain.ai, NimbleBrain's connector catalog and a subregistry of the official MCP Registry"
 requires-python = ">=3.13"
 dependencies = [
     "boto3>=1.35",

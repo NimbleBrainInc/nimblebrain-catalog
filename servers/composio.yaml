@@ -1,0 +1,719 @@
+# Connectors brokered by Composio. Composio holds the vendor's tokens; the runtime
+# keeps an opaque connected-account id per workspace and calls tools through a
+# per-session Composio MCP URL. The remote url is a placeholder replaced at install.
+# Each entry's `toolkit` is the key the deployment wires its Composio auth config
+# under. `tools` is curated: toolkits publish more tools than tool search can hold.
+
+servers:
+  - name: io.asana/mcp
+    title: Asana
+    description: Tasks, projects, and team workflows
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/icons/asana.png
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: asana
+          # Asana publishes 84 tool slugs — curate to a task/project
+          # working set. Slugs verified against the live Composio catalog
+          # (GET /api/v3/tools?toolkit_slug=asana); note the `_A_` infix
+          # (CREATE_A_TASK, GET_A_TASK) and that there is no
+          # SEARCH_TASKS_IN_WORKSPACE — GET_TYPEAHEAD_OBJECTS is the
+          # name-search path. Expand from the 84-slug set as needs surface.
+          tools:
+            - ASANA_CREATE_A_TASK
+            - ASANA_GET_A_TASK
+            - ASANA_UPDATE_A_TASK
+            - ASANA_GET_TASKS_FROM_A_PROJECT
+            - ASANA_GET_A_USER_TASK_LIST
+            - ASANA_CREATE_SUBTASK
+            - ASANA_GET_TASK_SUBTASKS
+            - ASANA_CREATE_TASK_COMMENT
+            - ASANA_GET_STORIES_FOR_TASK
+            - ASANA_GET_TYPEAHEAD_OBJECTS
+            - ASANA_CREATE_A_PROJECT
+            - ASANA_GET_A_PROJECT
+            - ASANA_GET_WORKSPACE_PROJECTS
+            - ASANA_GET_SECTIONS_IN_PROJECT
+            - ASANA_GET_MULTIPLE_WORKSPACES
+            - ASANA_GET_CURRENT_USER
+        tags: [tasks, projects, composio]
+
+  # Gmail (and Outlook below) route through Composio as a stopgap until our
+  # own Google / Microsoft OAuth clients pass restricted-scope verification.
+  - name: com.google/gmail
+    title: Gmail
+    description: Read, send, and draft mail
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/gmail/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        # Offered on the Profile → Connectors page as a personal (identity-plane)
+        # connection, grantable into any workspace.
+        personal: true
+        composio:
+          toolkit: gmail
+          # Curated working set. Composio's Gmail toolkit publishes
+          # ~60 tools; exposing all of them blows up the agent's
+          # tool-search context. Add to this list when a user need
+          # surfaces; default tight.
+          #
+          # NOTE: the allowlist is necessary but not sufficient for the
+          # destructive tools below. Composio gates delete/trash at the
+          # project level — an allowlisted-but-disabled tool returns
+          # "execution disabled for this project" rather than running.
+          # Enable them on the gmail auth_config in the Composio
+          # dashboard, and re-install the connector per workspace so the
+          # session is minted with the updated tool filter (the filter
+          # is baked at session-create time; see connector-tools.ts).
+          #
+          # GMAIL_DELETE_MESSAGE is deliberately omitted: it permanently
+          # deletes arbitrary mail (users.messages.delete — bypasses
+          # Trash, non-recoverable), exceeds the draft-pruning need, and
+          # GMAIL_MOVE_TO_TRASH already covers reversible removal. Add it
+          # only if a concrete purge-real-mail need surfaces.
+          tools:
+            - GMAIL_SEND_EMAIL
+            - GMAIL_FETCH_EMAILS
+            - GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID
+            - GMAIL_FETCH_MESSAGE_BY_THREAD_ID
+            - GMAIL_LIST_THREADS
+            - GMAIL_LIST_LABELS
+            - GMAIL_CREATE_EMAIL_DRAFT
+            - GMAIL_SEND_DRAFT
+            - GMAIL_LIST_DRAFTS
+            - GMAIL_DELETE_DRAFT
+            - GMAIL_REPLY_TO_THREAD
+            - GMAIL_FORWARD_MESSAGE
+            - GMAIL_ADD_LABEL_TO_EMAIL
+            - GMAIL_MOVE_TO_TRASH
+            - GMAIL_SEARCH_PEOPLE
+            - GMAIL_GET_PROFILE
+        tags: [email, productivity, composio]
+
+  - name: com.microsoft/outlook
+    title: Outlook
+    description: Read, send, and draft mail
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/outlook/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        # Offered on the Profile → Connectors page as a personal (identity-plane)
+        # connection, grantable into any workspace.
+        personal: true
+        composio:
+          toolkit: outlook
+          # Outlook publishes ~280 tools — curate aggressively.
+          # Slugs verified against Composio's published catalog
+          # (see `nb__search outlook` output for the full set).
+          tools:
+            - OUTLOOK_SEND_EMAIL
+            - OUTLOOK_REPLY_EMAIL
+            - OUTLOOK_FORWARD_MESSAGE
+            - OUTLOOK_LIST_MESSAGES
+            - OUTLOOK_LIST_SENT_ITEMS_MESSAGES
+            - OUTLOOK_GET_MESSAGE
+            - OUTLOOK_DELETE_MESSAGE
+            - OUTLOOK_MOVE_MESSAGE
+            - OUTLOOK_CREATE_DRAFT
+            - OUTLOOK_SEND_DRAFT
+            - OUTLOOK_LIST_MAIL_FOLDERS
+            - OUTLOOK_LIST_EVENTS
+            - OUTLOOK_CALENDAR_CREATE_EVENT
+            - OUTLOOK_ACCEPT_EVENT
+            - OUTLOOK_GET_PROFILE
+        tags: [email, productivity, composio]
+
+  - name: com.box/files
+    title: Box
+    description: Files, folders, and shared links
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/box/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: box
+          tools:
+            - BOX_UPLOAD_FILE
+            - BOX_DOWNLOAD_FILE
+            - BOX_GET_FILE_INFORMATION
+            - BOX_UPDATE_FILE
+            - BOX_DELETE_FILE
+            - BOX_COPY_FILE
+            - BOX_CREATE_FOLDER
+            - BOX_GET_FOLDER
+            - BOX_LIST_ITEMS_IN_FOLDER
+            - BOX_ADD_SHARED_LINK_TO_FILE
+            - BOX_ADD_SHARED_LINK_TO_FOLDER
+            - BOX_CREATE_COMMENT
+            - BOX_GET_CURRENT_USER
+            - BOX_ASK_QUESTION
+        tags: [storage, files, composio]
+
+  - name: com.github/repos
+    title: GitHub
+    description: Issues, pull requests, and repository files
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/github/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: github
+          tools:
+            - GITHUB_CREATE_AN_ISSUE
+            - GITHUB_GET_AN_ISSUE
+            - GITHUB_CREATE_AN_ISSUE_COMMENT
+            - GITHUB_ADD_LABELS_TO_AN_ISSUE
+            - GITHUB_ADD_ASSIGNEES_TO_AN_ISSUE
+            - GITHUB_CREATE_A_PULL_REQUEST
+            - GITHUB_GET_A_PULL_REQUEST
+            - GITHUB_FIND_PULL_REQUESTS
+            - GITHUB_CREATE_A_REVIEW_FOR_A_PULL_REQUEST
+            - GITHUB_FIND_REPOSITORIES
+            - GITHUB_GET_A_REPOSITORY
+            - GITHUB_GET_A_REPOSITORY_README
+            - GITHUB_GET_A_COMMIT
+            - GITHUB_CREATE_OR_UPDATE_FILE_CONTENTS
+            - GITHUB_GET_A_BRANCH
+        tags: [dev, code, composio]
+
+  - name: com.google/calendar
+    title: Google Calendar
+    description: Create, find, and manage calendar events
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/google-calendar/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        # Offered on the Profile → Connectors page as a personal (identity-plane)
+        # connection, grantable into any workspace.
+        personal: true
+        composio:
+          toolkit: googlecalendar
+          tools:
+            - GOOGLECALENDAR_CREATE_EVENT
+            - GOOGLECALENDAR_UPDATE_EVENT
+            - GOOGLECALENDAR_PATCH_EVENT
+            - GOOGLECALENDAR_DELETE_EVENT
+            - GOOGLECALENDAR_FIND_EVENT
+            - GOOGLECALENDAR_EVENTS_LIST
+            - GOOGLECALENDAR_EVENTS_GET
+            - GOOGLECALENDAR_FIND_FREE_SLOTS
+            - GOOGLECALENDAR_FREE_BUSY_QUERY
+            - GOOGLECALENDAR_QUICK_ADD
+            - GOOGLECALENDAR_LIST_CALENDARS
+            - GOOGLECALENDAR_GET_CALENDAR
+            - GOOGLECALENDAR_GET_CURRENT_DATE_TIME
+            - GOOGLECALENDAR_REMOVE_ATTENDEE
+        tags: [calendar, scheduling, composio]
+
+  - name: com.intuit/quickbooks
+    title: QuickBooks
+    description: Invoices, customers, payments, and financial reports
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/quickbooks/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: quickbooks
+          # Financial surface — read + create only, no delete/batch ops.
+          tools:
+            - QUICKBOOKS_CREATE_INVOICE
+            - QUICKBOOKS_READ_INVOICE
+            - QUICKBOOKS_LIST_INVOICES
+            - QUICKBOOKS_UPDATE_SPARSE_INVOICE
+            - QUICKBOOKS_CREATE_CUSTOMER
+            - QUICKBOOKS_READ_CUSTOMER
+            - QUICKBOOKS_CREATE_PAYMENT
+            - QUICKBOOKS_GET_PAYMENT
+            - QUICKBOOKS_CREATE_BILL
+            - QUICKBOOKS_GET_BILL
+            - QUICKBOOKS_CREATE_ESTIMATE
+            - QUICKBOOKS_GET_COMPANY_INFO
+            - QUICKBOOKS_GET_PROFIT_AND_LOSS_REPORT
+            - QUICKBOOKS_GET_BALANCE_SHEET_REPORT
+            - QUICKBOOKS_QUERY_ENTITIES
+        tags: [accounting, finance, composio]
+
+  - name: com.linkedin/social
+    title: LinkedIn
+    description: Create posts and read profile/company data
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/linkedin/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        # Offered on the Profile → Connectors page as a personal (identity-plane)
+        # connection, grantable into any workspace.
+        personal: true
+        composio:
+          toolkit: linkedin
+          tools:
+            - LINKEDIN_CREATE_LINKED_IN_POST
+            - LINKEDIN_CREATE_ARTICLE_OR_URL_SHARE
+            - LINKEDIN_CREATE_COMMENT_ON_POST
+            - LINKEDIN_GET_POST_CONTENT
+            - LINKEDIN_DELETE_LINKED_IN_POST
+            - LINKEDIN_GET_MY_INFO
+            - LINKEDIN_GET_PERSON
+            - LINKEDIN_GET_COMPANY_INFO
+            - LINKEDIN_GET_ORG_PAGE_STATS
+            - LINKEDIN_GET_SHARE_STATS
+            - LINKEDIN_GET_NETWORK_SIZE
+            - LINKEDIN_LIST_REACTIONS
+            - LINKEDIN_INITIALIZE_IMAGE_UPLOAD
+            - LINKEDIN_REGISTER_IMAGE_UPLOAD
+            - LINKEDIN_GET_IMAGE
+        tags: [social, marketing, composio]
+
+  - name: com.slack/messaging
+    title: Slack
+    description: Send messages, read channels, and search
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/slack/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        # Offered on the Profile → Connectors page as a personal (identity-plane)
+        # connection, grantable into any workspace.
+        personal: true
+        composio:
+          toolkit: slack
+          tools:
+            - SLACK_SEND_MESSAGE
+            - SLACK_UPDATES_A_SLACK_MESSAGE
+            - SLACK_DELETES_A_MESSAGE_FROM_A_CHAT
+            - SLACK_SCHEDULE_MESSAGE
+            - SLACK_FETCH_CONVERSATION_HISTORY
+            - SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION
+            - SLACK_LIST_ALL_CHANNELS
+            - SLACK_FIND_CHANNELS
+            - SLACK_CREATE_CHANNEL
+            - SLACK_SEARCH_MESSAGES
+            - SLACK_LIST_ALL_USERS
+            - SLACK_FIND_USER_BY_EMAIL_ADDRESS
+            - SLACK_ADD_REACTION_TO_AN_ITEM
+            - SLACK_RETRIEVE_CONVERSATION_INFORMATION
+            - SLACK_UPLOAD_OR_CREATE_A_FILE_IN_SLACK
+        tags: [messaging, productivity, composio]
+
+  - name: com.whatsapp/messaging
+    title: WhatsApp
+    description: Send WhatsApp Business messages and templates
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/whatsapp/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: whatsapp
+          tools:
+            - WHATSAPP_SEND_MESSAGE
+            - WHATSAPP_SEND_TEMPLATE_MESSAGE
+            - WHATSAPP_SEND_MEDIA
+            - WHATSAPP_SEND_LOCATION
+            - WHATSAPP_SEND_CONTACTS
+            - WHATSAPP_SEND_INTERACTIVE_BUTTONS
+            - WHATSAPP_SEND_INTERACTIVE_LIST
+            - WHATSAPP_GET_MESSAGE_TEMPLATES
+            - WHATSAPP_CREATE_MESSAGE_TEMPLATE
+            - WHATSAPP_GET_TEMPLATE_STATUS
+            - WHATSAPP_GET_BUSINESS_PROFILE
+            - WHATSAPP_GET_PHONE_NUMBERS
+            - WHATSAPP_UPLOAD_MEDIA
+        tags: [messaging, composio]
+
+  - name: com.zoho/crm
+    title: Zoho CRM
+    description: Contacts, leads, deals, and modules
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/zoho/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: zoho
+          tools:
+            - ZOHO_GET_ZOHO_RECORDS
+            - ZOHO_SEARCH_ZOHO_RECORDS
+            - ZOHO_CREATE_ZOHO_RECORD
+            - ZOHO_UPDATE_ZOHO_RECORD
+            - ZOHO_CONVERT_ZOHO_LEAD
+            - ZOHO_LIST_MODULES
+            - ZOHO_GET_MODULE_FIELDS
+            - ZOHO_GET_RELATED_RECORDS
+            - ZOHO_GET_ZOHO_USERS
+            - ZOHO_CREATE_ZOHO_TAG
+        tags: [crm, sales, composio]
+
+  - name: com.google/drive
+    title: Google Drive
+    description: Find, read, and manage Drive files
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/google-drive/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: googledrive
+          tools:
+            - GOOGLEDRIVE_FIND_FILE
+            - GOOGLEDRIVE_LIST_FILES
+            - GOOGLEDRIVE_GET_FILE_METADATA
+            - GOOGLEDRIVE_DOWNLOAD_FILE
+            - GOOGLEDRIVE_CREATE_FILE_FROM_TEXT
+            - GOOGLEDRIVE_CREATE_FOLDER
+            - GOOGLEDRIVE_FIND_FOLDER
+            - GOOGLEDRIVE_CREATE_PERMISSION
+            - GOOGLEDRIVE_COPY_FILE_ADVANCED
+            - GOOGLEDRIVE_MOVE_FILE
+        tags: [files, google, composio]
+
+  - name: com.google/sheets
+    title: Google Sheets
+    description: Read and write spreadsheet data
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/google-sheets/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: googlesheets
+          tools:
+            - GOOGLESHEETS_GET_SPREADSHEET_INFO
+            - GOOGLESHEETS_BATCH_GET
+            - GOOGLESHEETS_VALUES_UPDATE
+            - GOOGLESHEETS_BATCH_UPDATE
+            - GOOGLESHEETS_SPREADSHEETS_VALUES_APPEND
+            - GOOGLESHEETS_CLEAR_VALUES
+            - GOOGLESHEETS_CREATE_GOOGLE_SHEET1
+            - GOOGLESHEETS_ADD_SHEET
+            - GOOGLESHEETS_GET_SHEET_NAMES
+        tags: [productivity, google, composio]
+
+  - name: com.google/docs
+    title: Google Docs
+    description: Create, read, and edit documents
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/google-docs/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: googledocs
+          tools:
+            - GOOGLEDOCS_CREATE_DOCUMENT
+            - GOOGLEDOCS_CREATE_DOCUMENT_MARKDOWN
+            - GOOGLEDOCS_GET_DOCUMENT_BY_ID
+            - GOOGLEDOCS_GET_DOCUMENT_PLAINTEXT
+            - GOOGLEDOCS_SEARCH_DOCUMENTS
+            - GOOGLEDOCS_INSERT_TEXT_ACTION
+            - GOOGLEDOCS_REPLACE_ALL_TEXT
+            - GOOGLEDOCS_UPDATE_DOCUMENT_MARKDOWN
+            - GOOGLEDOCS_COPY_DOCUMENT
+            - GOOGLEDOCS_EXPORT_DOCUMENT_AS_PDF
+        tags: [productivity, google, composio]
+
+  - name: com.google/slides
+    title: Google Slides
+    description: Create and edit presentations
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/google-slides/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: googleslides
+          tools:
+            - GOOGLESLIDES_CREATE_PRESENTATION
+            - GOOGLESLIDES_CREATE_SLIDES_MARKDOWN
+            - GOOGLESLIDES_PRESENTATIONS_GET
+            - GOOGLESLIDES_PRESENTATIONS_PAGES_GET
+            - GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE
+            - GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE
+            - GOOGLESLIDES_GET_PAGE_THUMBNAIL2
+        tags: [productivity, google, composio]
+
+  - name: com.hubspot/mcp
+    title: HubSpot
+    description: CRM contacts, deals, and pipeline
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/hubspot/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: hubspot
+          # HubSpot publishes 200+ verbose tool slugs — curate tightly.
+          # Slugs from Composio's published catalog; verify the live set
+          # with `nb__search hubspot` and expand as needs surface.
+          tools:
+            - HUBSPOT_SEARCH_CONTACTS_BY_CRITERIA
+            - HUBSPOT_LIST_CONTACTS
+            - HUBSPOT_CREATE_CONTACT
+            - HUBSPOT_CREATE_DEAL
+            - HUBSPOT_CREATE_COMPANY
+            - HUBSPOT_BATCH_READ_COMPANIES_BY_PROPERTIES
+        tags: [crm, sales, composio]
+
+  - name: us.zoom/mcp
+    title: Zoom
+    description: Meetings, recordings, contacts
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/zoom/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        # Offered on the Profile → Connectors page as a personal (identity-plane)
+        # connection, grantable into any workspace.
+        personal: true
+        composio:
+          toolkit: zoom
+          tools:
+            - ZOOM_LIST_MEETINGS
+            - ZOOM_GET_A_MEETING
+            - ZOOM_GET_MEETING_RECORDINGS
+            - ZOOM_LIST_ALL_RECORDINGS
+            - ZOOM_GET_A_MEETING_SUMMARY
+            - ZOOM_GET_PAST_MEETING_PARTICIPANTS
+            - ZOOM_LIST_PAST_MEETING_INSTANCES
+            - ZOOM_GET_USER
+            - ZOOM_SEARCH_COMPANY_CONTACTS
+        # Zoom is not OIDC and Composio records no account name for it, so the
+        # label on a connected Zoom comes from asking Zoom who the user is.
+        # Argument names are Composio's (snake_case), not Zoom's REST names.
+        account:
+          tool: ZOOM_GET_USER
+          arguments: { user_id: me }
+          field: data.email
+        tags: [meetings, video, composio]
+
+  - name: com.microsoft/teams
+    title: Microsoft Teams
+    description: Read and post Teams channel and chat messages
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/ms-teams/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: microsoft_teams
+          tools:
+            - MICROSOFT_TEAMS_TEAMS_POST_CHANNEL_MESSAGE
+            - MICROSOFT_TEAMS_TEAMS_POST_CHAT_MESSAGE
+            - MICROSOFT_TEAMS_TEAMS_POST_MESSAGE_REPLY
+            - MICROSOFT_TEAMS_TEAMS_LIST_CHAT_MESSAGES
+            - MICROSOFT_TEAMS_CHATS_GET_ALL_MESSAGES
+            - MICROSOFT_TEAMS_LIST_MESSAGE_REPLIES
+            - MICROSOFT_TEAMS_GET_CHAT_MESSAGE
+            - MICROSOFT_TEAMS_TEAMS_LIST
+            - MICROSOFT_TEAMS_TEAMS_LIST_CHANNELS
+            - MICROSOFT_TEAMS_GET_CHANNEL
+            - MICROSOFT_TEAMS_CHATS_GET_ALL_CHATS
+            - MICROSOFT_TEAMS_LIST_TEAM_MEMBERS
+            - MICROSOFT_TEAMS_LIST_USERS
+            - MICROSOFT_TEAMS_TEAMS_CREATE_CHAT
+            - MICROSOFT_TEAMS_TEAMS_CREATE_CHANNEL
+            - MICROSOFT_TEAMS_CREATE_MEETING
+        tags: [communication, productivity, composio]
+
+  - name: com.atlassian/jira
+    title: Jira
+    description: Create, search, and update Jira issues
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/jira/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: jira
+          tools:
+            - JIRA_CREATE_ISSUE
+            - JIRA_GET_ISSUE
+            - JIRA_EDIT_ISSUE
+            - JIRA_DELETE_ISSUE
+            - JIRA_ASSIGN_ISSUE
+            - JIRA_TRANSITION_ISSUE
+            - JIRA_GET_TRANSITIONS
+            - JIRA_SEARCH_FOR_ISSUES_USING_JQL_POST
+            - JIRA_SEARCH_ISSUES
+            - JIRA_ADD_COMMENT
+            - JIRA_LIST_ISSUE_COMMENTS
+            - JIRA_GET_ALL_PROJECTS
+            - JIRA_GET_ISSUE_TYPES
+            - JIRA_LIST_BOARDS
+            - JIRA_LIST_SPRINTS
+            - JIRA_FIND_USERS
+            - JIRA_GET_CURRENT_USER
+        tags: [project-management, productivity, composio]
+
+  # PostHog — the first API-KEY Composio connector. Operator playbook (auth
+  # scheme, env wiring, icon, staging field-key verification) lives in
+  # ./README.md → "Adding an API-key connector".
+  #
+  # Field keys and the tools allowlist were verified against the live Composio
+  # posthog toolkit (358 tools) and curated to a read-leaning analytics working
+  # set. Expand from the full set as needs surface.
+  - name: com.posthog/analytics
+    title: PostHog
+    description: Product analytics — insights, events, persons, and HogQL queries
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/posthog/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://backend.composio.dev/v3/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: composio
+        composio:
+          toolkit: posthog
+          authScheme: API_KEY
+          # Field keys are Composio's connection-initiation field names, verified
+          # against the live posthog API_KEY auth-config
+          # (getConnectedAccountInitiationFields → generic_api_key + subdomain).
+          fields:
+            - key: generic_api_key
+              title: Personal API Key
+              description: >-
+                PostHog → Settings → Personal API Keys → Create. Must start with
+                phx_ (the personal key), NOT the phc_ project key.
+              sensitive: true
+              required: true
+            - key: subdomain
+              title: Region / subdomain
+              description: >-
+                Your PostHog host: us (US Cloud), eu (EU Cloud), us.i / eu.i for
+                public, or your self-hosted subdomain.
+              required: true
+          # Read-leaning analytics working set: HogQL query, trends, funnels,
+          # retention, insights (list/get/create), events, persons, feature
+          # flags, dashboards, annotations. No bulk-delete or org/pipeline admin.
+          #
+          # IMPORTANT — slugs are the tool-router `config.tools` namespace, NOT
+          # the /api/v3/tools REST catalog. They differ (e.g. funnels is
+          # GET_FUNNEL_INSIGHTS_IN_PROJECT here, RETRIEVE_..._IN_PROJECT in REST).
+          # Validate by minting a session (the connect path) — session-create
+          # 400s "Invalid tool slugs in config.tools: …" naming any wrong ones.
+          # This set was validated against a live posthog auth-config.
+          tools:
+            - POSTHOG_CREATE_QUERY_IN_PROJECT_BY_ID
+            - POSTHOG_RETRIEVE_ASYNC_QUERY_STATUS_BY_ID
+            - POSTHOG_LIST_ORGANIZATION_PROJECTS
+            - POSTHOG_PROJECT_TREND_ANALYTICS
+            - POSTHOG_GET_FUNNEL_INSIGHTS_IN_PROJECT
+            - POSTHOG_RETRIEVE_RETENTION_INSIGHTS
+            - POSTHOG_RETRIEVE_PROJECT_INSIGHTS_WITH_PAGINATION
+            - POSTHOG_RETRIEVE_PROJECT_INSIGHT_DETAILS
+            - POSTHOG_CREATE_CUSTOM_PROJECT_INSIGHTS
+            - POSTHOG_LIST_AND_FILTER_PROJECT_EVENTS
+            - POSTHOG_GET_EVENT_DEFINITIONS
+            - POSTHOG_LIST_OR_DELETE_PERSONS_WITH_OPTIONAL_FILTERS
+            - POSTHOG_LIST_AND_MANAGE_PROJECT_FEATURE_FLAGS
+            - POSTHOG_GET_FEATURE_FLAG_DETAILS
+            - POSTHOG_LIST_PROJECT_DASHBOARDS
+            - POSTHOG_RETRIEVE_SPECIFIC_PROJECT_DASHBOARD_DETAILS
+            - POSTHOG_LIST_AND_MANAGE_PROJECT_ANNOTATIONS
+        tags: [analytics, product, composio]

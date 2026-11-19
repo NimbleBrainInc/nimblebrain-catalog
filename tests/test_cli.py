@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
 import boto3
 import pytest
+import yaml
 
-from nimblebrain_registry.build import BuildError
-from nimblebrain_registry.cli import publish, read, write
+from nimblebrain_registry import cli
+from nimblebrain_registry.build import OFFICIAL_META_KEY, BuildError
+from nimblebrain_registry.cli import main, publish, read, write
 
 OBJECTS = {
     "v0.1/servers": {"servers": [], "metadata": {"count": 0}},
@@ -89,3 +92,62 @@ def test_publish_rejects_an_incomplete_build_before_any_aws_call(
     with pytest.raises(BuildError, match="index.html"):
         publish(tmp_path, "bucket", "DIST")
     assert clients == {}
+
+
+MIRRORED = "ai.example/mirrored"
+
+
+def server(name: str) -> dict[str, Any]:
+    return {
+        "name": name,
+        "version": "1.0.0",
+        "remotes": [{"type": "streamable-http", "url": f"https://{name.split('/')[0]}/mcp"}],
+    }
+
+
+def upstream(name: str, _base: str) -> list[dict[str, Any]]:
+    return [{"server": server(name), "_meta": {OFFICIAL_META_KEY: {"isLatest": True}}}]
+
+
+def run_build(tmp_path: Path, files: dict[str, list[str]]) -> int:
+    (tmp_path / "members.yaml").write_text(yaml.safe_dump([{"name": MIRRORED}]))
+    folder = tmp_path / "servers"
+    folder.mkdir()
+    for file, names in files.items():
+        (folder / file).write_text(yaml.safe_dump({"servers": [server(n) for n in names]}))
+    return main(
+        [
+            "build",
+            "--members",
+            str(tmp_path / "members.yaml"),
+            "--servers",
+            str(folder),
+            "--out",
+            str(tmp_path / "dist"),
+        ]
+    )
+
+
+def test_build_lists_mirrored_and_every_authored_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(cli, "fetch_upstream_versions", upstream)
+
+    assert run_build(tmp_path, {"b.yaml": ["ai.example/b"], "a.yaml": ["ai.example/a"]}) == 0
+
+    listing = json.loads((tmp_path / "dist" / "api" / "v0.1" / "servers.json").read_text())
+    assert [e["server"]["name"] for e in listing["servers"]] == [
+        MIRRORED,
+        "ai.example/a",
+        "ai.example/b",
+    ]
+
+
+def test_build_fails_on_a_name_authored_in_two_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(cli, "fetch_upstream_versions", upstream)
+
+    assert run_build(tmp_path, {"a.yaml": ["ai.example/a"], "b.yaml": ["ai.example/a"]}) == 1
+    assert "ai.example/a: listed more than once" in capsys.readouterr().err
+    assert not (tmp_path / "dist").exists()

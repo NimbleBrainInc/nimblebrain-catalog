@@ -23,7 +23,14 @@ from typing import Any
 
 import yaml
 
-from nimblebrain_registry.build import API_PREFIX, BuildError, Entry, build, parse_members
+from nimblebrain_registry.build import (
+    API_PREFIX,
+    BuildError,
+    Entry,
+    build,
+    parse_authored,
+    parse_members,
+)
 from nimblebrain_registry.render import SITE_CONTENT_TYPES, site
 
 UPSTREAM = "https://registry.modelcontextprotocol.io"
@@ -46,6 +53,16 @@ def fetch_upstream_versions(name: str, base: str = UPSTREAM) -> list[Entry]:
             f"{name}: upstream paginated the version list, which the build cannot read"
         )
     return body.get("servers", [])
+
+
+def read_authored(folder: Path) -> list[Entry]:
+    """Every authored server in `folder/*.yaml`, in file-name order."""
+    if not folder.is_dir():
+        return []
+    entries: list[Entry] = []
+    for path in sorted(folder.glob("*.yaml")):
+        entries += parse_authored(path.name, yaml.safe_load(path.read_text()))
+    return entries
 
 
 def write(objects: dict[str, Any], out: Path) -> None:
@@ -123,6 +140,7 @@ def main(argv: list[str] | None = None) -> int:
 
     b = sub.add_parser("build", help="build the registry from members.yaml and upstream")
     b.add_argument("--members", type=Path, default=Path("members.yaml"))
+    b.add_argument("--servers", type=Path, default=Path("servers"))
     b.add_argument("--out", type=Path, default=Path("dist"))
     b.add_argument("--upstream", default=UPSTREAM)
 
@@ -135,9 +153,13 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "build":
             members = parse_members(yaml.safe_load(args.members.read_text()))
-            objects = build(members, lambda name: fetch_upstream_versions(name, args.upstream))
+            authored = read_authored(args.servers)
+            objects = build(
+                members, lambda name: fetch_upstream_versions(name, args.upstream), authored
+            )
             write(objects, args.out)
-            print(f"built {len(objects)} API objects for {len(members)} servers in {args.out}")
+            count = len(members) + len(authored)
+            print(f"built {len(objects)} API objects for {count} servers in {args.out}")
         else:
             publish(args.out, args.bucket, args.distribution)
     except BuildError as err:
