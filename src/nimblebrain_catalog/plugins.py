@@ -11,11 +11,18 @@ generated here, never stored:
 - `.mcp.json`, the same server in Claude Code's own plugin format.
 - one zip per plugin, served at `plugins/<name>.zip`, which is the plugin's
   install source: the catalog repo is private, so no host can clone it.
-- `marketplace.json`, the index Claude Code and NimbleBrain install from.
-- `.well-known/ai-catalog.json`, the AI Catalog index for discovery.
+- one install index per kind of reader, in Claude Code's marketplace format
+  (ADR-0068). A listing promises its reader the plugin installs and signs in:
+  `marketplace.json` lists the portable plugins, for any host, and
+  `nimblebrain/marketplace.json` lists every plugin, for the NimbleBrain runtime.
+- `.well-known/ai-catalog.json`, the AI Catalog index for discovery. It lists
+  every plugin and marks the ones only NimbleBrain can run.
 
-A Composio connector's remote is a placeholder replaced at install, so its
-plugin has no MCP config: only NimbleBrain can reach that server.
+A plugin is portable when every server it names is reached by URL and signs in
+by dynamic client registration, or is mirrored from upstream with no NimbleBrain
+auth stated. A Composio connector's remote is a placeholder only NimbleBrain
+replaces, so its plugin has no MCP config; a server with `auth: static` needs an
+operator's own OAuth app. Both make a plugin NimbleBrain-only.
 """
 
 from __future__ import annotations
@@ -45,6 +52,10 @@ OWNER = {"name": "NimbleBrain", "url": "https://nimblebrain.ai"}
 SITE_URL = "https://catalog.nimblebrain.ai"
 
 MARKETPLACE_KEY = "marketplace.json"
+NIMBLEBRAIN_MARKETPLACE_KEY = "nimblebrain/marketplace.json"
+# Auth kinds any host can complete on its own. None is a mirrored server whose
+# entry states no NimbleBrain auth, which a host connects as its vendor publishes it.
+PORTABLE_AUTH = {None, "dcr"}
 AI_CATALOG_KEY = ".well-known/ai-catalog.json"
 
 # Agent Plugins 1.0 §5.5.
@@ -88,6 +99,11 @@ def parse_plugins(raw: object) -> list[Plugin]:
 
 def connector(server: Mapping[str, Any]) -> Mapping[str, Any]:
     return (server.get("_meta") or {}).get(CONNECTOR_META_KEY) or {}
+
+
+def portable(server: Mapping[str, Any]) -> bool:
+    """Whether any host can install the server's plugin and sign in on its own."""
+    return connector(server).get("auth") in PORTABLE_AUTH and _remote(server) is not None
 
 
 def brokered(server: Mapping[str, Any]) -> bool:
@@ -209,10 +225,16 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _marketplace(description: str, entries: list[dict[str, Any]]) -> bytes:
+    return _json(
+        {"name": MARKETPLACE, "description": description, "owner": dict(OWNER), "plugins": entries}
+    )
+
+
 def distribution(
     plugins: list[Plugin], servers: Mapping[str, Mapping[str, Any]], root: Path
 ) -> dict[str, bytes]:
-    """The catalog's plugin files: each plugin's zip, `marketplace.json`, and the AI Catalog."""
+    """The catalog's plugin files: each plugin's zip, both install indexes, the AI Catalog."""
     listed = {p.name for p in root.iterdir() if p.is_dir()} if root.is_dir() else set()
     unlisted = listed - {p.name for p in plugins}
     if unlisted:
@@ -220,6 +242,7 @@ def distribution(
 
     out: dict[str, bytes] = {}
     entries: list[dict[str, Any]] = []
+    portable_entries: list[dict[str, Any]] = []
     catalog: list[dict[str, Any]] = []
     for plugin in plugins:
         server = servers.get(plugin.server)
@@ -238,6 +261,8 @@ def distribution(
         if server.get("description"):
             entry["description"] = server["description"]
         entries.append(entry)
+        if portable(server):
+            portable_entries.append(entry)
 
         item: dict[str, Any] = {
             "identifier": f"urn:air:{PUBLISHER}:{plugin.name}:plugin",
@@ -251,6 +276,8 @@ def distribution(
         tags = connector(server).get("tags")
         if tags:
             item["tags"] = list(tags)
+        if not portable(server):
+            item["extensions"] = {EXTENSION: {"nimblebrainOnly": True}}
         item["publisher"] = {
             "identifier": PUBLISHER,
             "displayName": OWNER["name"],
@@ -258,13 +285,15 @@ def distribution(
         }
         catalog.append(item)
 
-    out[MARKETPLACE_KEY] = _json(
-        {
-            "name": MARKETPLACE,
-            "description": "The connectors NimbleBrain offers, each with the skill for using it.",
-            "owner": dict(OWNER),
-            "plugins": entries,
-        }
+    out[MARKETPLACE_KEY] = _marketplace(
+        "The connectors NimbleBrain offers that any agent can install and sign in to,"
+        " each with the skill for using it.",
+        portable_entries,
+    )
+    out[NIMBLEBRAIN_MARKETPLACE_KEY] = _marketplace(
+        "Every connector NimbleBrain offers, each with the skill for using it,"
+        " for the NimbleBrain runtime.",
+        entries,
     )
     out[AI_CATALOG_KEY] = _json(
         {

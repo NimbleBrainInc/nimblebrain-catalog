@@ -5,16 +5,16 @@ served in the official MCP Registry API (`/v0.1/servers`). It is a subregistry: 
 mirrors the servers named in `members.yaml` from the official registry
 (`registry.modelcontextprotocol.io`), publishes the ones authored in `servers/`, and
 serves both through the same API. Each server is also packaged as a plugin (Agent
-Plugins 1.0), with the skill for using it, and listed in `marketplace.json` and
-`.well-known/ai-catalog.json`. ADR-0068 in the runtime repo (`adr/`) sets what the
-catalog is for.
+Plugins 1.0), with the skill for using it, listed in an install index for each kind
+of reader and in `.well-known/ai-catalog.json`. ADR-0068 in the runtime repo (`adr/`)
+sets what the catalog is for.
 
 ## How data flows
 
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
 official registry + servers/*.yaml ──(catalog build)──► /v0.1/servers, the catalog page
-servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>.zip, marketplace.json, .well-known/ai-catalog.json
+servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>.zip, marketplace.json, nimblebrain/marketplace.json, .well-known/ai-catalog.json
 dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog.nimblebrain.ai
 ```
 
@@ -44,6 +44,15 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
   `notion@nimblebrain`). Claude Code requires the marketplace entry's name to equal the
   manifest's and prefixes each skill with it. Its global identifier is the AI Catalog's
   `urn:air:nimblebrain.ai:<name>:plugin`.
+- **Each install index lists only what its reader can run** (ADR-0068). A listing
+  promises the reader that the plugin installs and signs in. `marketplace.json`, for
+  any host, lists a plugin when every server it names is reached by URL and signs in
+  by DCR, or is mirrored with no NimbleBrain auth stated. `nimblebrain/marketplace.json`,
+  for the NimbleBrain runtime, lists every plugin. A Composio connector (only
+  NimbleBrain can reach it) or an `auth: static` server (it needs an operator's OAuth
+  app) is NimbleBrain-only, and the AI Catalog marks it with
+  `extensions["ai.nimblebrain"].nimblebrainOnly`. The build derives this from each
+  server's auth, so no one keeps a list.
 - **The zip is the install source.** This repo is private, so no host can clone it.
   `marketplace.json` names each plugin's zip by URL with its sha256, and the AI Catalog
   entry carries the same digest. Zips are built with fixed timestamps, so a plugin's
@@ -70,7 +79,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 | `plugins/<name>/skills/` | Each plugin's hand-written skills |
 | `src/nimblebrain_catalog/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
 | `src/nimblebrain_catalog/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page does not show it |
-| `src/nimblebrain_catalog/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, `marketplace.json`, and the AI Catalog |
+| `src/nimblebrain_catalog/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, both install indexes, and the AI Catalog |
 | `src/nimblebrain_catalog/cli.py` | `catalog build` (fetch upstream, write `dist/`) and `catalog publish` (upload to S3) |
 | `.github/workflows/deploy.yml` | Builds and publishes on push to `main`, hourly, and on `repository_dispatch` |
 
