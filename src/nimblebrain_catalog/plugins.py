@@ -15,11 +15,11 @@ generated here, never stored:
   (ADR-0068). A listing promises its reader the plugin installs and signs in:
   `marketplace.json` lists the portable plugins, for any host, and
   `nimblebrain/marketplace.json` lists every plugin, for the NimbleBrain runtime.
-- `.well-known/ai-catalog.json`, the AI Catalog index for discovery.
+- `.well-known/ai-catalog.json`, the AI Catalog index for discovery. It lists
+  every plugin and marks the ones only NimbleBrain can run.
 - `nimblebrain/connectors.yaml`, the portable servers as a runtime catalog file
   (`{servers: [ServerDetail, ...]}`), which the runtime image ships as the catalog a
-  fresh install starts with: every entry installs with nothing to configure. It lists
-  every plugin and marks the ones only NimbleBrain can run.
+  fresh install starts with: every entry installs with nothing to configure.
 
 A plugin is portable when every server it names is reached by URL and signs in
 by dynamic client registration, or is mirrored from upstream with no NimbleBrain
