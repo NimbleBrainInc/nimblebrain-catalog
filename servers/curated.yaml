@@ -39,7 +39,7 @@ servers:
   # /authorize independently rejects non-allowlisted redirect URIs
   # (DCR /register accepts but install fails at the browser redirect
   # with "Invalid redirect URI. It must be from an allowed host.").
-  # Re-add once #200 outreach lands.
+  # Re-add once Canva allowlists our redirect host.
 
   - name: com.cloudflare/mcp
     title: Cloudflare
@@ -61,7 +61,7 @@ servers:
   # everyone else with "Dynamic client registration is not supported."
   # Wired here as `auth: static` so operators can bring their own
   # OAuth app from the Dropbox App Console. Drop back to `auth: dcr`
-  # once #200 outreach lands.
+  # once Dropbox allowlists our redirect host.
 
   - name: com.dropbox/mcp
     title: Dropbox
@@ -98,7 +98,8 @@ servers:
   # com.intercom/mcp: dropped pending vendor host allowlisting.
   # Intercom rejects DCR /register itself with "Redirect URI ... is
   # not in the allowlist, reach out to Intercom Customer Support if
-  # you believe we should support it." Re-add once #200 lands.
+  # you believe we should support it." Re-add once Intercom allowlists
+  # our redirect host.
 
   - name: com.mercury/mcp
     title: Mercury
@@ -179,12 +180,12 @@ servers:
   # resource_metadata header (RFC 9728 §3.1) at a non-default path
   # (/.well-known/oauth-protected-resource/mcp). Platform's discovery
   # only honors the well-known root today — install would fail. Re-add
-  # once issue #196 lands the WWW-Authenticate fallback.
+  # once the runtime falls back to the WWW-Authenticate header.
 
   # com.vercel/mcp: dropped pending vendor host allowlisting. Vercel
   # rejects DCR /register with "The provided redirect URIs are not
-  # approved for use by this authorization server." Re-add once #200
-  # lands.
+  # approved for use by this authorization server." Re-add once Vercel
+  # allowlists our redirect host.
 
   - name: com.webflow/mcp
     title: Webflow
