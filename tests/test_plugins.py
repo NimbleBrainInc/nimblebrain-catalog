@@ -13,6 +13,7 @@ from nimblebrain_catalog.build import BuildError
 from nimblebrain_catalog.plugins import (
     AI_CATALOG_KEY,
     MARKETPLACE_KEY,
+    NIMBLEBRAIN_MARKETPLACE_KEY,
     Plugin,
     claude_mcp_config,
     distribution,
@@ -20,6 +21,7 @@ from nimblebrain_catalog.plugins import (
     mcp_config,
     parse_plugins,
     plugin_files,
+    portable,
 )
 
 DIRECT: dict[str, Any] = {
@@ -150,6 +152,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
         "plugins/vendor.zip",
         "plugins/brokered.zip",
         MARKETPLACE_KEY,
+        NIMBLEBRAIN_MARKETPLACE_KEY,
         AI_CATALOG_KEY,
     }
     names = zipfile.ZipFile(io.BytesIO(out["plugins/vendor.zip"])).namelist()
@@ -158,6 +161,9 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     digest = hashlib.sha256(out["plugins/vendor.zip"]).hexdigest()
     marketplace = json.loads(out[MARKETPLACE_KEY])
     assert marketplace["name"] == "nimblebrain"
+    assert [p["name"] for p in marketplace["plugins"]] == ["vendor"]
+    everything = json.loads(out[NIMBLEBRAIN_MARKETPLACE_KEY])
+    assert [p["name"] for p in everything["plugins"]] == ["vendor", "brokered"]
     assert marketplace["plugins"][0] == {
         "name": "vendor",
         "source": {
@@ -175,6 +181,8 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     assert entry["type"] == "application/agent-plugins+zip"
     assert entry["digest"] == f"sha256:{digest}"
     assert entry["displayName"] == "Vendor"
+    assert "extensions" not in entry
+    assert catalog["entries"][1]["extensions"] == {"ai.nimblebrain": {"nimblebrainOnly": True}}
 
 
 def test_distribution_is_the_same_bytes_every_build(tmp_path: Path) -> None:
@@ -193,3 +201,19 @@ def test_distribution_rejects_an_unlisted_plugin_folder(tmp_path: Path) -> None:
     write_skill(tmp_path, "stray", "stray")
     with pytest.raises(BuildError, match="does not list"):
         distribution(PLUGINS, SERVERS, tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("server", "expected"),
+    [
+        (DIRECT, True),
+        (BROKERED, False),
+        ({**DIRECT, "_meta": {"ai.nimblebrain/connector": {"auth": "static"}}}, False),
+        ({k: v for k, v in DIRECT.items() if k != "_meta"}, True),
+        ({**DIRECT, "remotes": []}, False),
+    ],
+)
+def test_portable_means_any_host_installs_and_signs_in(
+    server: dict[str, Any], expected: bool
+) -> None:
+    assert portable(server) is expected
