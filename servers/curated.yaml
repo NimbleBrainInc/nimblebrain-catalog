@@ -3,9 +3,6 @@
 # NimbleBrain's fields under `_meta["ai.nimblebrain/connector"]`. Secrets stay out:
 # an `auth: static` entry names its credential with `oauthClientSetup.clientSecretKey`,
 # which a workspace admin sets.
-#
-# Bassethound is listed by its upstream registry name in members.yaml, so it is not
-# repeated here.
 
 servers:
   - name: com.notion/mcp
@@ -218,6 +215,22 @@ servers:
       ai.nimblebrain/connector:
         auth: dcr
         tags: [website, cms]
+
+  - name: ai.bassethound/bassethound
+    title: Bassethound
+    description: "Deep five-layer domain intelligence: tech, infra, firmographics, AI-readiness, security"
+    version: "0.11.0"
+    websiteUrl: https://bassethound.ai
+    icons:
+      - src: https://static.nimblebrain.ai/logos/bassethound/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.bassethound.ai/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [intelligence, research, sales]
 
   - name: ai.exa/mcp
     title: Exa
