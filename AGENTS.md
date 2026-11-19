@@ -116,8 +116,8 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 - **registry.nimblebrain.ai, the catalog's first host, redirects.** Every request
   gets a 301 to the same path on catalog.nimblebrain.ai, so old links and clients keep
   working. The bucket keeps that first host's name, since a bucket cannot be renamed.
-- The bucket, distribution, certificate, DNS, and the deploy role are Terraform in the
-  `infra` repo. The deploy role trusts only this repo's `main`.
+- The bucket, distribution, certificate, DNS, and the deploy role are managed outside
+  this repo. The deploy role trusts only this repo's `main`.
 
 ## Commands
 

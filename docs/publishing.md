@@ -125,9 +125,8 @@ OIDC login grants only `io.github.*`, so our namespaces use DNS.
    ```
 
 2. Add a TXT record on the **apex** of the domain (not a `_mcp-auth` subdomain, which fails
-   with a generic signature error): `v=MCPv1; k=ed25519; p=<public half>`. Our domains are
-   in Route53; the `route53-dns` skill adds the record.
-3. Store the private half in 1Password ("<Product> MCP Registry Signing Key") and as the
+   with a generic signature error): `v=MCPv1; k=ed25519; p=<public half>`.
+3. Store the private half in your secret manager and as the
    `MCP_REGISTRY_SIGNING_KEY` secret of a GitHub environment named `mcp-registry-publish`,
    restricted to `v*` tags. Keep it an environment secret, not a repo secret, and add
    required reviewers if the repo has several writers: the key can overwrite **any** server
@@ -139,8 +138,8 @@ keep the publishing repos few.
 
 ### 3. Publish from the release workflow
 
-Copy the `publish-registry` job from Bassethound's `.github/workflows/release.yml`
-(NimbleBrainInc/bassethound), the reference implementation. It:
+Add a `publish-registry` job to the product's release workflow (Bassethound's is the
+reference implementation). It:
 
 - runs only after the production promote succeeds (`needs:` on that job), in the
   `mcp-registry-publish` environment;
