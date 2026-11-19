@@ -25,7 +25,10 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
 - **A mirrored server is copied unchanged.** Adding one is one entry in `members.yaml`;
   its records, upstream `_meta` included, are served as upstream serves them.
 - **An authored server is a `ServerDetail` in `servers/*.yaml`.** It is for a connector
-  whose vendor has not published a server under the name NimbleBrain installs it by.
+  whose vendor has not published a server under the name NimbleBrain installs it by, or
+  for an upstream server whose NimbleBrain auth a mirrored record cannot carry
+  (Bassethound). It keeps the upstream name and is pinned: it changes only when its
+  entry here is edited, not when the product releases.
   NimbleBrain's fields sit in the server's own `_meta`, under `ai.nimblebrain/connector`
   (auth, tags, OAuth setup, brokering) and `ai.nimblebrain/host` (placements), which is
   where the runtime reads them. The file shape (`{servers: [...]}`) is the one the

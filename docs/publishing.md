@@ -10,7 +10,11 @@ third-party remote servers we vouch for and configure (Notion, Linear, the Compo
 toolkits).
 
 - **Our own product's server** is published upstream from its product repo and mirrored
-  here by name. The rest of this guide covers that path.
+  here by name. The rest of this guide covers that path. A mirrored record carries no
+  NimbleBrain auth, so a product server that needs it stated is authored in
+  `servers/curated.yaml` under its registry name instead (Bassethound, `auth: dcr`). That
+  record is pinned: a release changes nothing here until its `version` and details are
+  edited to match the product's `server.json`.
 - **A third-party server** is mirrored the same way when its vendor publishes it upstream
   under the name NimbleBrain installs it by. Otherwise it is authored in
   `servers/curated.yaml` (DCR or static OAuth) or `servers/composio.yaml` (brokered), as
@@ -188,7 +192,8 @@ and open `https://catalog.nimblebrain.ai/#<name>`, which highlights the server's
 ## Changing or removing a server
 
 - **New version or changed details:** edit `server.json` in the product repo and release.
-  The catalog follows within the hour. Nothing changes here.
+  A mirrored server follows within the hour, with nothing to change here. An authored one
+  (in `servers/`) changes only when its entry is edited to match.
 - **Leave the catalog, stay published:** remove the entry from `members.yaml`. The next
   deploy deletes its objects here; the official listing is untouched.
 - **Retire it everywhere:** deprecate or delete it in the official registry (see its
