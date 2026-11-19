@@ -60,9 +60,6 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: composio
-        # Offered on the Profile → Connectors page as a personal (identity-plane)
-        # connection, grantable into any workspace.
-        personal: true
         composio:
           toolkit: gmail
           # Curated working set. Composio's Gmail toolkit publishes
@@ -116,9 +113,6 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: composio
-        # Offered on the Profile → Connectors page as a personal (identity-plane)
-        # connection, grantable into any workspace.
-        personal: true
         composio:
           toolkit: outlook
           # Outlook publishes ~280 tools — curate aggressively.
@@ -220,9 +214,6 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: composio
-        # Offered on the Profile → Connectors page as a personal (identity-plane)
-        # connection, grantable into any workspace.
-        personal: true
         composio:
           toolkit: googlecalendar
           tools:
@@ -289,9 +280,6 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: composio
-        # Offered on the Profile → Connectors page as a personal (identity-plane)
-        # connection, grantable into any workspace.
-        personal: true
         composio:
           toolkit: linkedin
           tools:
@@ -325,9 +313,6 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: composio
-        # Offered on the Profile → Connectors page as a personal (identity-plane)
-        # connection, grantable into any workspace.
-        personal: true
         composio:
           toolkit: slack
           tools:
@@ -555,9 +540,6 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: composio
-        # Offered on the Profile → Connectors page as a personal (identity-plane)
-        # connection, grantable into any workspace.
-        personal: true
         composio:
           toolkit: zoom
           tools:

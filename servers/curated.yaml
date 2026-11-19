@@ -262,9 +262,6 @@ servers:
       ai.nimblebrain/connector:
         auth: dcr
         tags: [meetings, notes]
-        # Offered on the Profile → Connectors page as a personal (identity-plane)
-        # connection, grantable into any workspace.
-        personal: true
 
   - name: ai.fireflies/mcp
     title: Fireflies
@@ -284,7 +281,6 @@ servers:
         # meeting by email, retitle, move) arrive with the connection; narrow
         # them with per-tool permissions on the Configure page, starting with
         # fireflies_share_meeting, which sends a transcript to any address.
-        personal: true
 
   - name: com.close/mcp
     title: Close
@@ -310,7 +306,6 @@ servers:
           tool: org_info
           field: current_user.email
         tags: [crm, sales]
-        personal: true
 
   # Sage Intacct runs its MCP server on its own OAuth issuer (api-mcp.intacct.com)
   # with no dynamic client registration, so each customer brings a client from
@@ -347,7 +342,3 @@ servers:
           hint: In the Sage Developer Console, create a Sage Intacct application on the AI-enabled sender ID, add the NimbleBrain redirect URI, then paste its client ID and secret here
           clientSecretKey: intacct.client_secret
         tags: [accounting, finance]
-        # Offered as a personal connection only on a tenant that declares the
-        # client in config.connectors.oauthClients, so each person signs in with
-        # their own Intacct user. Elsewhere the runtime leaves it out.
-        personal: true
