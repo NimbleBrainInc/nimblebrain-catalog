@@ -53,7 +53,7 @@ instance's own configuration, not a field of the catalog.
 ## How it works
 
 ```
-product repo                      official MCP Registry                 registry.nimblebrain.ai
+product repo                      official MCP Registry                 catalog.nimblebrain.ai
 server.json ──release CI──►  registry.modelcontextprotocol.io  ──hourly build──►  API + catalog page
              (mcp-publisher,        owns name, versions,          (this repo: members.yaml
               DNS-signed)           status                         picks which servers)

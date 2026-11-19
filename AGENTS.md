@@ -13,7 +13,7 @@ catalog is for.
 
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
-official registry + servers/*.yaml ──(registry build)──► /v0.1/servers, the catalog page
+official registry + servers/*.yaml ──(catalog build)──► /v0.1/servers, the catalog page
 servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>.zip, marketplace.json, .well-known/ai-catalog.json
 dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog.nimblebrain.ai
 ```
