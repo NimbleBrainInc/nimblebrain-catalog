@@ -22,6 +22,7 @@ FILES = {
     "plugins/widget.zip": b"PK\x05\x06" + b"\x00" * 18,
     "marketplace.json": b"{}\n",
     ".well-known/ai-catalog.json": b"{}\n",
+    "nimblebrain/connectors.yaml": b"servers: []\n",
 }
 
 
@@ -86,7 +87,9 @@ def test_publish_uploads_with_content_types_and_invalidates_everything(
     assert puts["plugins/widget.zip"]["ContentType"] == "application/zip"
     assert puts["marketplace.json"]["ContentType"] == "application/json"
     assert puts[".well-known/ai-catalog.json"]["ContentType"] == "application/json"
+    assert puts["nimblebrain/connectors.yaml"]["ContentType"] == "application/yaml"
     assert puts["plugins/widget.zip"]["Body"] == FILES["plugins/widget.zip"]
+    assert puts["nimblebrain/connectors.yaml"]["Body"] == FILES["nimblebrain/connectors.yaml"]
     assert clients["s3"].deleted == ["v0.1/servers/ai.example/gone/versions", "plugins/gone.zip"]
     (invalidation,) = clients["cloudfront"].invalidations
     assert invalidation["DistributionId"] == "DIST"

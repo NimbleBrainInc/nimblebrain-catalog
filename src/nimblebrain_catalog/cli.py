@@ -43,7 +43,11 @@ CACHE_CONTROL = "public, max-age=300"
 # no longer produces. The site's fixed keys never go stale.
 MANAGED_PREFIXES = (f"{API_PREFIX}/", "plugins/")
 
-SUFFIX_CONTENT_TYPES = {".json": "application/json", ".zip": "application/zip"}
+SUFFIX_CONTENT_TYPES = {
+    ".json": "application/json",
+    ".yaml": "application/yaml",
+    ".zip": "application/zip",
+}
 
 
 def content_type(key: str) -> str:

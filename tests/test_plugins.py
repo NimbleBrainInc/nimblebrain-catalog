@@ -8,12 +8,14 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import yaml
 
 from nimblebrain_catalog.build import BuildError
 from nimblebrain_catalog.plugins import (
     AI_CATALOG_KEY,
     MARKETPLACE_KEY,
     NIMBLEBRAIN_MARKETPLACE_KEY,
+    ZERO_SETUP_CONNECTORS_KEY,
     Plugin,
     claude_mcp_config,
     distribution,
@@ -153,6 +155,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
         "plugins/brokered.zip",
         MARKETPLACE_KEY,
         NIMBLEBRAIN_MARKETPLACE_KEY,
+        ZERO_SETUP_CONNECTORS_KEY,
         AI_CATALOG_KEY,
     }
     names = zipfile.ZipFile(io.BytesIO(out["plugins/vendor.zip"])).namelist()
@@ -217,3 +220,10 @@ def test_portable_means_any_host_installs_and_signs_in(
     server: dict[str, Any], expected: bool
 ) -> None:
     assert portable(server) is expected
+
+
+def test_zero_setup_file_lists_only_portable_servers(tmp_path: Path) -> None:
+    out = distribution(PLUGINS, SERVERS, tmp_path)
+    body = out[ZERO_SETUP_CONNECTORS_KEY].decode()
+    assert body.startswith("# The connectors a fresh NimbleBrain install starts with")
+    assert yaml.safe_load(body) == {"servers": [DIRECT]}
