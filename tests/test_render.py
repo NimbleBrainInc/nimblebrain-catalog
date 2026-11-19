@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from nimblebrain_registry.build import CATALOG_META_KEY, OFFICIAL_META_KEY
+from nimblebrain_registry.build import OFFICIAL_META_KEY
 from nimblebrain_registry.render import NOT_FOUND, render_index, site
 
 
@@ -11,7 +11,6 @@ def entry(name: str, **server: object) -> dict:
         "server": {"name": name, "version": "1.0.0", "description": "Does things.", **server},
         "_meta": {
             OFFICIAL_META_KEY: {"status": "active", "updatedAt": "2026-11-16T06:08:23Z"},
-            CATALOG_META_KEY: {"includedInPlatform": False},
         },
     }
 
@@ -56,14 +55,21 @@ def test_upstream_text_is_escaped_and_unsafe_urls_dropped() -> None:
     assert "javascript:" not in page
 
 
-def test_badges_follow_catalog_and_status() -> None:
-    included = entry("ai.example/a")
-    included["_meta"][CATALOG_META_KEY]["includedInPlatform"] = True
+def test_deprecated_server_is_badged() -> None:
     deprecated = entry("ai.example/b")
     deprecated["_meta"][OFFICIAL_META_KEY]["status"] = "deprecated"
-    page = render_index(listing(included, deprecated))
-    assert "Included in NimbleBrain" in page
-    assert "Deprecated" in page
+    assert "Deprecated" in render_index(listing(deprecated))
+
+
+def test_brokered_connector_hides_its_placeholder_remote() -> None:
+    brokered = entry(
+        "io.vendor/mcp",
+        remotes=[{"type": "streamable-http", "url": "https://broker.example/mcp"}],
+        _meta={"ai.nimblebrain/connector": {"auth": "composio"}},
+    )
+    page = render_index(listing(brokered))
+    assert "Connects through Composio" in page
+    assert "broker.example" not in page
 
 
 def test_packages_render_as_endpoints() -> None:
