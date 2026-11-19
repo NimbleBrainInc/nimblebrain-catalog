@@ -17,6 +17,11 @@ toolkits).
   a `ServerDetail` with NimbleBrain's fields under `_meta["ai.nimblebrain/connector"]`.
   It must be remote: the runtime connects to servers and never runs one.
 
+Every server in the catalog is also a plugin: add it to `plugins.yaml` with a short
+name, and write its skill, if it has one, in `plugins/<name>/skills/<name>/SKILL.md` with
+`metadata.nimblebrain.server: <name>`. A server we build publishes its own skill over
+MCP, so its plugin needs none. `AGENTS.md` covers what the build generates.
+
 List one of our own servers when someone outside NimbleBrain can connect to it or
 install it, and we stand behind it as a product.
 
@@ -159,6 +164,13 @@ In this repo, add the server to `members.yaml` and open a PR:
 
 ```yaml
 - name: com.todosforagents/todos
+```
+
+and its plugin to `plugins.yaml`:
+
+```yaml
+- name: todos
+  server: com.todosforagents/todos
 ```
 
 CI builds against the live official registry, so a name that is not published there, or

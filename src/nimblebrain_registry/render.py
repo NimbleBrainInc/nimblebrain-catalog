@@ -93,7 +93,7 @@ def _endpoints(server: Mapping[str, Any]) -> str:
     return "".join(rows)
 
 
-def _card(entry: Mapping[str, Any]) -> str:
+def _card(entry: Mapping[str, Any], plugin: str | None = None) -> str:
     server = entry["server"]
     meta = entry.get("_meta", {})
     official = meta.get(OFFICIAL_META_KEY, {})
@@ -105,6 +105,8 @@ def _card(entry: Mapping[str, Any]) -> str:
         badges.append('<span class="badge warn">Deprecated</span>')
 
     links = [f'<a href="{_e(_server_json_path(name))}">server.json</a>']
+    if plugin:
+        links.append(f'<a href="/plugins/{_e(urllib.parse.quote(plugin))}.zip">Plugin</a>')
     website = _safe_url(server.get("websiteUrl"))
     if website:
         links.insert(0, f'<a href="{_e(website)}" rel="noopener">Website</a>')
@@ -226,21 +228,25 @@ document.addEventListener("click", async (event) => {
 """
 
 
-def render_index(listing: Mapping[str, Any]) -> str:
-    """The catalog page, from the `v0.1/servers` list object."""
+def render_index(listing: Mapping[str, Any], plugins: Mapping[str, str] | None = None) -> str:
+    """The catalog page, from the `v0.1/servers` list object.
+
+    `plugins` maps a server's name to the plugin that installs it.
+    """
+    plugins = plugins or {}
     entries = sorted(
         listing.get("servers", []),
         key=lambda e: str(e["server"].get("title") or e["server"]["name"]).lower(),
     )
     count = len(entries)
-    cards = "".join(_card(e) for e in entries)
+    cards = "".join(_card(e, plugins.get(e["server"]["name"])) for e in entries)
     body = (
         f'<p class="count">{count} server{"" if count == 1 else "s"}</p>'
         f'<div class="grid">{cards}</div>'
         if entries
         else '<p class="empty">No servers are listed yet.</p>'
     )
-    description = "MCP servers built by NimbleBrain, served in the official MCP Registry API."
+    description = "The connectors NimbleBrain offers, each with the skill for using it."
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -253,6 +259,7 @@ def render_index(listing: Mapping[str, Any]) -> str:
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{_e(FONTS_URL)}">
 <link rel="alternate" type="application/json" href="/{API_PREFIX}/servers">
+<link rel="ai-catalog" type="application/ai-catalog+json" href="/.well-known/ai-catalog.json">
 <style>{STYLE}</style>
 </head>
 <body>
@@ -267,6 +274,8 @@ def render_index(listing: Mapping[str, Any]) -> str:
 <p class="lede">{_e(description)}</p>
 <nav>
 <a href="/{API_PREFIX}/servers">API</a>
+<a href="/marketplace.json">Plugin marketplace</a>
+<a href="/.well-known/ai-catalog.json">AI Catalog</a>
 <a href="{API_DOCS_URL}">API reference</a>
 <a href="https://nimblebrain.ai">nimblebrain.ai</a>
 </nav>
@@ -279,9 +288,9 @@ def render_index(listing: Mapping[str, Any]) -> str:
 """
 
 
-def site(listing: Mapping[str, Any]) -> dict[str, str]:
-    """Every site file, keyed by its path, as text."""
+def site(listing: Mapping[str, Any], plugins: Mapping[str, str] | None = None) -> dict[str, str]:
+    """The page and the 404 body, keyed by path, as text."""
     return {
-        INDEX_KEY: render_index(listing),
+        INDEX_KEY: render_index(listing, plugins),
         NOT_FOUND_KEY: json.dumps(NOT_FOUND) + "\n",
     }

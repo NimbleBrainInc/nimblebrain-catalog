@@ -86,3 +86,10 @@ def test_site_has_page_and_404() -> None:
     files = site(listing())
     assert files["index.html"].startswith("<!doctype html>")
     assert json.loads(files["errors/404.json"]) == NOT_FOUND
+
+
+def test_card_links_the_plugin_that_installs_the_server() -> None:
+    page = render_index(listing(entry("ai.example/a")), {"ai.example/a": "example"})
+    assert 'href="/plugins/example.zip"' in page
+    assert 'href="/marketplace.json"' in page
+    assert 'rel="ai-catalog"' in page

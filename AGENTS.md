@@ -4,14 +4,18 @@ Builds `registry.nimblebrain.ai`: NimbleBrain's catalog of the connectors it off
 served in the official MCP Registry API (`/v0.1/servers`). It is a subregistry: it
 mirrors the servers named in `members.yaml` from the official registry
 (`registry.modelcontextprotocol.io`), publishes the ones authored in `servers/`, and
-serves both through the same API. ADR-0068 in the runtime repo (`adr/`) sets what the
+serves both through the same API. Each server is also packaged as a plugin (Agent
+Plugins 1.0), with the skill for using it, and listed in `marketplace.json` and
+`.well-known/ai-catalog.json`. ADR-0068 in the runtime repo (`adr/`) sets what the
 catalog is for.
 
 ## How data flows
 
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
-official registry + servers/*.yaml ──(this repo: registry build)──► S3 ──► CloudFront ──► registry.nimblebrain.ai
+official registry + servers/*.yaml ──(registry build)──► /v0.1/servers, the catalog page
+servers + plugins.yaml + plugins/*/skills ──(registry build)──► plugins/<name>.zip, marketplace.json, .well-known/ai-catalog.json
+dist/ ──(registry publish)──► S3 ──► CloudFront ──► registry.nimblebrain.ai
 ```
 
 - **A server's identity, versions, and status belong to the official registry.** Each
@@ -28,9 +32,26 @@ official registry + servers/*.yaml ──(this repo: registry build)──► S3
   runtime's catalog directory reads. Only remote servers are accepted.
 - **A name appears once.** The build fails when a name is both mirrored and authored,
   or authored twice.
-- **Nothing reads the catalog yet.** Hosted instances read their own copy of these
-  entries, and a local install reads the example built into the runtime image. Keep
-  `servers/` equal to the hosted copy until instances read the catalog instead.
+- **A plugin is one catalog server plus its skill.** `plugins.yaml` names each plugin
+  and its server. Its skills are written by hand in `plugins/<name>/skills/<skill>/SKILL.md`
+  (an Agent Skill whose `name` is its folder), and a skill bound to the connector says
+  so with `metadata.nimblebrain.server: <plugin name>`. Everything else restates the
+  server, so the build generates it into the plugin's zip and the repo never stores it:
+  `plugin.json` (with `extensions["ai.nimblebrain"].servers` naming the catalog
+  server), `mcp.json`, and Claude Code's `.mcp.json`. A Composio plugin has no MCP
+  config, since its remote is a placeholder only NimbleBrain can replace.
+- **A plugin's name is short and unique in this catalog** (`notion`, installed as
+  `notion@nimblebrain`). Claude Code requires the marketplace entry's name to equal the
+  manifest's and prefixes each skill with it. Its global identifier is the AI Catalog's
+  `urn:air:nimblebrain.ai:<name>:plugin`.
+- **The zip is the install source.** This repo is private, so no host can clone it.
+  `marketplace.json` names each plugin's zip by URL with its sha256, and the AI Catalog
+  entry carries the same digest. Zips are built with fixed timestamps, so a plugin's
+  digest changes only when its content does.
+- **Nothing reads the catalog yet.** Hosted instances read their own copy of the
+  servers, a local install reads the example built into the runtime image, and the
+  runtime fetches connector skills from the `connector-skills` repo. Keep `servers/`
+  and the skills equal to those copies until instances read the catalog instead.
 - **Namespace follows who sells the server.** A product sold on its own publishes under
   its own domain (`ai.bassethound/…`, `com.todosforagents/…`); a server that exists only
   as part of NimbleBrain publishes under `ai.nimblebrain/…`. The catalog lists both.
@@ -45,8 +66,11 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 |---|---|
 | `members.yaml` | Servers mirrored from the official registry |
 | `servers/*.yaml` | Servers the catalog authors: `curated.yaml` (DCR and static OAuth), `composio.yaml` (brokered by Composio) |
+| `plugins.yaml` | The plugins: each one's name and the catalog server it installs |
+| `plugins/<name>/skills/` | Each plugin's hand-written skills |
 | `src/nimblebrain_registry/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
 | `src/nimblebrain_registry/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page does not show it |
+| `src/nimblebrain_registry/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, `marketplace.json`, and the AI Catalog |
 | `src/nimblebrain_registry/cli.py` | `registry build` (fetch upstream, write `dist/`) and `registry publish` (upload to S3) |
 | `.github/workflows/deploy.yml` | Builds and publishes on push to `main`, hourly, and on `repository_dispatch` |
 
@@ -73,8 +97,10 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 - **An authored server has one version**, the one its entry states, served as its
   `latest`.
 - **A failed build publishes nothing**, so the registry keeps serving the last good copy
-  when upstream is down or a member is missing. `publish` deletes keys the build no
-  longer produces.
+  when upstream is down or a member is missing. `publish` deletes keys under `v0.1/`
+  and `plugins/` the build no longer produces.
+- **Every site file's content type comes from its key**: the page and the 404 body by
+  name, `.json` as `application/json`, `.zip` as `application/zip`.
 - The bucket, distribution, certificate, DNS, and the deploy role are Terraform in the
   `infra` repo. The deploy role trusts only this repo's `main`.
 
@@ -84,7 +110,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 uv sync
 uv run pytest -q
 uv run ruff format . && uv run ruff check . && uv run ty check src tests
-uv run registry build          # writes dist/ from members.yaml, servers/, and the live upstream
+uv run registry build          # writes dist/ from members.yaml, servers/, plugins, and the live upstream
 ```
 
 Publishing runs in CI only (`deploy.yml`), with the role in the

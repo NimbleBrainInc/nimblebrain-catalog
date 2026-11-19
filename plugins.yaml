@@ -1,0 +1,85 @@
+# The plugins in the catalog. A plugin is what a person installs: its connector
+# and, when the catalog has one, the skill for using it (ADR-0068).
+#
+#   name     the plugin's name: lowercase letters, digits, `-` and `.`. It is the
+#            install id (`notion@nimblebrain`) and prefixes the plugin's skills.
+#   server   the catalog server the plugin connects, by its registry name
+#
+# A plugin's skills are written by hand under plugins/<name>/skills/. Its manifest
+# and MCP config restate its server, so the build generates them into the plugin's
+# zip and never stores them here.
+
+- name: asana
+  server: io.asana/mcp
+- name: bassethound
+  server: ai.bassethound/bassethound
+- name: box
+  server: com.box/files
+- name: close
+  server: com.close/mcp
+- name: cloudflare
+  server: com.cloudflare/mcp
+- name: dropbox
+  server: com.dropbox/mcp
+- name: exa
+  server: ai.exa/mcp
+- name: fireflies
+  server: ai.fireflies/mcp
+- name: github
+  server: com.github/repos
+- name: gmail
+  server: com.google/gmail
+- name: googlecalendar
+  server: com.google/calendar
+- name: googledocs
+  server: com.google/docs
+- name: googledrive
+  server: com.google/drive
+- name: googlesheets
+  server: com.google/sheets
+- name: googleslides
+  server: com.google/slides
+- name: granola
+  server: ai.granola/mcp
+- name: hubspot
+  server: com.hubspot/mcp
+- name: intacct
+  server: com.intacct/mcp
+- name: jira
+  server: com.atlassian/jira
+- name: linear
+  server: app.linear/mcp
+- name: linkedin
+  server: com.linkedin/social
+- name: mercury
+  server: com.mercury/mcp
+- name: microsoft-teams
+  server: com.microsoft/teams
+- name: neon
+  server: com.neon/mcp
+- name: notion
+  server: com.notion/mcp
+- name: outlook
+  server: com.microsoft/outlook
+- name: paypal
+  server: com.paypal/mcp
+- name: posthog
+  server: com.posthog/analytics
+- name: quickbooks
+  server: com.intuit/quickbooks
+- name: sentry
+  server: com.sentry/mcp
+- name: slack
+  server: com.slack/messaging
+- name: stripe
+  server: com.stripe/mcp
+- name: webflow
+  server: com.webflow/mcp
+- name: whatsapp
+  server: com.whatsapp/messaging
+- name: wix
+  server: com.wix/mcp
+- name: zoho
+  server: com.zoho/crm
+- name: zoom
+  server: us.zoom/mcp

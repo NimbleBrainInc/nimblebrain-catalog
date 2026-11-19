@@ -18,6 +18,12 @@ OBJECTS = {
     "v0.1/servers/ai.example/widget/versions/latest": {"server": {}},
 }
 
+FILES = {
+    "plugins/widget.zip": b"PK\x05\x06" + b"\x00" * 18,
+    "marketplace.json": b"{}\n",
+    ".well-known/ai-catalog.json": b"{}\n",
+}
+
 
 def test_write_then_read_round_trips_api_and_site(tmp_path: Path) -> None:
     write(OBJECTS, tmp_path)
@@ -59,7 +65,7 @@ def clients(monkeypatch: pytest.MonkeyPatch) -> dict[str, FakeClient]:
     made: dict[str, FakeClient] = {}
 
     def client(service: str) -> FakeClient:
-        existing = ["v0.1/servers/ai.example/gone/versions", "old-page.html"]
+        existing = ["v0.1/servers/ai.example/gone/versions", "plugins/gone.zip", "old-page.html"]
         return made.setdefault(service, FakeClient(existing))
 
     monkeypatch.setattr(boto3, "client", client)
@@ -69,15 +75,19 @@ def clients(monkeypatch: pytest.MonkeyPatch) -> dict[str, FakeClient]:
 def test_publish_uploads_with_content_types_and_invalidates_everything(
     tmp_path: Path, clients: dict[str, FakeClient]
 ) -> None:
-    write(OBJECTS, tmp_path)
+    write(OBJECTS, tmp_path, FILES)
     publish(tmp_path, "bucket", "DIST")
 
     puts = clients["s3"].puts
-    assert set(puts) == {*OBJECTS, "index.html", "errors/404.json"}
+    assert set(puts) == {*OBJECTS, *FILES, "index.html", "errors/404.json"}
     assert puts["v0.1/servers"]["ContentType"] == "application/json"
     assert puts["index.html"]["ContentType"] == "text/html; charset=utf-8"
     assert puts["errors/404.json"]["ContentType"] == "application/problem+json"
-    assert clients["s3"].deleted == ["v0.1/servers/ai.example/gone/versions"]
+    assert puts["plugins/widget.zip"]["ContentType"] == "application/zip"
+    assert puts["marketplace.json"]["ContentType"] == "application/json"
+    assert puts[".well-known/ai-catalog.json"]["ContentType"] == "application/json"
+    assert puts["plugins/widget.zip"]["Body"] == FILES["plugins/widget.zip"]
+    assert clients["s3"].deleted == ["v0.1/servers/ai.example/gone/versions", "plugins/gone.zip"]
     (invalidation,) = clients["cloudfront"].invalidations
     assert invalidation["DistributionId"] == "DIST"
     assert invalidation["InvalidationBatch"]["Paths"] == {"Quantity": 1, "Items": ["/*"]}
@@ -111,6 +121,9 @@ def upstream(name: str, _base: str) -> list[dict[str, Any]]:
 
 def run_build(tmp_path: Path, files: dict[str, list[str]]) -> int:
     (tmp_path / "members.yaml").write_text(yaml.safe_dump([{"name": MIRRORED}]))
+    (tmp_path / "plugins.yaml").write_text(
+        yaml.safe_dump([{"name": "mirrored", "server": MIRRORED}])
+    )
     folder = tmp_path / "servers"
     folder.mkdir()
     for file, names in files.items():
@@ -122,6 +135,10 @@ def run_build(tmp_path: Path, files: dict[str, list[str]]) -> int:
             str(tmp_path / "members.yaml"),
             "--servers",
             str(folder),
+            "--plugins",
+            str(tmp_path / "plugins.yaml"),
+            "--plugin-dir",
+            str(tmp_path / "plugins"),
             "--out",
             str(tmp_path / "dist"),
         ]
@@ -141,6 +158,11 @@ def test_build_lists_mirrored_and_every_authored_file(
         "ai.example/a",
         "ai.example/b",
     ]
+    site = tmp_path / "dist" / "site"
+    assert (site / "plugins" / "mirrored.zip").is_file()
+    marketplace = json.loads((site / "marketplace.json").read_text())
+    assert [p["name"] for p in marketplace["plugins"]] == ["mirrored"]
+    assert (site / ".well-known" / "ai-catalog.json").is_file()
 
 
 def test_build_fails_on_a_name_authored_in_two_files(
