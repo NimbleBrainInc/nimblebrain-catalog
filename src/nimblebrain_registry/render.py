@@ -101,8 +101,6 @@ def _card(entry: Mapping[str, Any]) -> str:
     title = server.get("title") or name
 
     badges = []
-    if _brokered(server):
-        badges.append('<span class="badge">Connects through Composio</span>')
     if official.get("status") == "deprecated":
         badges.append('<span class="badge warn">Deprecated</span>')
 
