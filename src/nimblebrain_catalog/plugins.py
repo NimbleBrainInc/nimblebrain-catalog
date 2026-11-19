@@ -15,7 +15,10 @@ generated here, never stored:
   (ADR-0068). A listing promises its reader the plugin installs and signs in:
   `marketplace.json` lists the portable plugins, for any host, and
   `nimblebrain/marketplace.json` lists every plugin, for the NimbleBrain runtime.
-- `.well-known/ai-catalog.json`, the AI Catalog index for discovery. It lists
+- `.well-known/ai-catalog.json`, the AI Catalog index for discovery.
+- `nimblebrain/connectors.yaml`, the portable servers as a runtime catalog file
+  (`{servers: [ServerDetail, ...]}`), which the runtime image ships as the catalog a
+  fresh install starts with: every entry installs with nothing to configure. It lists
   every plugin and marks the ones only NimbleBrain can run.
 
 A plugin is portable when every server it names is reached by URL and signs in
@@ -53,6 +56,13 @@ SITE_URL = "https://catalog.nimblebrain.ai"
 
 MARKETPLACE_KEY = "marketplace.json"
 NIMBLEBRAIN_MARKETPLACE_KEY = "nimblebrain/marketplace.json"
+ZERO_SETUP_CONNECTORS_KEY = "nimblebrain/connectors.yaml"
+ZERO_SETUP_HEADER = (
+    "# The connectors a fresh NimbleBrain install starts with: the catalog's portable\n"
+    "# servers, each of which installs with nothing to configure. Built by\n"
+    "# nimblebrain-catalog from servers/ and published at catalog.nimblebrain.ai; the\n"
+    "# runtime image ships it as its in-image catalog. Edit the catalog, not this file.\n"
+)
 # Auth kinds any host can complete on its own. None is a mirrored server whose
 # entry states no NimbleBrain auth, which a host connects as its vendor publishes it.
 PORTABLE_AUTH = {None, "dcr"}
@@ -234,7 +244,7 @@ def _marketplace(description: str, entries: list[dict[str, Any]]) -> bytes:
 def distribution(
     plugins: list[Plugin], servers: Mapping[str, Mapping[str, Any]], root: Path
 ) -> dict[str, bytes]:
-    """The catalog's plugin files: each plugin's zip, both install indexes, the AI Catalog."""
+    """The catalog's plugin files: each plugin's zip, the indexes, and the zero-setup file."""
     listed = {p.name for p in root.iterdir() if p.is_dir()} if root.is_dir() else set()
     unlisted = listed - {p.name for p in plugins}
     if unlisted:
@@ -290,6 +300,16 @@ def distribution(
         " each with the skill for using it.",
         portable_entries,
     )
+    zero_setup = [servers[p.server] for p in plugins if portable(servers[p.server])]
+    out[ZERO_SETUP_CONNECTORS_KEY] = (
+        ZERO_SETUP_HEADER
+        + yaml.safe_dump(
+            {"servers": [dict(s) for s in zero_setup]},
+            sort_keys=False,
+            allow_unicode=True,
+            width=100,
+        )
+    ).encode()
     out[NIMBLEBRAIN_MARKETPLACE_KEY] = _marketplace(
         "Every connector NimbleBrain offers, each with the skill for using it,"
         " for the NimbleBrain runtime.",

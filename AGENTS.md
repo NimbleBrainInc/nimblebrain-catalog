@@ -14,7 +14,7 @@ sets what the catalog is for.
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
 official registry + servers/*.yaml ──(catalog build)──► /v0.1/servers, the catalog page
-servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>.zip, marketplace.json, nimblebrain/marketplace.json, .well-known/ai-catalog.json
+servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>.zip, marketplace.json, nimblebrain/marketplace.json, nimblebrain/connectors.yaml, .well-known/ai-catalog.json
 dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog.nimblebrain.ai
 ```
 
@@ -56,6 +56,10 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
   app) is NimbleBrain-only, and the AI Catalog marks it with
   `extensions["ai.nimblebrain"].nimblebrainOnly`. The build derives this from each
   server's auth, so no one keeps a list.
+- **A fresh install starts with the portable servers.** The build writes them as a
+  runtime catalog file, `nimblebrain/connectors.yaml` (`{servers: [...]}`), which the
+  runtime image takes at build as its in-image catalog. Every entry installs with
+  nothing to configure, by the same `portable()` rule as `marketplace.json`.
 - **The zip is the install source.** This repo is private, so no host can clone it.
   `marketplace.json` names each plugin's zip by URL with its sha256, and the AI Catalog
   entry carries the same digest. Zips are built with fixed timestamps, so a plugin's
@@ -112,7 +116,8 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
   when upstream is down or a member is missing. `publish` deletes keys under `v0.1/`
   and `plugins/` the build no longer produces.
 - **Every site file's content type comes from its key**: the page and the 404 body by
-  name, `.json` as `application/json`, `.zip` as `application/zip`.
+  name, `.json` as `application/json`, `.yaml` as `application/yaml`, `.zip` as
+  `application/zip`.
 - **registry.nimblebrain.ai, the catalog's first host, redirects.** Every request
   gets a 301 to the same path on catalog.nimblebrain.ai, so old links and clients keep
   working. The bucket keeps that first host's name, since a bucket cannot be renamed.
