@@ -17,3 +17,26 @@ jobs:
       # Builds against the live upstream registry, so a member that is missing or
       # malformed upstream fails here, before it reaches main.
       - run: uv run catalog build
+
+  # Every authored server checked with the runtime's own catalog validator, the one
+  # the runtime runs when it loads these files. A tenant reads `servers/` straight
+  # from this repo's `main`, and the runtime drops an invalid entry at load with only
+  # a warn log, so an entry that fails here would merge green and vanish from every
+  # tenant's Browse. The validator lives with its schema in the runtime repo, which is
+  # public, so it is checked out rather than copied here.
+  connectors-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: catalog
+      - uses: actions/checkout@v7
+        with:
+          repository: NimbleBrainInc/nimblebrain
+          ref: main
+          path: runtime
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+        working-directory: runtime
+      - run: bun run scripts/check-catalog-schema.ts "$GITHUB_WORKSPACE/catalog/servers"
+        working-directory: runtime
