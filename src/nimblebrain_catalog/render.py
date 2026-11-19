@@ -1,4 +1,4 @@
-"""The registry's human-facing files: the catalog page at `/` and the 404 body.
+"""The catalog's human-facing files: the catalog page at `/` and the 404 body.
 
 The page is rendered from the same list the API serves, in the same build, so it
 cannot disagree with the API. It needs no script to show the list; the only
@@ -17,7 +17,7 @@ from collections.abc import Mapping
 from html import escape
 from typing import Any
 
-from nimblebrain_registry.build import API_PREFIX, OFFICIAL_META_KEY
+from nimblebrain_catalog.build import API_PREFIX, OFFICIAL_META_KEY
 
 CONNECTOR_META_KEY = "ai.nimblebrain/connector"
 
@@ -252,7 +252,7 @@ def render_index(listing: Mapping[str, Any], plugins: Mapping[str, str] | None =
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NimbleBrain Registry</title>
+<title>NimbleBrain Catalog</title>
 <meta name="description" content="{_e(description)}">
 <link rel="icon" href="{FAVICON_URL}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -269,7 +269,7 @@ def render_index(listing: Mapping[str, Any], plugins: Mapping[str, str] | None =
 <source srcset="{ICON_URL.format(mode="dark")}" media="(prefers-color-scheme: dark)">
 <img src="{ICON_URL.format(mode="light")}" alt="">
 </picture>
-<h1>NimbleBrain Registry</h1>
+<h1>NimbleBrain Catalog</h1>
 </div>
 <p class="lede">{_e(description)}</p>
 <nav>

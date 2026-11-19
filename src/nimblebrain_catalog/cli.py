@@ -1,4 +1,4 @@
-"""`registry build` writes the registry to a folder; `registry publish` uploads that folder.
+"""`catalog build` writes the catalog to a folder; `catalog publish` uploads that folder.
 
 The folder has two parts:
 
@@ -24,7 +24,7 @@ from typing import Any
 
 import yaml
 
-from nimblebrain_registry.build import (
+from nimblebrain_catalog.build import (
     API_PREFIX,
     BuildError,
     Entry,
@@ -32,8 +32,8 @@ from nimblebrain_registry.build import (
     parse_authored,
     parse_members,
 )
-from nimblebrain_registry.plugins import distribution, parse_plugins
-from nimblebrain_registry.render import SITE_CONTENT_TYPES, site
+from nimblebrain_catalog.plugins import distribution, parse_plugins
+from nimblebrain_catalog.render import SITE_CONTENT_TYPES, site
 
 UPSTREAM = "https://registry.modelcontextprotocol.io"
 SUFFIX = ".json"
@@ -128,7 +128,7 @@ def publish(out: Path, bucket: str, distribution: str | None) -> None:
     objects = read(out)
     missing = [k for k in (f"{API_PREFIX}/servers", *SITE_CONTENT_TYPES) if k not in objects]
     if missing:
-        raise BuildError(f"{out} is not a complete build (missing {missing}); run `registry build`")
+        raise BuildError(f"{out} is not a complete build (missing {missing}); run `catalog build`")
 
     s3 = boto3.client("s3")
     for key, (body, kind) in objects.items():
@@ -163,10 +163,12 @@ def publish(out: Path, bucket: str, distribution: str | None) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="registry")
+    parser = argparse.ArgumentParser(prog="catalog")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    b = sub.add_parser("build", help="build the registry from members.yaml and upstream")
+    b = sub.add_parser(
+        "build", help="build the catalog from members.yaml, servers/, plugins, and upstream"
+    )
     b.add_argument("--members", type=Path, default=Path("members.yaml"))
     b.add_argument("--servers", type=Path, default=Path("servers"))
     b.add_argument("--plugins", type=Path, default=Path("plugins.yaml"))
@@ -174,7 +176,7 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("--out", type=Path, default=Path("dist"))
     b.add_argument("--upstream", default=UPSTREAM)
 
-    p = sub.add_parser("publish", help="upload a built registry to its bucket")
+    p = sub.add_parser("publish", help="upload a built catalog to its bucket")
     p.add_argument("--out", type=Path, default=Path("dist"))
     p.add_argument("--bucket", required=True)
     p.add_argument("--distribution", help="CloudFront distribution to invalidate")

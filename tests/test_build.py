@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from nimblebrain_registry.build import (
+from nimblebrain_catalog.build import (
     OFFICIAL_META_KEY,
     BuildError,
     Member,

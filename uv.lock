@@ -58,7 +58,7 @@ wheels = [
 ]
 
 [[package]]
-name = "nimblebrain-registry"
+name = "nimblebrain-catalog"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
