@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import json
 
-from nimblebrain_registry.build import OFFICIAL_META_KEY
-from nimblebrain_registry.render import NOT_FOUND, render_index, site
+from nimblebrain_catalog.build import OFFICIAL_META_KEY
+from nimblebrain_catalog.render import NOT_FOUND, render_index, site
 
 
 def entry(name: str, **server: object) -> dict:

@@ -32,7 +32,7 @@ from typing import Any
 
 import yaml
 
-from nimblebrain_registry.build import BuildError
+from nimblebrain_catalog.build import BuildError
 
 PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
 MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
@@ -42,7 +42,7 @@ CONNECTOR_META_KEY = "ai.nimblebrain/connector"
 MARKETPLACE = "nimblebrain"
 PUBLISHER = "nimblebrain.ai"
 OWNER = {"name": "NimbleBrain", "url": "https://nimblebrain.ai"}
-SITE_URL = "https://registry.nimblebrain.ai"
+SITE_URL = "https://catalog.nimblebrain.ai"
 
 MARKETPLACE_KEY = "marketplace.json"
 AI_CATALOG_KEY = ".well-known/ai-catalog.json"

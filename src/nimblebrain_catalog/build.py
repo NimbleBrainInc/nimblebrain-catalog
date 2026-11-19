@@ -1,4 +1,4 @@
-"""Turn the catalog's servers into the registry's objects.
+"""Turn the catalog's servers into the catalog's API objects.
 
 A server reaches the catalog one of two ways. A member (`members.yaml`) names a
 server published to the official registry, and its records are mirrored from
@@ -13,7 +13,7 @@ leading slash dropped, and a server name's "/" stays a literal "/" in the key: t
 host resolves a request for `ai.example%2Fserver` to the key `ai.example/server`,
 so one object answers both the encoded and the raw form of a URL. A key such as
 `v0.1/servers` and the keys under `v0.1/servers/` are separate objects, which is
-why the registry is served from an object store rather than a file tree.
+why the catalog is served from an object store rather than a file tree.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ FetchVersions = Callable[[str], list[Entry]]
 
 
 class BuildError(Exception):
-    """The member list or the upstream data cannot produce a valid registry."""
+    """The member list or the upstream data cannot produce a valid catalog."""
 
 
 @dataclass(frozen=True)
@@ -68,7 +68,7 @@ REMOTE_TYPES = {"streamable-http", "sse"}
 
 
 def parse_authored(source: str, raw: object) -> list[Entry]:
-    """The `ServerDetail`s in one `servers/*.yaml` file, as registry entries.
+    """The `ServerDetail`s in one `servers/*.yaml` file, as API entries.
 
     The file is `{servers: [ServerDetail, ...]}`, the shape the runtime's catalog
     directory reads. Only remote servers are accepted: the runtime connects over
@@ -135,7 +135,7 @@ def _add(objects: dict[str, Any], name: str, entries: list[Entry], latest: Entry
 def build(
     members: list[Member], fetch_versions: FetchVersions, authored: list[Entry] | None = None
 ) -> dict[str, Any]:
-    """Return every object of the registry, keyed by its path."""
+    """Return every API object of the catalog, keyed by its path."""
     objects: dict[str, Any] = {}
     listed: list[Entry] = []
     names: set[str] = set()

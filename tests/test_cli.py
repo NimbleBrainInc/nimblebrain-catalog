@@ -8,9 +8,9 @@ import boto3
 import pytest
 import yaml
 
-from nimblebrain_registry import cli
-from nimblebrain_registry.build import OFFICIAL_META_KEY, BuildError
-from nimblebrain_registry.cli import main, publish, read, write
+from nimblebrain_catalog import cli
+from nimblebrain_catalog.build import OFFICIAL_META_KEY, BuildError
+from nimblebrain_catalog.cli import main, publish, read, write
 
 OBJECTS = {
     "v0.1/servers": {"servers": [], "metadata": {"count": 0}},

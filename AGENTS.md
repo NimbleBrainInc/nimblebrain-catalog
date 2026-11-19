@@ -1,6 +1,6 @@
-# nimblebrain-registry
+# nimblebrain-catalog
 
-Builds `registry.nimblebrain.ai`: NimbleBrain's catalog of the connectors it offers,
+Builds `catalog.nimblebrain.ai`: NimbleBrain's catalog of the connectors it offers,
 served in the official MCP Registry API (`/v0.1/servers`). It is a subregistry: it
 mirrors the servers named in `members.yaml` from the official registry
 (`registry.modelcontextprotocol.io`), publishes the ones authored in `servers/`, and
@@ -13,9 +13,9 @@ catalog is for.
 
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
-official registry + servers/*.yaml ──(registry build)──► /v0.1/servers, the catalog page
-servers + plugins.yaml + plugins/*/skills ──(registry build)──► plugins/<name>.zip, marketplace.json, .well-known/ai-catalog.json
-dist/ ──(registry publish)──► S3 ──► CloudFront ──► registry.nimblebrain.ai
+official registry + servers/*.yaml ──(catalog build)──► /v0.1/servers, the catalog page
+servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>.zip, marketplace.json, .well-known/ai-catalog.json
+dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog.nimblebrain.ai
 ```
 
 - **A server's identity, versions, and status belong to the official registry.** Each
@@ -68,10 +68,10 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 | `servers/*.yaml` | Servers the catalog authors: `curated.yaml` (DCR and static OAuth), `composio.yaml` (brokered by Composio) |
 | `plugins.yaml` | The plugins: each one's name and the catalog server it installs |
 | `plugins/<name>/skills/` | Each plugin's hand-written skills |
-| `src/nimblebrain_registry/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
-| `src/nimblebrain_registry/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page does not show it |
-| `src/nimblebrain_registry/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, `marketplace.json`, and the AI Catalog |
-| `src/nimblebrain_registry/cli.py` | `registry build` (fetch upstream, write `dist/`) and `registry publish` (upload to S3) |
+| `src/nimblebrain_catalog/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
+| `src/nimblebrain_catalog/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page does not show it |
+| `src/nimblebrain_catalog/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, `marketplace.json`, and the AI Catalog |
+| `src/nimblebrain_catalog/cli.py` | `catalog build` (fetch upstream, write `dist/`) and `catalog publish` (upload to S3) |
 | `.github/workflows/deploy.yml` | Builds and publishes on push to `main`, hourly, and on `repository_dispatch` |
 
 ## Hosting rules
@@ -96,11 +96,14 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
   enough that no client needs `cursor` or `search`.
 - **An authored server has one version**, the one its entry states, served as its
   `latest`.
-- **A failed build publishes nothing**, so the registry keeps serving the last good copy
+- **A failed build publishes nothing**, so the catalog keeps serving the last good copy
   when upstream is down or a member is missing. `publish` deletes keys under `v0.1/`
   and `plugins/` the build no longer produces.
 - **Every site file's content type comes from its key**: the page and the 404 body by
   name, `.json` as `application/json`, `.zip` as `application/zip`.
+- **registry.nimblebrain.ai, the catalog's first host, redirects.** Every request
+  gets a 301 to the same path on catalog.nimblebrain.ai, so old links and clients keep
+  working. The bucket keeps that first host's name, since a bucket cannot be renamed.
 - The bucket, distribution, certificate, DNS, and the deploy role are Terraform in the
   `infra` repo. The deploy role trusts only this repo's `main`.
 
@@ -110,7 +113,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 uv sync
 uv run pytest -q
 uv run ruff format . && uv run ruff check . && uv run ty check src tests
-uv run registry build          # writes dist/ from members.yaml, servers/, plugins, and the live upstream
+uv run catalog build          # writes dist/ from members.yaml, servers/, plugins, and the live upstream
 ```
 
 Publishing runs in CI only (`deploy.yml`), with the role in the

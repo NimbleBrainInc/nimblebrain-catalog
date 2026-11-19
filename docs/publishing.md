@@ -1,9 +1,9 @@
-# Publishing an MCP server to the NimbleBrain registry
+# Publishing an MCP server to the NimbleBrain catalog
 
-How a server gets into the catalog at `registry.nimblebrain.ai`: which servers belong
+How a server gets into the catalog at `catalog.nimblebrain.ai`: which servers belong
 there, how the two registries fit together, and the steps to list one.
 
-## What belongs in the registry
+## What belongs in the catalog
 
 The catalog holds the connectors NimbleBrain offers: our own products' servers, and
 third-party remote servers we vouch for and configure (Notion, Linear, the Composio
@@ -53,7 +53,7 @@ instance's own configuration, not a field of the catalog.
 ## How it works
 
 ```
-product repo                      official MCP Registry                 registry.nimblebrain.ai
+product repo                      official MCP Registry                 catalog.nimblebrain.ai
 server.json ──release CI──►  registry.modelcontextprotocol.io  ──hourly build──►  API + catalog page
              (mcp-publisher,        owns name, versions,          (this repo: members.yaml
               DNS-signed)           status                         picks which servers)
@@ -179,11 +179,11 @@ is misspelled, fails the PR. Once merged, the deploy publishes it.
 ### 6. Check it
 
 ```sh
-curl -s https://registry.nimblebrain.ai/v0.1/servers | jq '.servers[].server.name'
-curl -s "https://registry.nimblebrain.ai/v0.1/servers/<name with / as %2F>/versions/latest" | jq .
+curl -s https://catalog.nimblebrain.ai/v0.1/servers | jq '.servers[].server.name'
+curl -s "https://catalog.nimblebrain.ai/v0.1/servers/<name with / as %2F>/versions/latest" | jq .
 ```
 
-and open `https://registry.nimblebrain.ai/#<name>`, which highlights the server's card.
+and open `https://catalog.nimblebrain.ai/#<name>`, which highlights the server's card.
 
 ## Changing or removing a server
 

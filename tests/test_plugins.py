@@ -9,8 +9,8 @@ from typing import Any
 
 import pytest
 
-from nimblebrain_registry.build import BuildError
-from nimblebrain_registry.plugins import (
+from nimblebrain_catalog.build import BuildError
+from nimblebrain_catalog.plugins import (
     AI_CATALOG_KEY,
     MARKETPLACE_KEY,
     Plugin,
@@ -162,7 +162,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
         "name": "vendor",
         "source": {
             "source": "archive",
-            "url": "https://registry.nimblebrain.ai/plugins/vendor.zip",
+            "url": "https://catalog.nimblebrain.ai/plugins/vendor.zip",
             "sha256": digest,
         },
         "description": "A vendor's server.",
