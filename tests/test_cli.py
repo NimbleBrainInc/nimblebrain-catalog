@@ -66,7 +66,12 @@ def clients(monkeypatch: pytest.MonkeyPatch) -> dict[str, FakeClient]:
     made: dict[str, FakeClient] = {}
 
     def client(service: str) -> FakeClient:
-        existing = ["v0.1/servers/ai.example/gone/versions", "plugins/gone.zip", "old-page.html"]
+        existing = [
+            "v0.1/servers/ai.example/gone/versions",
+            "plugins/gone.zip",
+            f"plugins/gone/{'a' * 64}.zip",
+            "old-page.html",
+        ]
         return made.setdefault(service, FakeClient(existing))
 
     monkeypatch.setattr(boto3, "client", client)
@@ -90,6 +95,7 @@ def test_publish_uploads_with_content_types_and_invalidates_everything(
     assert puts["nimblebrain/connectors.yaml"]["ContentType"] == "application/yaml"
     assert puts["plugins/widget.zip"]["Body"] == FILES["plugins/widget.zip"]
     assert puts["nimblebrain/connectors.yaml"]["Body"] == FILES["nimblebrain/connectors.yaml"]
+    # A zip under its digest stays: a pinned index may still name it.
     assert clients["s3"].deleted == ["v0.1/servers/ai.example/gone/versions", "plugins/gone.zip"]
     (invalidation,) = clients["cloudfront"].invalidations
     assert invalidation["DistributionId"] == "DIST"

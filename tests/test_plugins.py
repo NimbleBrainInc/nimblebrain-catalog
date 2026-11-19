@@ -15,6 +15,7 @@ from nimblebrain_catalog.plugins import (
     AI_CATALOG_KEY,
     MARKETPLACE_KEY,
     NIMBLEBRAIN_MARKETPLACE_KEY,
+    PINNED_INDEX_PREFIX,
     ZERO_SETUP_CONNECTORS_KEY,
     Plugin,
     claude_mcp_config,
@@ -150,18 +151,25 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     write_skill(tmp_path, "vendor", "vendor")
     out = distribution(PLUGINS, SERVERS, tmp_path)
 
+    digest = hashlib.sha256(out["plugins/vendor.zip"]).hexdigest()
+    brokered = hashlib.sha256(out["plugins/brokered.zip"]).hexdigest()
+    index = hashlib.sha256(out[NIMBLEBRAIN_MARKETPLACE_KEY]).hexdigest()
     assert set(out) == {
         "plugins/vendor.zip",
+        f"plugins/vendor/{digest}.zip",
         "plugins/brokered.zip",
+        f"plugins/brokered/{brokered}.zip",
         MARKETPLACE_KEY,
         NIMBLEBRAIN_MARKETPLACE_KEY,
+        f"{PINNED_INDEX_PREFIX}{index}.json",
         ZERO_SETUP_CONNECTORS_KEY,
         AI_CATALOG_KEY,
     }
+    assert out[f"plugins/vendor/{digest}.zip"] == out["plugins/vendor.zip"]
+    assert out[f"{PINNED_INDEX_PREFIX}{index}.json"] == out[NIMBLEBRAIN_MARKETPLACE_KEY]
     names = zipfile.ZipFile(io.BytesIO(out["plugins/vendor.zip"])).namelist()
     assert sorted(names) == [".mcp.json", "mcp.json", "plugin.json", "skills/vendor/SKILL.md"]
 
-    digest = hashlib.sha256(out["plugins/vendor.zip"]).hexdigest()
     marketplace = json.loads(out[MARKETPLACE_KEY])
     assert marketplace["name"] == "nimblebrain"
     assert [p["name"] for p in marketplace["plugins"]] == ["vendor"]
@@ -171,7 +179,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
         "name": "vendor",
         "source": {
             "source": "archive",
-            "url": "https://catalog.nimblebrain.ai/plugins/vendor.zip",
+            "url": f"https://catalog.nimblebrain.ai/plugins/vendor/{digest}.zip",
             "sha256": digest,
         },
         "description": "A vendor's server.",
@@ -183,6 +191,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     assert entry["identifier"] == "urn:air:nimblebrain.ai:vendor:plugin"
     assert entry["type"] == "application/agent-plugins+zip"
     assert entry["digest"] == f"sha256:{digest}"
+    assert entry["url"] == f"https://catalog.nimblebrain.ai/plugins/vendor/{digest}.zip"
     assert entry["displayName"] == "Vendor"
     assert "extensions" not in entry
     assert catalog["entries"][1]["extensions"] == {"ai.nimblebrain": {"nimblebrainOnly": True}}
