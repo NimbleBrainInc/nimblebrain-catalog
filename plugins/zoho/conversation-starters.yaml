@@ -1,0 +1,8 @@
+# Conversation starters for the zoho plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Which deals need attention?
+  text: List my open Zoho CRM deals with no activity in the last two weeks, with their stage and amount.
+- title: New leads
+  text: Show the leads added to Zoho CRM this week and suggest which to follow up first.
+- title: Look up an account
+  text: Ask me which account, then show its Zoho CRM record, contacts, and open deals.

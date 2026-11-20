@@ -2,12 +2,14 @@
 
 A plugin is one catalog server plus, when the catalog has one, the skill for
 using it. `plugins.yaml` lists the plugins; `plugins/<name>/skills/` holds the
-hand-written skills. Everything else about a plugin restates its server, so it is
-generated here, never stored:
+hand-written skills, and `plugins/<name>/conversation-starters.yaml` the
+hand-written conversation starters, which a host offers a person who has the plugin
+and does not know what to ask. Everything else about a plugin restates its server, so
+it is generated here, never stored:
 
 - `plugin.json` and `mcp.json`, the Agent Plugins 1.0 manifest and MCP config,
   read by any Agent Plugins host. NimbleBrain's link from the plugin to its
-  catalog server sits in `extensions["ai.nimblebrain"]`.
+  catalog server, and its conversation starters, sit in `extensions["ai.nimblebrain"]`.
 - `.mcp.json`, the same server in Claude Code's own plugin format.
 - one zip per plugin, which is the plugin's install source: the catalog repo is
   private, so no host can clone it. It is served at `plugins/<name>.zip`, which
@@ -81,6 +83,13 @@ PLUGIN_NAME_RE = re.compile(r"^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?
 # Agent Skills: lowercase letters, digits and single hyphens, matching its folder.
 SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
+# A conversation starter is one line a person reads and the text a host sends. A few
+# per plugin, so a host can show them without choosing.
+CONVERSATION_STARTERS_FILE = "conversation-starters.yaml"
+MAX_CONVERSATION_STARTERS = 4
+MAX_STARTER_TITLE = 60
+MAX_STARTER_TEXT = 500
+
 # Every zip entry gets this timestamp, so a plugin's bytes, and its digest, change
 # only when its content does.
 ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
@@ -136,7 +145,11 @@ def _remote(server: Mapping[str, Any]) -> Mapping[str, Any] | None:
     return (preferred or remotes or [None])[0]
 
 
-def manifest(plugin: Plugin, server: Mapping[str, Any]) -> dict[str, Any]:
+def manifest(
+    plugin: Plugin,
+    server: Mapping[str, Any],
+    conversation_starters: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
     """The plugin's Agent Plugins `plugin.json`."""
     out: dict[str, Any] = {"$schema": PLUGIN_SCHEMA, "name": plugin.name}
     if server.get("description"):
@@ -147,7 +160,10 @@ def manifest(plugin: Plugin, server: Mapping[str, Any]) -> dict[str, Any]:
     tags = connector(server).get("tags")
     if tags:
         out["keywords"] = list(tags)
-    out["extensions"] = {EXTENSION: {"servers": {plugin.name: server["name"]}}}
+    extension: dict[str, Any] = {"servers": {plugin.name: server["name"]}}
+    if conversation_starters:
+        extension["conversationStarters"] = conversation_starters
+    out["extensions"] = {EXTENSION: extension}
     return out
 
 
@@ -212,13 +228,55 @@ def read_skills(plugin: Plugin, root: Path) -> dict[str, bytes]:
     return files
 
 
+def read_conversation_starters(plugin: Plugin, root: Path) -> list[dict[str, str]]:
+    """The plugin's conversation starters from `plugins/<name>/conversation-starters.yaml`.
+
+    The file is a list of `{title, text}`: `title` is what a person reads (a short
+    action, such as "Summarize my unread email"), and `text` is what the host sends
+    when they choose it. None when the plugin has no file.
+    """
+    path = root / plugin.name / CONVERSATION_STARTERS_FILE
+    if not path.is_file():
+        return []
+    where = f"plugin {plugin.name}: {CONVERSATION_STARTERS_FILE}"
+    raw = yaml.safe_load(path.read_text())
+    if not isinstance(raw, list) or not raw:
+        raise BuildError(f"{where}: must be a non-empty list of starters")
+    if len(raw) > MAX_CONVERSATION_STARTERS:
+        raise BuildError(f"{where}: at most {MAX_CONVERSATION_STARTERS} starters")
+    starters: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for i, item in enumerate(raw):
+        if not isinstance(item, Mapping):
+            raise BuildError(f"{where}: starter {i} must be a mapping")
+        unknown = set(item) - {"title", "text"}
+        if unknown:
+            raise BuildError(f"{where}: starter {i} has unknown fields {sorted(unknown)}")
+        title, text = item.get("title"), item.get("text")
+        if not isinstance(title, str) or not title.strip() or len(title) > MAX_STARTER_TITLE:
+            raise BuildError(
+                f"{where}: starter {i} needs a title of at most {MAX_STARTER_TITLE} characters"
+            )
+        if not isinstance(text, str) or not text.strip() or len(text) > MAX_STARTER_TEXT:
+            raise BuildError(
+                f"{where}: starter {i} needs a text of at most {MAX_STARTER_TEXT} characters"
+            )
+        if title in seen:
+            raise BuildError(f"{where}: title {title!r} appears twice")
+        seen.add(title)
+        starters.append({"title": title.strip(), "text": text.strip()})
+    return starters
+
+
 def _json(value: object) -> bytes:
     return (json.dumps(value, indent=2, ensure_ascii=False) + "\n").encode()
 
 
 def plugin_files(plugin: Plugin, server: Mapping[str, Any], root: Path) -> dict[str, bytes]:
     """Every file of one plugin, keyed by its path inside the plugin."""
-    files = {"plugin.json": _json(manifest(plugin, server))}
+    files = {
+        "plugin.json": _json(manifest(plugin, server, read_conversation_starters(plugin, root)))
+    }
     mcp = mcp_config(plugin, server)
     if mcp is not None:
         files["mcp.json"] = _json(mcp)

@@ -94,6 +94,54 @@ def test_manifest_links_the_plugin_to_its_catalog_server() -> None:
     assert out["extensions"] == {"ai.nimblebrain": {"servers": {"vendor": "com.vendor/mcp"}}}
 
 
+def write_starters(root: Path, plugin: str, starters: object) -> None:
+    (root / plugin).mkdir(parents=True, exist_ok=True)
+    (root / plugin / "conversation-starters.yaml").write_text(yaml.safe_dump(starters))
+
+
+def test_starters_ride_in_the_manifest_and_not_as_a_file(tmp_path: Path) -> None:
+    write_starters(
+        tmp_path,
+        "vendor",
+        [{"title": "Summarize my week", "text": "  Summarize what changed this week.  "}],
+    )
+    files = plugin_files(Plugin("vendor", DIRECT["name"]), DIRECT, tmp_path)
+    assert "conversation-starters.yaml" not in files
+    extension = json.loads(files["plugin.json"])["extensions"]["ai.nimblebrain"]
+    assert extension == {
+        "servers": {"vendor": "com.vendor/mcp"},
+        "conversationStarters": [
+            {"title": "Summarize my week", "text": "Summarize what changed this week."}
+        ],
+    }
+
+
+def test_a_plugin_without_starters_has_none_in_its_manifest(tmp_path: Path) -> None:
+    files = plugin_files(Plugin("vendor", DIRECT["name"]), DIRECT, tmp_path)
+    extension = json.loads(files["plugin.json"])["extensions"]["ai.nimblebrain"]
+    assert "conversationStarters" not in extension
+
+
+@pytest.mark.parametrize(
+    ("starters", "message"),
+    [
+        ([], "non-empty list"),
+        ({"title": "x", "text": "y"}, "non-empty list"),
+        ([{"title": f"t{i}", "text": "p"} for i in range(5)], "at most 4"),
+        (["just a string"], "must be a mapping"),
+        ([{"title": "t", "text": "p", "icon": "x"}], "unknown fields"),
+        ([{"title": "", "text": "p"}], "needs a title"),
+        ([{"title": "x" * 61, "text": "p"}], "needs a title"),
+        ([{"title": "t", "text": "x" * 501}], "needs a text"),
+        ([{"title": "t", "text": "a"}, {"title": "t", "text": "b"}], "appears twice"),
+    ],
+)
+def test_starters_reject(tmp_path: Path, starters: object, message: str) -> None:
+    write_starters(tmp_path, "vendor", starters)
+    with pytest.raises(BuildError, match=message):
+        plugin_files(Plugin("vendor", DIRECT["name"]), DIRECT, tmp_path)
+
+
 def test_direct_server_gets_both_mcp_configs() -> None:
     plugin = Plugin("vendor", DIRECT["name"])
     config = mcp_config(plugin, DIRECT)

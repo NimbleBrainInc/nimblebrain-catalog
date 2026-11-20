@@ -1,0 +1,8 @@
+# Conversation starters for the paypal plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Recent transactions
+  text: Summarize my PayPal transactions from the last 30 days, with totals and the largest ones.
+- title: Unpaid invoices
+  text: List my unpaid PayPal invoices with amounts and due dates, oldest first.
+- title: Open disputes
+  text: List any open PayPal disputes with what's needed from me on each.

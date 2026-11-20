@@ -1,0 +1,10 @@
+# Conversation starters for the github plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What needs my review?
+  text: List the open GitHub pull requests that are waiting on my review, oldest first, with a one-line
+    summary of each.
+- title: Triage new issues
+  text: Show the issues opened in the last week on my most active repository, and suggest labels and
+    an owner for each.
+- title: What shipped this week?
+  text: Summarize the pull requests merged this week on my most active repository, grouped by area.

@@ -1,0 +1,9 @@
+# Conversation starters for the googledrive plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find a file
+  text: Help me find a file in Google Drive. Ask me what it's about, then search and show the best matches.
+- title: What changed recently?
+  text: List the Google Drive files modified in the last week, with who changed them.
+- title: Tidy a folder
+  text: Ask me which Drive folder to look at, list what's in it, and suggest how to organize it. Don't
+    move anything until I agree.

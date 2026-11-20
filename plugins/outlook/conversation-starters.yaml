@@ -1,0 +1,10 @@
+# Conversation starters for the outlook plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Summarize my unread email
+  text: Summarize my unread Outlook email from the last day, grouped by sender, and flag anything that
+    needs a reply today.
+- title: What's on today?
+  text: Show my Outlook calendar for today with times, attendees, and anything I should prepare.
+- title: Draft replies
+  text: Find the Outlook threads from this week still waiting on my reply and draft a response to each.
+    Save them as drafts; don't send anything.

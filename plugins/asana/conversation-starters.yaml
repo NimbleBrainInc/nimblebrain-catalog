@@ -1,0 +1,10 @@
+# Conversation starters for the asana plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's due this week?
+  text: List my Asana tasks due this week, grouped by project, with the overdue ones first.
+- title: Catch me up on a project
+  text: Pick the Asana project I've been most active in and summarize its open tasks, who owns them,
+    and what is blocked.
+- title: Turn notes into tasks
+  text: I'll paste some notes. Turn each action item into an Asana task, and ask me which project and
+    assignee to use before creating them.

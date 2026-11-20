@@ -38,7 +38,15 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
 - **A plugin is one catalog server plus its skill.** `plugins.yaml` names each plugin
   and its server. Its skills are written by hand in `plugins/<name>/skills/<skill>/SKILL.md`
   (an Agent Skill whose `name` is its folder), and a skill bound to the connector says
-  so with `metadata.nimblebrain.server: <plugin name>`. Everything else restates the
+  so with `metadata.nimblebrain.server: <plugin name>`.
+- **A plugin's conversation starters are written by hand in
+  `plugins/<name>/conversation-starters.yaml`**: up to four `{title, text}`, where
+  `title` is the short action a person reads and `text` is what a host sends when they
+  choose it (the shape Microsoft 365 Copilot's agent manifest uses). They are for someone
+  who has the plugin and does not know what to ask, so each is something its tools can
+  do, and one that would write or send asks first. The build puts them in `plugin.json`
+  under `extensions["ai.nimblebrain"].conversationStarters`, which is where the runtime
+  reads them. Keys in that extension are camelCase, as in MCP and Agent Plugins. Everything else restates the
   server, so the build generates it into the plugin's zip and the repo never stores it:
   `plugin.json` (with `extensions["ai.nimblebrain"].servers` naming the catalog
   server), `mcp.json`, and Claude Code's `.mcp.json`. A Composio plugin has no MCP
@@ -95,6 +103,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 | `servers/*.yaml` | Servers the catalog authors: `curated.yaml` (DCR and static OAuth), `composio.yaml` (brokered by Composio) |
 | `plugins.yaml` | The plugins: each one's name and the catalog server it installs |
 | `plugins/<name>/skills/` | Each plugin's hand-written skills |
+| `plugins/<name>/conversation-starters.yaml` | Each plugin's hand-written conversation starters |
 | `src/nimblebrain_catalog/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
 | `src/nimblebrain_catalog/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page does not show it |
 | `src/nimblebrain_catalog/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, both install indexes, and the AI Catalog |
