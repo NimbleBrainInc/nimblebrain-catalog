@@ -1,0 +1,9 @@
+# Starter prompts for the linear plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the prompt is sent.
+- title: What's due this week?
+  prompt: List my open Linear issues by due date, with their status and project.
+- title: Cycle status
+  prompt: 'Summarize the current Linear cycle for my team: what''s done, in progress, and slipping.'
+- title: File an issue
+  prompt: Help me file a Linear issue. Ask me what it's about and which team, then draft it for me to
+    confirm.

@@ -1,0 +1,10 @@
+# Starter prompts for the linkedin plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the prompt is sent.
+- title: Draft a post
+  prompt: Help me draft a LinkedIn post. Ask me the topic and the point I want to make. Don't publish
+    until I approve it.
+- title: How are my posts doing?
+  prompt: 'Show how my recent LinkedIn posts performed: impressions, reactions, and comments.'
+- title: Share a link
+  prompt: Ask me for a link and why it matters, then draft a short LinkedIn post sharing it for me to
+    approve.

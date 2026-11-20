@@ -1,0 +1,9 @@
+# Starter prompts for the quickbooks plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the prompt is sent.
+- title: How did last month go?
+  prompt: Show last month's profit and loss from QuickBooks, compared with the month before.
+- title: Who owes us?
+  prompt: List unpaid QuickBooks invoices by customer, with amounts and how overdue they are.
+- title: Draft an invoice
+  prompt: Help me draft a QuickBooks invoice. Ask me the customer and line items, and confirm before creating
+    it.

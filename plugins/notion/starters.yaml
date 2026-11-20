@@ -1,0 +1,9 @@
+# Starter prompts for the notion plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the prompt is sent.
+- title: Find a page
+  prompt: Help me find a Notion page. Ask me what it's about, then search and show the best matches.
+- title: Summarize a page
+  prompt: Ask me which Notion page to read, then summarize it with any decisions and open questions.
+- title: Draft a page
+  prompt: Help me draft a new Notion page. Ask me the topic and where it belongs, then create it once
+    I approve the outline.

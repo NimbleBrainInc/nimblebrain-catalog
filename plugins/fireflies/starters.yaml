@@ -1,0 +1,9 @@
+# Starter prompts for the fireflies plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the prompt is sent.
+- title: Recap my last meeting
+  prompt: 'Summarize my most recent Fireflies meeting: decisions, action items, and who owns them.'
+- title: What did I commit to?
+  prompt: List the action items assigned to me across my Fireflies meetings this week.
+- title: Find what was said
+  prompt: Help me find something from a meeting. Ask me the topic, then search my Fireflies transcripts
+    and quote what was decided.

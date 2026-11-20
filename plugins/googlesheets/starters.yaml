@@ -1,0 +1,10 @@
+# Starter prompts for the googlesheets plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the prompt is sent.
+- title: Summarize a spreadsheet
+  prompt: Ask me which Google Sheet to read, then summarize what it tracks and anything that stands out.
+- title: Add rows from notes
+  prompt: I'll paste some notes. Turn them into rows and append them to a Google Sheet I choose, after
+    showing me the rows first.
+- title: Start a tracker
+  prompt: Help me set up a new Google Sheet to track something. Ask me what it's for and create it with
+    sensible columns.

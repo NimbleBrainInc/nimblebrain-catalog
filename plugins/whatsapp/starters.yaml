@@ -1,0 +1,9 @@
+# Starter prompts for the whatsapp plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the prompt is sent.
+- title: Message a customer
+  prompt: Help me send a WhatsApp message to a customer. Ask me who and what to say, and show me the message
+    before sending.
+- title: Review my templates
+  prompt: List my approved WhatsApp message templates and what each is for.
+- title: Draft a template
+  prompt: Help me draft a new WhatsApp message template. Ask me what it's for and suggest the wording.
