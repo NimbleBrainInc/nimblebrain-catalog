@@ -1,0 +1,8 @@
+# Conversation starters for the close plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Which leads need follow-up?
+  text: List my Close leads with no activity in the last two weeks, with their status and last contact.
+- title: Look up a lead
+  text: Ask me which company or person, then show their Close lead, contacts, and recent activity.
+- title: What's in my pipeline?
+  text: Summarize my open Close opportunities by stage, with the largest ones listed.

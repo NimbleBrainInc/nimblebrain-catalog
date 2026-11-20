@@ -1,8 +1,0 @@
-# Starter prompts for the cloudflare plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: List my Workers
-  prompt: List the Workers in my Cloudflare account with their bindings.
-- title: Inspect my storage
-  prompt: Show my KV namespaces, R2 buckets, and D1 databases, with what each one is for if you can tell.
-- title: Query a D1 database
-  prompt: List my D1 databases and their tables, then ask me what I want to find.

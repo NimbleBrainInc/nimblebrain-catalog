@@ -1,8 +1,0 @@
-# Starter prompts for the hubspot plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: Which deals need attention?
-  prompt: List my open HubSpot deals with no activity in the last two weeks, with their stage and amount.
-- title: Look up a company
-  prompt: Ask me which company, then show its HubSpot record, contacts, and open deals.
-- title: Add a contact
-  prompt: Help me add a contact to HubSpot. Ask me for their details and confirm before creating it.

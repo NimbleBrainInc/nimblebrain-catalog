@@ -1,0 +1,8 @@
+# Conversation starters for the zoom plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Recap my last meeting
+  text: 'Summarize my most recent Zoom meeting from its AI summary: decisions and action items.'
+- title: What's scheduled?
+  text: List my upcoming Zoom meetings this week with times and topics.
+- title: Find a recording
+  text: Help me find a Zoom recording. Ask me the meeting or date, then show the matches.

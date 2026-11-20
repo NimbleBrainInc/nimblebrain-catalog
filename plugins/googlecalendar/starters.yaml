@@ -1,8 +1,0 @@
-# Starter prompts for the googlecalendar plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: What's on today?
-  prompt: Show my calendar for today with times, attendees, and anything I should prepare.
-- title: Prep for tomorrow
-  prompt: 'Brief me on each meeting tomorrow: who is attending, what it''s about, and any open questions.'
-- title: Find a time
-  prompt: Help me find a time to meet. Ask me who and how long, then check our availability this week.

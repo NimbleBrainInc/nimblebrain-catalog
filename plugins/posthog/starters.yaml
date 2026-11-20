@@ -1,8 +1,0 @@
-# Starter prompts for the posthog plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: How's usage trending?
-  prompt: Show daily active users in PostHog for the last 30 days and call out any change.
-- title: Where do people drop off?
-  prompt: Ask me which flow to look at, then build a PostHog funnel and show where people drop off.
-- title: What do the dashboards say?
-  prompt: 'Summarize my main PostHog dashboard: what moved this week and what to look into.'

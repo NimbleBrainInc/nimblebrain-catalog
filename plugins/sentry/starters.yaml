@@ -1,9 +1,0 @@
-# Starter prompts for the sentry plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: What's breaking?
-  prompt: List the Sentry issues with the most events in the last 24 hours, with how many users they affect.
-- title: Investigate an issue
-  prompt: Ask me which Sentry issue, then read its stack trace and recent events and explain the likely
-    cause.
-- title: What changed after the last release?
-  prompt: Compare Sentry errors before and after the most recent release and list new or worse issues.

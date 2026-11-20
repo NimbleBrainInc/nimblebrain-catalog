@@ -1,0 +1,9 @@
+# Conversation starters for the exa plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Research a topic
+  text: Ask me what to research, then search the web with Exa and give me a short brief with sources.
+- title: Find similar companies
+  text: Ask me for a company, then use Exa to find similar companies and say how each compares.
+- title: Find recent news
+  text: Ask me for a company or topic, then find news from the last month with Exa and summarize it
+    with links.

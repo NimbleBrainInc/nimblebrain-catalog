@@ -1,8 +1,0 @@
-# Starter prompts for the mercury plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: What's our cash position?
-  prompt: Show the current balance of each Mercury account and the total.
-- title: Recent spending
-  prompt: Summarize Mercury transactions from the last 30 days by category, with the largest ones listed.
-- title: Find a transaction
-  prompt: Help me find a Mercury transaction. Ask me the amount, date, or counterparty, then search.

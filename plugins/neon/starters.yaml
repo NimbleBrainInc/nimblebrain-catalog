@@ -1,9 +1,0 @@
-# Starter prompts for the neon plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: Explore my database
-  prompt: List my Neon projects and the tables in the main database, with row counts.
-- title: Answer a question with SQL
-  prompt: Ask me what I want to know from my Neon database, then write and run a read-only query.
-- title: Plan a schema change
-  prompt: Ask me what I want to change in my Neon schema, then plan it on a branch and show me the migration
-    before applying it.

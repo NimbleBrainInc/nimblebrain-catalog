@@ -1,9 +1,0 @@
-# Starter prompts for the jira plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: What's on my plate?
-  prompt: List my open Jira issues by priority, with their status and sprint.
-- title: Sprint status
-  prompt: 'Summarize the current sprint in Jira: what''s done, in progress, and at risk.'
-- title: File a bug
-  prompt: Help me file a Jira bug. Ask me what happened and in which project, then draft the issue for
-    me to confirm.

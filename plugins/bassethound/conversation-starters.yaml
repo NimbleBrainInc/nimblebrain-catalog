@@ -1,0 +1,11 @@
+# Conversation starters for the bassethound plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Research a company
+  text: Ask me for a company's domain, then look it up with Bassethound and summarize its tech stack,
+    size, and AI readiness.
+- title: Prep for a sales call
+  text: Ask me which company I'm meeting, then look up its domain with Bassethound and brief me on what
+    they run and where we could help.
+- title: Check a vendor's security
+  text: Ask me for a vendor's domain, then look it up with Bassethound and summarize its security posture
+    and any red flags.

@@ -1,9 +1,0 @@
-# Starter prompts for the googledrive plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: Find a file
-  prompt: Help me find a file in Google Drive. Ask me what it's about, then search and show the best matches.
-- title: What changed recently?
-  prompt: List the Google Drive files modified in the last week, with who changed them.
-- title: Tidy a folder
-  prompt: Ask me which Drive folder to look at, list what's in it, and suggest how to organize it. Don't
-    move anything until I agree.

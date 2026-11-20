@@ -1,0 +1,11 @@
+# Conversation starters for the gmail plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Summarize my unread email
+  text: Summarize my unread email from the last day, grouped by sender, and flag anything that needs
+    a reply today.
+- title: Draft replies
+  text: Find the threads from this week still waiting on my reply and draft a response to each. Save
+    them as drafts; don't send anything.
+- title: Find an email
+  text: Help me find an email. Ask me who it was from or what it was about, then search and show the
+    best matches.

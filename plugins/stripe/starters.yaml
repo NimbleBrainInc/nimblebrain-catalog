@@ -1,8 +1,0 @@
-# Starter prompts for the stripe plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: How's revenue this month?
-  prompt: Summarize this month's Stripe payments so far, compared with last month.
-- title: Failed payments
-  prompt: List failed Stripe payments from the last week with the customer and the reason.
-- title: Look up a customer
-  prompt: Ask me which customer, then show their Stripe subscriptions, recent payments, and any open invoices.

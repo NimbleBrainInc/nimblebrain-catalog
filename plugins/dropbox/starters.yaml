@@ -1,8 +1,0 @@
-# Starter prompts for the dropbox plugin: what a host offers a person who has it
-# and does not know what to ask. A title is what they read; the prompt is sent.
-- title: Find a file
-  prompt: Help me find a file in Dropbox. Ask me what it's about, then search and show the best matches.
-- title: Summarize a document
-  prompt: Ask me which Dropbox file to read, then summarize it in a few bullet points.
-- title: What's shared?
-  prompt: List the Dropbox files and folders I've shared by link, with who can open them.

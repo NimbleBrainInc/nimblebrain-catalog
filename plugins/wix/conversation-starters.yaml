@@ -1,0 +1,8 @@
+# Conversation starters for the wix plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's on my site?
+  text: 'List my Wix sites and summarize what each one has: store, bookings, blog, or events.'
+- title: Recent orders
+  text: Show recent orders from my Wix store with totals and status.
+- title: Upcoming bookings
+  text: List upcoming Wix bookings for this week with times and customers.

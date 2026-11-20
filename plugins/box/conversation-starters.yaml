@@ -1,0 +1,9 @@
+# Conversation starters for the box plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find a file
+  text: Help me find a file in Box. Ask me what it's about, then search and show the best matches with
+    their folders.
+- title: Summarize a document
+  text: Ask me which Box file to read, then summarize it in a few bullet points.
+- title: What changed recently?
+  text: List the Box files that were modified most recently, with who changed them and when.

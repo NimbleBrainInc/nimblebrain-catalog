@@ -1,0 +1,8 @@
+# Conversation starters for the intacct plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: How did last month go?
+  text: Show last month's profit and loss from Sage Intacct, compared with the month before.
+- title: Who do we owe?
+  text: List our open bills in Sage Intacct by vendor, with due dates, oldest first.
+- title: Budget versus actual
+  text: Compare this quarter's actuals to budget in Sage Intacct and call out the biggest variances.
