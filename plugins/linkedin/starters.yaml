@@ -3,8 +3,9 @@
 - title: Draft a post
   prompt: Help me draft a LinkedIn post. Ask me the topic and the point I want to make. Don't publish
     until I approve it.
-- title: How are my posts doing?
-  prompt: 'Show how my recent LinkedIn posts performed: impressions, reactions, and comments.'
+- title: How is my company page doing?
+  prompt: 'Ask me which LinkedIn company page I administer, then show how its recent posts performed:
+    impressions, reactions, and comments.'
 - title: Share a link
   prompt: Ask me for a link and why it matters, then draft a short LinkedIn post sharing it for me to
     approve.
