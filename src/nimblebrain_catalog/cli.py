@@ -33,7 +33,7 @@ from nimblebrain_catalog.build import (
     parse_authored,
     parse_members,
 )
-from nimblebrain_catalog.plugins import distribution, parse_plugins
+from nimblebrain_catalog.plugins import AI_CATALOG_KEY, distribution, parse_plugins
 from nimblebrain_catalog.render import SITE_CONTENT_TYPES, site
 
 UPSTREAM = "https://registry.modelcontextprotocol.io"
@@ -58,6 +58,8 @@ SUFFIX_CONTENT_TYPES = {
 def content_type(key: str) -> str:
     if key in SITE_CONTENT_TYPES:
         return SITE_CONTENT_TYPES[key]
+    if key == AI_CATALOG_KEY:
+        return "application/ai-catalog+json"
     for suffix, kind in SUFFIX_CONTENT_TYPES.items():
         if key.endswith(suffix):
             return kind

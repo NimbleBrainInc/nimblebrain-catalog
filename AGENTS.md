@@ -135,14 +135,25 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 - **A failed build publishes nothing**, so the catalog keeps serving the last good copy
   when upstream is down or a member is missing. `publish` deletes keys under `v0.1/`
   and `plugins/` the build no longer produces, except a zip under its digest.
-- **Every site file's content type comes from its key**: the page and the 404 body by
-  name, `.json` as `application/json`, `.yaml` as `application/yaml`, `.zip` as
-  `application/zip`.
+- **Every site file's content type comes from its key**: the page, the 404 body, and
+  the AI Catalog (`application/ai-catalog+json`) by name, `.json` as
+  `application/json`, `.yaml` as `application/yaml`, `.zip` as `application/zip`.
 - **registry.nimblebrain.ai, the catalog's first host, redirects.** Every request
   gets a 301 to the same path on catalog.nimblebrain.ai, so old links and clients keep
   working. The bucket keeps that first host's name, since a bucket cannot be renamed.
 - The bucket, distribution, certificate, DNS, and the deploy role are managed outside
   this repo. The deploy role trusts only this repo's `main`.
+
+## The AI Catalog
+
+`.well-known/ai-catalog.json` follows the AI Catalog spec version in
+`AI_CATALOG_SPEC_VERSION` (`plugins.py`). CI checks the built file with
+`scripts/check-ai-catalog.mjs`, which builds Vercel's TypeScript SDK for the spec at a
+pinned commit and fails on anything the SDK rejects, a `specVersion` other than the
+SDK's, or a `urn:air` identifier whose last segment is not its kind. To move to a
+newer spec, set the script's `SDK_COMMIT` to the SDK release for it and
+`AI_CATALOG_SPEC_VERSION` to match. The script is the same in every repo that
+publishes an AI Catalog (the nimblebrain.ai and bassethound.ai websites).
 
 ## Commands
 
@@ -151,6 +162,7 @@ uv sync
 uv run pytest -q
 uv run ruff format . && uv run ruff check . && uv run ty check src tests
 uv run catalog build          # writes dist/ from members.yaml, servers/, plugins, and the live upstream
+node scripts/check-ai-catalog.mjs dist/site/.well-known/ai-catalog.json
 ```
 
 Publishing runs in CI only (`deploy.yml`), with the role in the
