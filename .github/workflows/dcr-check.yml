@@ -1,0 +1,81 @@
+name: DCR check
+
+# Runs the runtime's DCR probe (`scripts/check-catalog-dcr.ts`) against every
+# `auth: dcr` entry in servers/: reachability, OAuth discovery, a real DCR
+# registration with NimbleBrain's redirect URI, and the vendor's /authorize. A
+# vendor can stop accepting that redirect at any time (an allowlist added at
+# /register or /authorize), and nothing else here notices until someone's connect
+# fails, so it runs weekly as well as on every change to servers/.
+#
+# The redirect URI is the `DCR_REDIRECT_URI` secret, not written here: this repo's
+# Actions logs are public, and a secret is masked in them. A failed scheduled run
+# notifies through GitHub's own Actions notification. With the
+# `CATALOG_SLACK_WEBHOOK_URL` secret set, it also posts to that Slack webhook.
+on:
+  schedule:
+    # Mondays 18:41 UTC, 08:41 in Hawaii: the start of the working week.
+    - cron: "41 18 * * 1"
+  pull_request:
+    paths:
+      - "servers/**"
+      - ".github/workflows/dcr-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dcr:
+    name: DCR probe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: catalog
+
+      # The probe ships in the runtime repo, beside the OAuth discovery it mirrors.
+      - uses: actions/checkout@v7
+        with:
+          repository: NimbleBrainInc/nimblebrain
+          ref: main
+          path: runtime
+
+      - uses: oven-sh/setup-bun@v2
+
+      # Root dependencies only: the probe imports `src/`, not the web client.
+      - run: bun install --frozen-lockfile
+        working-directory: runtime
+
+      # Exits non-zero naming each entry that failed and the step it failed at.
+      - name: probe every DCR entry
+        env:
+          REDIRECT_URI: ${{ secrets.DCR_REDIRECT_URI }}
+        run: |
+          if [ -z "$REDIRECT_URI" ]; then
+            echo "::error::the DCR_REDIRECT_URI secret is not set"
+            exit 1
+          fi
+          bun run scripts/check-catalog-dcr.ts "$GITHUB_WORKSPACE/catalog/servers" "$REDIRECT_URI"
+        working-directory: runtime
+
+  alert:
+    name: Alert on failure
+    needs: [dcr]
+    if: ${{ failure() && github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to Slack
+        env:
+          WEBHOOK: ${{ secrets.CATALOG_SLACK_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then
+            echo "CATALOG_SLACK_WEBHOOK_URL is not set: GitHub's failed-run notification is the only alert"
+            exit 0
+          fi
+          jq -n --arg text ":red_circle: A catalog connector failed the DCR check: ${RUN_URL}" '{text: $text}' \
+            | curl -fsS -X POST -H 'Content-Type: application/json' --data @- "$WEBHOOK"

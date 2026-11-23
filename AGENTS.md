@@ -109,6 +109,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 | `src/nimblebrain_catalog/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, both install indexes, and the AI Catalog |
 | `src/nimblebrain_catalog/cli.py` | `catalog build` (fetch upstream, write `dist/`) and `catalog publish` (upload to S3) |
 | `.github/workflows/deploy.yml` | Builds and publishes on push to `main`, hourly, and on `repository_dispatch` |
+| `.github/workflows/dcr-check.yml` | Runs the runtime's DCR probe on every `auth: dcr` entry in `servers/` with the real redirect URI (the `DCR_REDIRECT_URI` secret), weekly and on changes to `servers/`, since a vendor can start rejecting that redirect at any time |
 
 ## Hosting rules
 
