@@ -1,0 +1,6 @@
+# Conversation starters for the zapier plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What can you do?
+  text: List the Zapier actions I've enabled for you, grouped by app.
+- title: Run an action
+  text: Help me run a Zapier action. Ask me what I want done, pick the matching enabled action, and run it once I approve the details.

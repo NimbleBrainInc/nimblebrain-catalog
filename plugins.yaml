@@ -9,8 +9,16 @@
 # and MCP config restate its server, so the build generates them into the plugin's
 # zip and never stores them here.
 
+- name: ahrefs
+  server: com.ahrefs/mcp
+- name: airtable
+  server: com.airtable/mcp
+- name: apollo
+  server: io.github.apolloio/apollo-mcp
 - name: asana
   server: io.asana/mcp
+- name: basecamp
+  server: com.basecamp/mcp
 - name: bassethound
   server: ai.bassethound/bassethound
 - name: box
@@ -23,6 +31,8 @@
   server: com.dropbox/mcp
 - name: exa
   server: ai.exa/mcp
+- name: fathom
+  server: ai.fathom.api/mcp
 - name: fireflies
   server: ai.fireflies/mcp
 - name: github
@@ -55,12 +65,18 @@
   server: com.mercury/mcp
 - name: microsoft-teams
   server: com.microsoft/teams
+- name: miro
+  server: io.github.miroapp/mcp-server
+- name: monday
+  server: com.monday/monday.com
 - name: neon
   server: com.neon/mcp
 - name: notion
   server: com.notion/mcp
 - name: outlook
   server: com.microsoft/outlook
+- name: pandadoc
+  server: com.pandadoc.mcp/mcp
 - name: paypal
   server: com.paypal/mcp
 - name: posthog
@@ -73,12 +89,16 @@
   server: com.slack/messaging
 - name: stripe
   server: com.stripe/mcp
+- name: todoist
+  server: net.todoist/mcp
 - name: webflow
   server: com.webflow/mcp
 - name: whatsapp
   server: com.whatsapp/messaging
 - name: wix
   server: com.wix/mcp
+- name: zapier
+  server: com.zapier/mcp
 - name: zoho
   server: com.zoho/crm
 - name: zoom

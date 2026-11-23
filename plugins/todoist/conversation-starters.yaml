@@ -1,0 +1,8 @@
+# Conversation starters for the todoist plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's due today?
+  text: List my Todoist tasks due today and overdue, grouped by project, highest priority first.
+- title: Plan my week
+  text: Look at my Todoist tasks for the next seven days and suggest an order to do them in, flagging any day that's overloaded.
+- title: Add tasks
+  text: Help me add tasks to Todoist. Ask me what they are, with any due dates and project, then create them once I approve.

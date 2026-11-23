@@ -1,0 +1,8 @@
+# Conversation starters for the basecamp plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's on my plate?
+  text: List my open Basecamp to-dos across projects, with their project and due date, soonest first.
+- title: Catch me up on a project
+  text: Ask me which Basecamp project, then summarize its recent messages, to-dos completed, and what's coming up.
+- title: Post an update
+  text: Help me post a message to a Basecamp project. Ask me the project and what to say, then post it once I approve the draft.

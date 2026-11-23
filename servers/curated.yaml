@@ -342,3 +342,165 @@ servers:
           hint: In the Sage Developer Console, create a Sage Intacct application on the AI-enabled sender ID, add the NimbleBrain redirect URI, then paste its client ID and secret here
           clientSecretKey: intacct.client_secret
         tags: [accounting, finance]
+
+  # Each vendor below publishes this server to the official MCP registry under the
+  # same name; the entry is authored here because tenants read this file. Not
+  # listed: com.figma.mcp/mcp (DCR registration returns 403 to clients Figma has
+  # not approved), io.github.Zoominfo/zoominfo-mcp (registration accepts only
+  # approved vendors), and com.typeform/typeform (registration rejects our
+  # redirect domain). Each can be re-added once the vendor approves NimbleBrain.
+
+  - name: com.airtable/mcp
+    title: Airtable
+    description: Bases, tables, and records — read, search, and update your data
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/airtable/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.airtable.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [database, productivity]
+
+  - name: com.monday/monday.com
+    title: monday.com
+    description: Boards, items, and updates across your monday.com workspace
+    version: "0.0.1"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/monday/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.monday.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [project-management, productivity]
+
+  - name: io.github.miroapp/mcp-server
+    title: Miro
+    description: Read boards and create diagrams, docs, and tables on them
+    version: "1.0.2"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/miro/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.miro.com/
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [whiteboard, design]
+
+  - name: com.basecamp/mcp
+    title: Basecamp
+    description: Projects, to-dos, card tables, messages, docs, schedules, and Campfire
+    version: "0.2.26"
+    websiteUrl: https://basecamp.com/ai
+    icons:
+      - src: https://static.nimblebrain.ai/logos/basecamp/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.basecamp.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [project-management, productivity]
+
+  - name: net.todoist/mcp
+    title: Todoist
+    description: Tasks, projects, and due dates in your Todoist
+    version: "1.0.1"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/todoist/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://ai.todoist.net/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [tasks, productivity]
+
+  - name: ai.fathom.api/mcp
+    title: Fathom
+    description: Meeting recordings, transcripts, summaries, and action items
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/fathom/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://api.fathom.ai/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [meetings, notes]
+
+  - name: io.github.apolloio/apollo-mcp
+    title: Apollo.io
+    description: Prospect, enrich leads, and manage outreach sequences
+    version: "0.1.1"
+    websiteUrl: https://www.apollo.io/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/apollo/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.apollo.io/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [sales, prospecting]
+
+  - name: com.pandadoc.mcp/mcp
+    title: PandaDoc
+    description: Create, send, and track proposals, quotes, and contracts for signature
+    version: "1.0.0"
+    websiteUrl: https://developers.pandadoc.com/docs/getting-started-with-mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/pandadoc/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.pandadoc.com/v1/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [documents, sales]
+
+  - name: com.ahrefs/mcp
+    title: Ahrefs
+    description: SEO data — backlinks, keywords, rankings, and competitor research
+    version: "1.0.0"
+    websiteUrl: https://ahrefs.com/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/ahrefs/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://api.ahrefs.com/mcp/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [seo, marketing]
+
+  - name: com.zapier/mcp
+    title: Zapier
+    description: Run actions in the apps you enable in Zapier
+    version: "1.0.2"
+    websiteUrl: https://docs.zapier.com/mcp/home
+    icons:
+      - src: https://static.nimblebrain.ai/logos/zapier/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.zapier.com/api/v1/connect
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [automation, productivity]
