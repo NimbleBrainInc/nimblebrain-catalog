@@ -30,6 +30,12 @@ jobs:
       - run: uv sync --locked --no-dev
       # A failed build stops here, so the catalog keeps serving the last good copy.
       - run: uv run catalog build
+      # An hourly rebuild changes the catalog without a pull request, so it is
+      # checked here too: a catalog that breaks the spec publishes nothing.
+      - uses: NimbleBrainInc/ai-catalog-conformance@v0.1.0
+        with:
+          catalogs: dist/site/.well-known/ai-catalog.json
+          profile: nimblebrain
       - uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.REGISTRY_DEPLOY_ROLE_ARN }}
