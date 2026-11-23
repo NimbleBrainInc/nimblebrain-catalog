@@ -49,8 +49,8 @@ servers:
       - src: https://static.nimblebrain.ai/icons/cloudflare.png
         sizes: ["any"]
     remotes:
-      - type: sse
-        url: https://bindings.mcp.cloudflare.com/sse
+      - type: streamable-http
+        url: https://bindings.mcp.cloudflare.com/mcp
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
@@ -139,8 +139,8 @@ servers:
       - src: https://static.nimblebrain.ai/icons/paypal.png
         sizes: ["any"]
     remotes:
-      - type: sse
-        url: https://mcp.paypal.com/sse
+      - type: streamable-http
+        url: https://mcp.paypal.com/mcp
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
@@ -195,8 +195,8 @@ servers:
       - src: https://static.nimblebrain.ai/icons/webflow.png
         sizes: ["any"]
     remotes:
-      - type: sse
-        url: https://mcp.webflow.com/sse
+      - type: streamable-http
+        url: https://mcp.webflow.com/mcp
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
@@ -210,8 +210,8 @@ servers:
       - src: https://static.nimblebrain.ai/icons/wix.png
         sizes: ["any"]
     remotes:
-      - type: sse
-        url: https://mcp.wix.com/sse
+      - type: streamable-http
+        url: https://mcp.wix.com/mcp
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
