@@ -35,7 +35,6 @@ jobs:
       - uses: NimbleBrainInc/ai-catalog-conformance@v0.1.0
         with:
           catalogs: dist/site/.well-known/ai-catalog.json
-          profile: nimblebrain
       - uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.REGISTRY_DEPLOY_ROLE_ARN }}

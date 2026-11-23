@@ -149,8 +149,7 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 `.well-known/ai-catalog.json` follows the AI Catalog spec version in
 `AI_CATALOG_SPEC_VERSION` (`plugins.py`). CI and the deploy check the built file with
 [ai-catalog-conformance](https://github.com/NimbleBrainInc/ai-catalog-conformance)
-and its `nimblebrain` profile, and fail on any MUST it breaks; a finding names the
-spec requirement by ID. The zips are served as `application/zip`, not the
+and fail on any MUST it breaks; a finding names the spec requirement by ID. The zips are served as `application/zip`, not the
 `application/agent-plugins+zip` their entries declare, which the suite reports as a
 warning (ENTRY-8): the install indexes name the same URLs, and changing what hosts
 download is its own change. To move to a newer spec, bump the action's tag and
