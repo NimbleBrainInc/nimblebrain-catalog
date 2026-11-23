@@ -1,0 +1,8 @@
+# Conversation starters for the pandadoc plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's waiting on signature?
+  text: List my PandaDoc documents that have been sent but not completed, with who they're waiting on and when they were sent.
+- title: Draft a proposal
+  text: Help me create a PandaDoc document from a template. Ask me the template, the recipient, and the details, then create it as a draft for me to review.
+- title: Check a document
+  text: Ask me which PandaDoc document, then show its status, recipients, and who has viewed or signed it.

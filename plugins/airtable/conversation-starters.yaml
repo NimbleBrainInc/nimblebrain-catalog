@@ -1,0 +1,8 @@
+# Conversation starters for the airtable plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find records
+  text: Ask me which Airtable base and what I'm looking for, then search it and show the matching records.
+- title: Summarize a table
+  text: Ask me which Airtable base and table, then summarize what's in it, with counts by its main status or category field.
+- title: Update a record
+  text: Help me update an Airtable record. Ask me which one and what changes, show me the edit, and make it once I approve.

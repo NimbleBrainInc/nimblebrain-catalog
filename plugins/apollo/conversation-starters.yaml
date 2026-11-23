@@ -1,0 +1,8 @@
+# Conversation starters for the apollo plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find prospects
+  text: Help me find prospects in Apollo. Ask me the titles, industry, company size, and location, then show the best matches.
+- title: Research a company
+  text: Ask me which company, then use Apollo to show its size, industry, and the key people I should contact.
+- title: Add to a sequence
+  text: Help me add contacts to an Apollo sequence. Ask me who and which sequence, then add them once I approve the list.

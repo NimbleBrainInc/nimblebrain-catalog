@@ -1,0 +1,8 @@
+# Conversation starters for the monday plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's on my plate?
+  text: List the monday.com items assigned to me that are not done, grouped by board, with their status and due date.
+- title: Summarize a board
+  text: Ask me which monday.com board, then summarize it by status and call out anything overdue or stuck.
+- title: Add an item
+  text: Help me add an item to monday.com. Ask me the board, the item, and its owner, then create it once I approve.
