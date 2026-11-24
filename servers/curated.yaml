@@ -18,7 +18,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [wiki, notes, knowledge]
 
   - name: app.linear/mcp
@@ -34,7 +34,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [projects]
+        category: "Projects & tasks"
         tags: [tickets, bugs, sprints]
 
   # com.canva/mcp: dropped pending vendor host allowlisting. Canva's
@@ -56,7 +56,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [cdn, hosting]
 
   # Dropbox advertises DCR but only honors it for a curated partner
@@ -96,7 +96,7 @@ servers:
           portalUrl: https://www.dropbox.com/developers/apps
           hint: Create a Scoped Access app in the Dropbox App Console, enable the listed scopes, add the NimbleBrain redirect URI, then paste App key + App secret here
           clientSecretKey: dropbox.client_secret
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [storage]
 
   # com.intercom/mcp: dropped pending vendor host allowlisting.
@@ -118,7 +118,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [finance]
+        category: "Finance & payments"
 
   - name: com.neon/mcp
     title: Neon
@@ -133,7 +133,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [database, sql]
 
   - name: com.paypal/mcp
@@ -149,7 +149,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [finance]
+        category: "Finance & payments"
 
   - name: com.sentry/mcp
     title: Sentry
@@ -164,7 +164,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [monitoring, crashes]
 
   - name: com.stripe/mcp
@@ -180,7 +180,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [finance]
+        category: "Finance & payments"
         tags: [invoices, billing]
 
   # Supabase: advertises OAuth metadata via WWW-Authenticate's
@@ -207,7 +207,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [marketing]
+        category: "Marketing & websites"
 
   - name: com.wix/mcp
     title: Wix
@@ -222,7 +222,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [marketing]
+        category: "Marketing & websites"
         tags: [cms]
 
   - name: ai.bassethound/bassethound
@@ -239,7 +239,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [sales]
+        category: "Sales & support"
         tags: [prospecting, company]
 
   - name: ai.exa/mcp
@@ -255,7 +255,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [research]
+        category: "Search & research"
 
   - name: ai.granola/mcp
     title: Granola
@@ -270,7 +270,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [meetings]
 
   - name: ai.fireflies/mcp
@@ -286,7 +286,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [meetings, notes, recordings]
         # Fireflies grants no read-only scope, so its write tools (share a
         # meeting by email, retitle, move) arrive with the connection; narrow
@@ -316,7 +316,7 @@ servers:
         account:
           tool: org_info
           field: current_user.email
-        categories: [sales]
+        category: "Sales & support"
         tags: [deals, pipeline]
 
   # Sage Intacct runs its MCP server on its own OAuth issuer (api-mcp.intacct.com)
@@ -353,7 +353,7 @@ servers:
           portalUrl: https://developer.sage.com/intacct/
           hint: In the Sage Developer Console, create a Sage Intacct application on the AI-enabled sender ID, add the NimbleBrain redirect URI, then paste its client ID and secret here
           clientSecretKey: intacct.client_secret
-        categories: [finance]
+        category: "Finance & payments"
         tags: [ledger, erp]
 
   # Each vendor below publishes this server to the official MCP registry under the
@@ -376,7 +376,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [database, spreadsheets]
 
   - name: com.monday/monday.com
@@ -392,7 +392,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [projects]
+        category: "Projects & tasks"
         tags: [tasks]
 
   - name: io.github.miroapp/mcp-server
@@ -408,7 +408,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [design-media]
+        category: "Design & media"
         tags: [whiteboard]
 
   - name: com.basecamp/mcp
@@ -425,7 +425,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [projects]
+        category: "Projects & tasks"
         tags: [tasks]
 
   - name: net.todoist/mcp
@@ -441,7 +441,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [projects]
+        category: "Projects & tasks"
         tags: ["to-do", reminders]
 
   - name: ai.fathom.api/mcp
@@ -457,7 +457,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [meetings, notes]
 
   - name: io.github.apolloio/apollo-mcp
@@ -474,7 +474,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [sales]
+        category: "Sales & support"
         tags: [crm, prospecting, contacts]
 
   - name: com.pandadoc.mcp/mcp
@@ -491,7 +491,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [sales]
+        category: "Sales & support"
         tags: ["e-signature"]
 
   - name: com.ahrefs/mcp
@@ -508,7 +508,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [marketing]
+        category: "Marketing & websites"
 
   - name: com.zapier/mcp
     title: Zapier
@@ -524,7 +524,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [automation]
+        category: "Automation"
         tags: [workflows, integrations, zaps]
 
   # Vendor-hosted servers that sign in by plain DCR with NimbleBrain's redirect
@@ -544,7 +544,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [design-media]
+        category: "Design & media"
         tags: [flowcharts, whiteboard]
 
   - name: com.whimsical/mcp
@@ -561,7 +561,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [design-media]
+        category: "Design & media"
         tags: [diagrams, whiteboard]
 
   - name: io.github.Fibery-inc/mcp
@@ -578,7 +578,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [projects]
+        category: "Projects & tasks"
         tags: [tasks]
 
   - name: com.productboard/productboard
@@ -595,7 +595,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [projects]
+        category: "Projects & tasks"
 
   - name: co.rocketreach/mcp
     title: "RocketReach"
@@ -611,7 +611,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [sales]
+        category: "Sales & support"
         tags: [leads, prospecting, contacts]
 
   - name: com.amplitude/mcp-server
@@ -627,7 +627,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [analytics]
+        category: "Data & analytics"
         tags: [metrics, events]
 
   - name: com.supermetrics/supermetrics
@@ -644,7 +644,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [analytics]
+        category: "Data & analytics"
         tags: [ads, reporting]
 
   - name: com.beehiiv/beehiiv
@@ -661,7 +661,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [marketing]
+        category: "Marketing & websites"
         tags: [email]
 
   - name: com.bitly/mcp
@@ -678,7 +678,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [marketing]
+        category: "Marketing & websites"
         tags: ["url shortener"]
 
   - name: com.jotform/mcp
@@ -694,7 +694,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [surveys]
 
   - name: com.gocardless/gc-mcp
@@ -711,7 +711,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [finance]
+        category: "Finance & payments"
         tags: ["direct debit", billing, invoices]
 
   - name: com.paddle/mcp
@@ -728,7 +728,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [finance]
+        category: "Finance & payments"
         tags: [invoices]
 
   - name: com.kajabi/kajabi
@@ -745,7 +745,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [marketing]
+        category: "Marketing & websites"
         tags: [courses, commerce]
 
   - name: com.plain/mcp
@@ -762,7 +762,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [sales]
+        category: "Sales & support"
         tags: [helpdesk, tickets]
 
   - name: com.getguru/mcp-server
@@ -779,7 +779,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [wiki, faq]
 
   - name: com.egnyte/mcp-server
@@ -795,7 +795,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [storage, folders]
 
   - name: com.make/mcp-server
@@ -811,7 +811,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [automation]
+        category: "Automation"
         tags: [workflows, integrations, integromat]
 
   - name: com.gitlab/mcp
@@ -827,7 +827,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [code, repositories, ci]
 
   - name: com.digitalocean/mcp
@@ -844,7 +844,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [hosting, cloud, servers]
 
   - name: com.railway/mcp
@@ -860,7 +860,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [hosting, cloud]
 
   - name: com.postman/postman-mcp-server
@@ -877,7 +877,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [testing]
 
   - name: com.newrelic/mcp-server
@@ -893,7 +893,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [observability, apm, monitoring]
 
   - name: io.github.grafana/mcp-grafana
@@ -910,7 +910,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [observability, monitoring]
 
   - name: io.honeycomb/mcp
@@ -927,7 +927,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [observability, tracing, monitoring]
 
   - name: co.huggingface/hf-mcp-server
@@ -943,7 +943,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [ai, "machine learning"]
 
   - name: io.sanity.www/mcp
@@ -960,7 +960,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [marketing]
+        category: "Marketing & websites"
         tags: [cms, website]
 
   - name: com.apify/apify-mcp-server
@@ -977,7 +977,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [research]
+        category: "Search & research"
         tags: [scraping, crawler, "web data"]
 
   - name: ai.parallel/search-mcp
@@ -994,7 +994,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [research]
+        category: "Search & research"
 
   - name: io.github.descriptinc/descript
     title: "Descript"
@@ -1010,7 +1010,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [design-media]
+        category: "Design & media"
         tags: [podcast, editing, transcripts]
 
   - name: com.heygen/hyperframes
@@ -1027,7 +1027,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [design-media]
+        category: "Design & media"
         tags: [editing]
 
   - name: com.cloudinary/asset-management-mcp
@@ -1044,7 +1044,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [design-media]
+        category: "Design & media"
         tags: [assets, media]
 
   # The vendors' own servers for Atlassian and PostHog, replacing their Composio
@@ -1063,7 +1063,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [projects]
+        category: "Projects & tasks"
         tags: [tickets, wiki, bugs]
 
   - name: com.posthog/mcp
@@ -1080,5 +1080,5 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        categories: [analytics]
+        category: "Data & analytics"
         tags: [metrics, events, funnels]

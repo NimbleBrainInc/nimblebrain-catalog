@@ -43,7 +43,7 @@ servers:
             - ASANA_GET_SECTIONS_IN_PROJECT
             - ASANA_GET_MULTIPLE_WORKSPACES
             - ASANA_GET_CURRENT_USER
-        categories: [projects]
+        category: "Projects & tasks"
         tags: ["to-do"]
 
   # Gmail (and Outlook below) route through Composio as a stopgap until our
@@ -99,7 +99,7 @@ servers:
             - GMAIL_MOVE_TO_TRASH
             - GMAIL_SEARCH_PEOPLE
             - GMAIL_GET_PROFILE
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [email, inbox]
 
   - name: com.microsoft/outlook
@@ -136,7 +136,7 @@ servers:
             - OUTLOOK_CALENDAR_CREATE_EVENT
             - OUTLOOK_ACCEPT_EVENT
             - OUTLOOK_GET_PROFILE
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [email, inbox, microsoft]
 
   - name: com.box/files
@@ -169,7 +169,7 @@ servers:
             - BOX_CREATE_COMMENT
             - BOX_GET_CURRENT_USER
             - BOX_ASK_QUESTION
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [storage]
 
   - name: com.github/repos
@@ -203,7 +203,7 @@ servers:
             - GITHUB_GET_A_COMMIT
             - GITHUB_CREATE_OR_UPDATE_FILE_CONTENTS
             - GITHUB_GET_A_BRANCH
-        categories: [developer-tools]
+        category: "Developer tools"
         tags: [code, repositories]
 
   - name: com.google/calendar
@@ -236,7 +236,7 @@ servers:
             - GOOGLECALENDAR_GET_CALENDAR
             - GOOGLECALENDAR_GET_CURRENT_DATE_TIME
             - GOOGLECALENDAR_REMOVE_ATTENDEE
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [scheduling, meetings]
 
   - name: com.intuit/quickbooks
@@ -271,7 +271,7 @@ servers:
             - QUICKBOOKS_GET_PROFIT_AND_LOSS_REPORT
             - QUICKBOOKS_GET_BALANCE_SHEET_REPORT
             - QUICKBOOKS_QUERY_ENTITIES
-        categories: [finance]
+        category: "Finance & payments"
         tags: [accounting, bookkeeping]
 
   - name: com.linkedin/social
@@ -305,7 +305,7 @@ servers:
             - LINKEDIN_INITIALIZE_IMAGE_UPLOAD
             - LINKEDIN_REGISTER_IMAGE_UPLOAD
             - LINKEDIN_GET_IMAGE
-        categories: [marketing]
+        category: "Marketing & websites"
         tags: [social]
 
   - name: com.slack/messaging
@@ -339,7 +339,7 @@ servers:
             - SLACK_ADD_REACTION_TO_AN_ITEM
             - SLACK_RETRIEVE_CONVERSATION_INFORMATION
             - SLACK_UPLOAD_OR_CREATE_A_FILE_IN_SLACK
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [chat, messaging]
 
   - name: com.whatsapp/messaging
@@ -371,7 +371,7 @@ servers:
             - WHATSAPP_GET_BUSINESS_PROFILE
             - WHATSAPP_GET_PHONE_NUMBERS
             - WHATSAPP_UPLOAD_MEDIA
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [chat, messaging, sms]
 
   - name: com.zoho/crm
@@ -400,7 +400,7 @@ servers:
             - ZOHO_GET_RELATED_RECORDS
             - ZOHO_GET_ZOHO_USERS
             - ZOHO_CREATE_ZOHO_TAG
-        categories: [sales]
+        category: "Sales & support"
 
   - name: com.google/drive
     title: Google Drive
@@ -428,7 +428,7 @@ servers:
             - GOOGLEDRIVE_CREATE_PERMISSION
             - GOOGLEDRIVE_COPY_FILE_ADVANCED
             - GOOGLEDRIVE_MOVE_FILE
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [storage, folders]
 
   - name: com.google/sheets
@@ -456,7 +456,7 @@ servers:
             - GOOGLESHEETS_CREATE_GOOGLE_SHEET1
             - GOOGLESHEETS_ADD_SHEET
             - GOOGLESHEETS_GET_SHEET_NAMES
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [spreadsheets, tables]
 
   - name: com.google/docs
@@ -485,7 +485,7 @@ servers:
             - GOOGLEDOCS_UPDATE_DOCUMENT_MARKDOWN
             - GOOGLEDOCS_COPY_DOCUMENT
             - GOOGLEDOCS_EXPORT_DOCUMENT_AS_PDF
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [writing]
 
   - name: com.google/slides
@@ -511,7 +511,7 @@ servers:
             - GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE
             - GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE
             - GOOGLESLIDES_GET_PAGE_THUMBNAIL2
-        categories: [docs-files]
+        category: "Docs & files"
         tags: [decks]
 
   - name: com.hubspot/mcp
@@ -539,7 +539,7 @@ servers:
             - HUBSPOT_CREATE_DEAL
             - HUBSPOT_CREATE_COMPANY
             - HUBSPOT_BATCH_READ_COMPANIES_BY_PROPERTIES
-        categories: [sales]
+        category: "Sales & support"
         tags: [leads]
 
   - name: us.zoom/mcp
@@ -574,7 +574,7 @@ servers:
           tool: ZOOM_GET_USER
           arguments: { user_id: me }
           field: data.email
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [video, calls]
 
   - name: com.microsoft/teams
@@ -609,5 +609,5 @@ servers:
             - MICROSOFT_TEAMS_TEAMS_CREATE_CHAT
             - MICROSOFT_TEAMS_TEAMS_CREATE_CHANNEL
             - MICROSOFT_TEAMS_CREATE_MEETING
-        categories: [communication]
+        category: "Communication & meetings"
         tags: [messaging, meetings]

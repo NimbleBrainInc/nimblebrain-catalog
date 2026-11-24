@@ -130,14 +130,12 @@ def upstream(name: str, _base: str) -> list[dict[str, Any]]:
 
 def authored(name: str) -> dict[str, Any]:
     """An authored server: the catalog states its category, which a mirrored one cannot."""
-    return {**server(name), "_meta": {"ai.nimblebrain/connector": {"categories": ["tools"]}}}
+    return {**server(name), "_meta": {"ai.nimblebrain/connector": {"category": "Tools"}}}
 
 
 def run_build(tmp_path: Path, files: dict[str, list[str]]) -> int:
     (tmp_path / "members.yaml").write_text(yaml.safe_dump([{"name": MIRRORED}]))
-    (tmp_path / "categories.yaml").write_text(
-        yaml.safe_dump({"categories": [{"slug": "tools", "label": "Tools"}]})
-    )
+    (tmp_path / "categories.yaml").write_text(yaml.safe_dump({"categories": ["Tools"]}))
     (tmp_path / "plugins.yaml").write_text(
         yaml.safe_dump([{"name": "mirrored", "server": MIRRORED}])
     )
