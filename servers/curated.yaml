@@ -18,7 +18,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [docs, knowledge]
+        categories: [docs-files]
+        tags: [wiki, notes, knowledge]
 
   - name: app.linear/mcp
     title: Linear
@@ -33,7 +34,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [issues, project-mgmt]
+        categories: [projects]
+        tags: [tickets, bugs, sprints]
 
   # com.canva/mcp: dropped pending vendor host allowlisting. Canva's
   # /authorize independently rejects non-allowlisted redirect URIs
@@ -54,7 +56,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [infra, devops]
+        categories: [developer-tools]
+        tags: [cdn, hosting]
 
   # Dropbox advertises DCR but only honors it for a curated partner
   # allowlist (Claude Desktop, Cursor, ChatGPT) — `/register` rejects
@@ -93,7 +96,8 @@ servers:
           portalUrl: https://www.dropbox.com/developers/apps
           hint: Create a Scoped Access app in the Dropbox App Console, enable the listed scopes, add the NimbleBrain redirect URI, then paste App key + App secret here
           clientSecretKey: dropbox.client_secret
-        tags: [storage, files]
+        categories: [docs-files]
+        tags: [storage]
 
   # com.intercom/mcp: dropped pending vendor host allowlisting.
   # Intercom rejects DCR /register itself with "Redirect URI ... is
@@ -114,7 +118,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [banking, finance]
+        categories: [finance]
 
   - name: com.neon/mcp
     title: Neon
@@ -129,7 +133,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [database, postgres]
+        categories: [developer-tools]
+        tags: [database, sql]
 
   - name: com.paypal/mcp
     title: PayPal
@@ -144,7 +149,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [payments]
+        categories: [finance]
 
   - name: com.sentry/mcp
     title: Sentry
@@ -159,7 +164,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [observability, errors]
+        categories: [developer-tools]
+        tags: [monitoring, crashes]
 
   - name: com.stripe/mcp
     title: Stripe
@@ -174,7 +180,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [payments, billing]
+        categories: [finance]
+        tags: [invoices, billing]
 
   # Supabase: advertises OAuth metadata via WWW-Authenticate's
   # resource_metadata header (RFC 9728 §3.1) at a non-default path
@@ -200,7 +207,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [design, cms]
+        categories: [marketing]
 
   - name: com.wix/mcp
     title: Wix
@@ -215,7 +222,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [website, cms]
+        categories: [marketing]
+        tags: [cms]
 
   - name: ai.bassethound/bassethound
     title: Bassethound
@@ -231,7 +239,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [intelligence, research, sales]
+        categories: [sales]
+        tags: [prospecting, company]
 
   - name: ai.exa/mcp
     title: Exa
@@ -246,7 +255,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [search, research]
+        categories: [research]
 
   - name: ai.granola/mcp
     title: Granola
@@ -261,7 +270,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [meetings, notes]
+        categories: [communication]
+        tags: [meetings]
 
   - name: ai.fireflies/mcp
     title: Fireflies
@@ -276,7 +286,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [meetings, notes]
+        categories: [communication]
+        tags: [meetings, notes, recordings]
         # Fireflies grants no read-only scope, so its write tools (share a
         # meeting by email, retitle, move) arrive with the connection; narrow
         # them with per-tool permissions on the Configure page, starting with
@@ -305,7 +316,8 @@ servers:
         account:
           tool: org_info
           field: current_user.email
-        tags: [crm, sales]
+        categories: [sales]
+        tags: [deals, pipeline]
 
   # Sage Intacct runs its MCP server on its own OAuth issuer (api-mcp.intacct.com)
   # with no dynamic client registration, so each customer brings a client from
@@ -341,7 +353,8 @@ servers:
           portalUrl: https://developer.sage.com/intacct/
           hint: In the Sage Developer Console, create a Sage Intacct application on the AI-enabled sender ID, add the NimbleBrain redirect URI, then paste its client ID and secret here
           clientSecretKey: intacct.client_secret
-        tags: [accounting, finance]
+        categories: [finance]
+        tags: [ledger, erp]
 
   # Each vendor below publishes this server to the official MCP registry under the
   # same name; the entry is authored here because tenants read this file. Not
@@ -363,7 +376,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [database, productivity]
+        categories: [docs-files]
+        tags: [database, spreadsheets]
 
   - name: com.monday/monday.com
     title: monday.com
@@ -378,7 +392,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [project-management, productivity]
+        categories: [projects]
+        tags: [tasks]
 
   - name: io.github.miroapp/mcp-server
     title: Miro
@@ -393,7 +408,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [whiteboard, design]
+        categories: [design-media]
+        tags: [whiteboard]
 
   - name: com.basecamp/mcp
     title: Basecamp
@@ -409,7 +425,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [project-management, productivity]
+        categories: [projects]
+        tags: [tasks]
 
   - name: net.todoist/mcp
     title: Todoist
@@ -424,7 +441,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [tasks, productivity]
+        categories: [projects]
+        tags: ["to-do", reminders]
 
   - name: ai.fathom.api/mcp
     title: Fathom
@@ -439,6 +457,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
+        categories: [communication]
         tags: [meetings, notes]
 
   - name: io.github.apolloio/apollo-mcp
@@ -455,7 +474,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [sales, prospecting]
+        categories: [sales]
+        tags: [crm, prospecting, contacts]
 
   - name: com.pandadoc.mcp/mcp
     title: PandaDoc
@@ -471,7 +491,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [documents, sales]
+        categories: [sales]
+        tags: ["e-signature"]
 
   - name: com.ahrefs/mcp
     title: Ahrefs
@@ -487,7 +508,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [seo, marketing]
+        categories: [marketing]
 
   - name: com.zapier/mcp
     title: Zapier
@@ -503,7 +524,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [automation, productivity]
+        categories: [automation]
+        tags: [workflows, integrations, zaps]
 
   # Vendor-hosted servers that sign in by plain DCR with NimbleBrain's redirect
   # (checked end to end with the runtime's check-catalog-dcr.ts). Each keeps the
@@ -522,7 +544,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [diagrams, design]
+        categories: [design-media]
+        tags: [flowcharts, whiteboard]
 
   - name: com.whimsical/mcp
     title: "Whimsical"
@@ -538,7 +561,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [diagrams, design]
+        categories: [design-media]
+        tags: [diagrams, whiteboard]
 
   - name: io.github.Fibery-inc/mcp
     title: "Fibery"
@@ -554,7 +578,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [project-management, productivity]
+        categories: [projects]
+        tags: [tasks]
 
   - name: com.productboard/productboard
     title: "Productboard"
@@ -570,7 +595,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [product, feedback]
+        categories: [projects]
 
   - name: co.rocketreach/mcp
     title: "RocketReach"
@@ -586,7 +611,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [sales, prospecting]
+        categories: [sales]
+        tags: [leads, prospecting, contacts]
 
   - name: com.amplitude/mcp-server
     title: "Amplitude"
@@ -601,7 +627,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [analytics, product]
+        categories: [analytics]
+        tags: [metrics, events]
 
   - name: com.supermetrics/supermetrics
     title: "Supermetrics"
@@ -617,7 +644,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [marketing, analytics]
+        categories: [analytics]
+        tags: [ads, reporting]
 
   - name: com.beehiiv/beehiiv
     title: "beehiiv"
@@ -633,7 +661,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [newsletter, marketing]
+        categories: [marketing]
+        tags: [email]
 
   - name: com.bitly/mcp
     title: "Bitly"
@@ -649,7 +678,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [links, marketing]
+        categories: [marketing]
+        tags: ["url shortener"]
 
   - name: com.jotform/mcp
     title: "Jotform"
@@ -664,7 +694,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [forms, productivity]
+        categories: [docs-files]
+        tags: [surveys]
 
   - name: com.gocardless/gc-mcp
     title: "GoCardless"
@@ -680,7 +711,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [payments, billing]
+        categories: [finance]
+        tags: ["direct debit", billing, invoices]
 
   - name: com.paddle/mcp
     title: "Paddle"
@@ -696,7 +728,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [payments, billing]
+        categories: [finance]
+        tags: [invoices]
 
   - name: com.kajabi/kajabi
     title: "Kajabi"
@@ -712,7 +745,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [commerce, marketing]
+        categories: [marketing]
+        tags: [courses, commerce]
 
   - name: com.plain/mcp
     title: "Plain"
@@ -728,7 +762,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [support, customers]
+        categories: [sales]
+        tags: [helpdesk, tickets]
 
   - name: com.getguru/mcp-server
     title: "Guru"
@@ -744,7 +779,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [knowledge, docs]
+        categories: [docs-files]
+        tags: [wiki, faq]
 
   - name: com.egnyte/mcp-server
     title: "Egnyte"
@@ -759,7 +795,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [storage, files]
+        categories: [docs-files]
+        tags: [storage, folders]
 
   - name: com.make/mcp-server
     title: "Make"
@@ -774,7 +811,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [automation, productivity]
+        categories: [automation]
+        tags: [workflows, integrations, integromat]
 
   - name: com.gitlab/mcp
     title: "GitLab"
@@ -789,7 +827,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [dev, code]
+        categories: [developer-tools]
+        tags: [code, repositories, ci]
 
   - name: com.digitalocean/mcp
     title: "DigitalOcean"
@@ -805,7 +844,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [infra, devops]
+        categories: [developer-tools]
+        tags: [hosting, cloud, servers]
 
   - name: com.railway/mcp
     title: "Railway"
@@ -820,7 +860,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [infra, devops]
+        categories: [developer-tools]
+        tags: [hosting, cloud]
 
   - name: com.postman/postman-mcp-server
     title: "Postman"
@@ -836,7 +877,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [dev, api]
+        categories: [developer-tools]
+        tags: [testing]
 
   - name: com.newrelic/mcp-server
     title: "New Relic"
@@ -851,7 +893,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [observability, errors]
+        categories: [developer-tools]
+        tags: [observability, apm, monitoring]
 
   - name: io.github.grafana/mcp-grafana
     title: "Grafana Cloud"
@@ -867,7 +910,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [observability, dashboards]
+        categories: [developer-tools]
+        tags: [observability, monitoring]
 
   - name: io.honeycomb/mcp
     title: "Honeycomb"
@@ -883,7 +927,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [observability, errors]
+        categories: [developer-tools]
+        tags: [observability, tracing, monitoring]
 
   - name: co.huggingface/hf-mcp-server
     title: "Hugging Face"
@@ -898,7 +943,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [ai, research]
+        categories: [developer-tools]
+        tags: [ai, "machine learning"]
 
   - name: io.sanity.www/mcp
     title: "Sanity"
@@ -914,7 +960,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [cms, content]
+        categories: [marketing]
+        tags: [cms, website]
 
   - name: com.apify/apify-mcp-server
     title: "Apify"
@@ -930,7 +977,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [scraping, research]
+        categories: [research]
+        tags: [scraping, crawler, "web data"]
 
   - name: ai.parallel/search-mcp
     title: "Parallel Search"
@@ -946,7 +994,7 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [search, research]
+        categories: [research]
 
   - name: io.github.descriptinc/descript
     title: "Descript"
@@ -962,7 +1010,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [video, media]
+        categories: [design-media]
+        tags: [podcast, editing, transcripts]
 
   - name: com.heygen/hyperframes
     title: "HeyGen HyperFrames"
@@ -978,7 +1027,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [video, media]
+        categories: [design-media]
+        tags: [editing]
 
   - name: com.cloudinary/asset-management-mcp
     title: "Cloudinary"
@@ -994,7 +1044,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [media, storage]
+        categories: [design-media]
+        tags: [assets, media]
 
   # The vendors' own servers for Atlassian and PostHog, replacing their Composio
   # toolkits: each signs in by plain DCR, so no broker and no API key.
@@ -1012,7 +1063,8 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [issues, project-management, docs]
+        categories: [projects]
+        tags: [tickets, wiki, bugs]
 
   - name: com.posthog/mcp
     title: PostHog
@@ -1028,4 +1080,5 @@ servers:
     _meta:
       ai.nimblebrain/connector:
         auth: dcr
-        tags: [analytics, product]
+        categories: [analytics]
+        tags: [metrics, events, funnels]

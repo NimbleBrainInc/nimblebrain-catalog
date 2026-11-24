@@ -1,0 +1,50 @@
+# The connector categories. Every authored server in servers/ names exactly one, under
+# `_meta["ai.nimblebrain/connector"].categories`, and the build fails on any other.
+#
+# A category names the job a connector does, in a buyer's words, so a person can narrow
+# the catalog to what fits the work in front of them. Each connector is in exactly one,
+# so a category filter shows every connector once. The field is a list so a second
+# category can be allowed later without changing what readers parse; the build allows
+# one today.
+#
+# The order here is the display order: by value to a business buyer, developer tools
+# last.
+#
+# Keep a category at three connectors or more, unless it is a named growth category
+# (Automation). When three connectors in one category share a narrower job, split it
+# out under one of the reserved slugs.
+
+categories:
+  - slug: communication
+    label: Communication & meetings
+  - slug: docs-files
+    label: Docs & files
+  - slug: projects
+    label: Projects & tasks
+  - slug: sales
+    label: Sales & support
+  - slug: marketing
+    label: Marketing & websites
+  - slug: finance
+    label: Finance & payments
+  - slug: analytics
+    label: Data & analytics
+  - slug: design-media
+    label: Design & media
+  - slug: research
+    label: Search & research
+  - slug: automation
+    label: Automation
+  - slug: developer-tools
+    label: Developer tools
+
+# Slugs held for the next splits: support (from sales), hr, commerce. Not offered until
+# they have three connectors.
+reserved: [support, hr, commerce]
+
+# `tags` are search keywords only: words a person might type that the title and
+# description do not already say ("crm", "wiki", "invoices"). These never belong there.
+forbiddenTags:
+  composio: how a connector signs in, which the build derives from its auth
+  google: a vendor, not a job
+  productivity: true of most connectors, so it narrows nothing

@@ -43,7 +43,8 @@ servers:
             - ASANA_GET_SECTIONS_IN_PROJECT
             - ASANA_GET_MULTIPLE_WORKSPACES
             - ASANA_GET_CURRENT_USER
-        tags: [tasks, projects, composio]
+        categories: [projects]
+        tags: ["to-do"]
 
   # Gmail (and Outlook below) route through Composio as a stopgap until our
   # own Google / Microsoft OAuth clients pass restricted-scope verification.
@@ -98,7 +99,8 @@ servers:
             - GMAIL_MOVE_TO_TRASH
             - GMAIL_SEARCH_PEOPLE
             - GMAIL_GET_PROFILE
-        tags: [email, productivity, composio]
+        categories: [communication]
+        tags: [email, inbox]
 
   - name: com.microsoft/outlook
     title: Outlook
@@ -134,7 +136,8 @@ servers:
             - OUTLOOK_CALENDAR_CREATE_EVENT
             - OUTLOOK_ACCEPT_EVENT
             - OUTLOOK_GET_PROFILE
-        tags: [email, productivity, composio]
+        categories: [communication]
+        tags: [email, inbox, microsoft]
 
   - name: com.box/files
     title: Box
@@ -166,7 +169,8 @@ servers:
             - BOX_CREATE_COMMENT
             - BOX_GET_CURRENT_USER
             - BOX_ASK_QUESTION
-        tags: [storage, files, composio]
+        categories: [docs-files]
+        tags: [storage]
 
   - name: com.github/repos
     title: GitHub
@@ -199,7 +203,8 @@ servers:
             - GITHUB_GET_A_COMMIT
             - GITHUB_CREATE_OR_UPDATE_FILE_CONTENTS
             - GITHUB_GET_A_BRANCH
-        tags: [dev, code, composio]
+        categories: [developer-tools]
+        tags: [code, repositories]
 
   - name: com.google/calendar
     title: Google Calendar
@@ -231,7 +236,8 @@ servers:
             - GOOGLECALENDAR_GET_CALENDAR
             - GOOGLECALENDAR_GET_CURRENT_DATE_TIME
             - GOOGLECALENDAR_REMOVE_ATTENDEE
-        tags: [calendar, scheduling, composio]
+        categories: [communication]
+        tags: [scheduling, meetings]
 
   - name: com.intuit/quickbooks
     title: QuickBooks
@@ -265,7 +271,8 @@ servers:
             - QUICKBOOKS_GET_PROFIT_AND_LOSS_REPORT
             - QUICKBOOKS_GET_BALANCE_SHEET_REPORT
             - QUICKBOOKS_QUERY_ENTITIES
-        tags: [accounting, finance, composio]
+        categories: [finance]
+        tags: [accounting, bookkeeping]
 
   - name: com.linkedin/social
     title: LinkedIn
@@ -298,7 +305,8 @@ servers:
             - LINKEDIN_INITIALIZE_IMAGE_UPLOAD
             - LINKEDIN_REGISTER_IMAGE_UPLOAD
             - LINKEDIN_GET_IMAGE
-        tags: [social, marketing, composio]
+        categories: [marketing]
+        tags: [social]
 
   - name: com.slack/messaging
     title: Slack
@@ -331,7 +339,8 @@ servers:
             - SLACK_ADD_REACTION_TO_AN_ITEM
             - SLACK_RETRIEVE_CONVERSATION_INFORMATION
             - SLACK_UPLOAD_OR_CREATE_A_FILE_IN_SLACK
-        tags: [messaging, productivity, composio]
+        categories: [communication]
+        tags: [chat, messaging]
 
   - name: com.whatsapp/messaging
     title: WhatsApp
@@ -362,7 +371,8 @@ servers:
             - WHATSAPP_GET_BUSINESS_PROFILE
             - WHATSAPP_GET_PHONE_NUMBERS
             - WHATSAPP_UPLOAD_MEDIA
-        tags: [messaging, composio]
+        categories: [communication]
+        tags: [chat, messaging, sms]
 
   - name: com.zoho/crm
     title: Zoho CRM
@@ -390,7 +400,7 @@ servers:
             - ZOHO_GET_RELATED_RECORDS
             - ZOHO_GET_ZOHO_USERS
             - ZOHO_CREATE_ZOHO_TAG
-        tags: [crm, sales, composio]
+        categories: [sales]
 
   - name: com.google/drive
     title: Google Drive
@@ -418,7 +428,8 @@ servers:
             - GOOGLEDRIVE_CREATE_PERMISSION
             - GOOGLEDRIVE_COPY_FILE_ADVANCED
             - GOOGLEDRIVE_MOVE_FILE
-        tags: [files, google, composio]
+        categories: [docs-files]
+        tags: [storage, folders]
 
   - name: com.google/sheets
     title: Google Sheets
@@ -445,7 +456,8 @@ servers:
             - GOOGLESHEETS_CREATE_GOOGLE_SHEET1
             - GOOGLESHEETS_ADD_SHEET
             - GOOGLESHEETS_GET_SHEET_NAMES
-        tags: [productivity, google, composio]
+        categories: [docs-files]
+        tags: [spreadsheets, tables]
 
   - name: com.google/docs
     title: Google Docs
@@ -473,7 +485,8 @@ servers:
             - GOOGLEDOCS_UPDATE_DOCUMENT_MARKDOWN
             - GOOGLEDOCS_COPY_DOCUMENT
             - GOOGLEDOCS_EXPORT_DOCUMENT_AS_PDF
-        tags: [productivity, google, composio]
+        categories: [docs-files]
+        tags: [writing]
 
   - name: com.google/slides
     title: Google Slides
@@ -498,7 +511,8 @@ servers:
             - GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE
             - GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE
             - GOOGLESLIDES_GET_PAGE_THUMBNAIL2
-        tags: [productivity, google, composio]
+        categories: [docs-files]
+        tags: [decks]
 
   - name: com.hubspot/mcp
     title: HubSpot
@@ -525,7 +539,8 @@ servers:
             - HUBSPOT_CREATE_DEAL
             - HUBSPOT_CREATE_COMPANY
             - HUBSPOT_BATCH_READ_COMPANIES_BY_PROPERTIES
-        tags: [crm, sales, composio]
+        categories: [sales]
+        tags: [leads]
 
   - name: us.zoom/mcp
     title: Zoom
@@ -559,7 +574,8 @@ servers:
           tool: ZOOM_GET_USER
           arguments: { user_id: me }
           field: data.email
-        tags: [meetings, video, composio]
+        categories: [communication]
+        tags: [video, calls]
 
   - name: com.microsoft/teams
     title: Microsoft Teams
@@ -593,4 +609,5 @@ servers:
             - MICROSOFT_TEAMS_TEAMS_CREATE_CHAT
             - MICROSOFT_TEAMS_TEAMS_CREATE_CHANNEL
             - MICROSOFT_TEAMS_CREATE_MEETING
-        tags: [communication, productivity, composio]
+        categories: [communication]
+        tags: [messaging, meetings]

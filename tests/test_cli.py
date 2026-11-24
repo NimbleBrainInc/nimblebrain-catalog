@@ -128,15 +128,23 @@ def upstream(name: str, _base: str) -> list[dict[str, Any]]:
     return [{"server": server(name), "_meta": {OFFICIAL_META_KEY: {"isLatest": True}}}]
 
 
+def authored(name: str) -> dict[str, Any]:
+    """An authored server: the catalog states its category, which a mirrored one cannot."""
+    return {**server(name), "_meta": {"ai.nimblebrain/connector": {"categories": ["tools"]}}}
+
+
 def run_build(tmp_path: Path, files: dict[str, list[str]]) -> int:
     (tmp_path / "members.yaml").write_text(yaml.safe_dump([{"name": MIRRORED}]))
+    (tmp_path / "categories.yaml").write_text(
+        yaml.safe_dump({"categories": [{"slug": "tools", "label": "Tools"}]})
+    )
     (tmp_path / "plugins.yaml").write_text(
         yaml.safe_dump([{"name": "mirrored", "server": MIRRORED}])
     )
     folder = tmp_path / "servers"
     folder.mkdir()
     for file, names in files.items():
-        (folder / file).write_text(yaml.safe_dump({"servers": [server(n) for n in names]}))
+        (folder / file).write_text(yaml.safe_dump({"servers": [authored(n) for n in names]}))
     return main(
         [
             "build",
@@ -144,6 +152,8 @@ def run_build(tmp_path: Path, files: dict[str, list[str]]) -> int:
             str(tmp_path / "members.yaml"),
             "--servers",
             str(folder),
+            "--categories",
+            str(tmp_path / "categories.yaml"),
             "--plugins",
             str(tmp_path / "plugins.yaml"),
             "--plugin-dir",

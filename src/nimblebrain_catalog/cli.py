@@ -33,6 +33,7 @@ from nimblebrain_catalog.build import (
     parse_authored,
     parse_members,
 )
+from nimblebrain_catalog.categories import check_entries, parse_vocabulary
 from nimblebrain_catalog.plugins import distribution, parse_plugins
 from nimblebrain_catalog.render import SITE_CONTENT_TYPES, site
 
@@ -181,10 +182,12 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
 
     b = sub.add_parser(
-        "build", help="build the catalog from members.yaml, servers/, plugins, and upstream"
+        "build",
+        help="build the catalog from members.yaml, servers/, categories, plugins, and upstream",
     )
     b.add_argument("--members", type=Path, default=Path("members.yaml"))
     b.add_argument("--servers", type=Path, default=Path("servers"))
+    b.add_argument("--categories", type=Path, default=Path("categories.yaml"))
     b.add_argument("--plugins", type=Path, default=Path("plugins.yaml"))
     b.add_argument("--plugin-dir", type=Path, default=Path("plugins"))
     b.add_argument("--out", type=Path, default=Path("dist"))
@@ -200,6 +203,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "build":
             members = parse_members(yaml.safe_load(args.members.read_text()))
             authored = read_authored(args.servers)
+            vocabulary = parse_vocabulary(yaml.safe_load(args.categories.read_text()))
+            check_entries(authored, vocabulary)
             objects = build(
                 members, lambda name: fetch_upstream_versions(name, args.upstream), authored
             )

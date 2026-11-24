@@ -30,9 +30,20 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
   (Bassethound). It keeps the upstream name and is pinned: it changes only when its
   entry here is edited, not when the product releases.
   NimbleBrain's fields sit in the server's own `_meta`, under `ai.nimblebrain/connector`
-  (auth, tags, OAuth setup, brokering) and `ai.nimblebrain/host` (placements), which is
-  where the runtime reads them. The file shape (`{servers: [...]}`) is the one the
-  runtime's catalog directory reads. Only remote servers are accepted.
+  (auth, category, search tags, OAuth setup, brokering) and `ai.nimblebrain/host`
+  (placements), which is where the runtime reads them. The file shape
+  (`{servers: [...]}`) is the one the runtime's catalog directory reads. Only remote
+  servers are accepted.
+- **Every authored server names one category, from `categories.yaml`.** It sits under
+  `ai.nimblebrain/connector.categories` and names the job the connector does in a
+  buyer's words, so a category filter shows each connector exactly once. The field is
+  a list so a second category can be allowed later without changing what readers
+  parse; the build allows one today and fails on a missing or unknown slug. `tags` are
+  search keywords only, the words a person might type that the title and description
+  do not already contain (`crm`, `wiki`, `invoices`). The vocabulary forbids the ones
+  that never belong there: how a connector signs in, a vendor, or a word true of most
+  connectors. Categories are listed by value to a buyer, and a new one is split out
+  when three connectors share a narrower job.
 - **A name appears once.** The build fails when a name is both mirrored and authored,
   or authored twice.
 - **A plugin is one catalog server plus its skill.** `plugins.yaml` names each plugin
@@ -100,11 +111,13 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 | Path | What |
 |---|---|
 | `members.yaml` | Servers mirrored from the official registry |
+| `categories.yaml` | The connector categories (slug, label, display order), the slugs held for the next splits, and the tags no entry may use |
 | `servers/*.yaml` | Servers the catalog authors: `curated.yaml` (DCR and static OAuth), `composio.yaml` (brokered by Composio) |
 | `plugins.yaml` | The plugins: each one's name and the catalog server it installs |
 | `plugins/<name>/skills/` | Each plugin's hand-written skills |
 | `plugins/<name>/conversation-starters.yaml` | Each plugin's hand-written conversation starters |
 | `src/nimblebrain_catalog/build.py` | Pure: members + upstream entries + authored servers → objects keyed by API path |
+| `src/nimblebrain_catalog/categories.py` | Pure: the vocabulary, and the check that every authored server names one known category and no forbidden tag |
 | `src/nimblebrain_catalog/render.py` | Pure: the server list → the catalog page at `/` and the 404 body. A Composio connector's remote is a placeholder, so the page does not show it |
 | `src/nimblebrain_catalog/plugins.py` | Pure: plugins + servers + skills → each plugin's zip, both install indexes, and the AI Catalog |
 | `src/nimblebrain_catalog/cli.py` | `catalog build` (fetch upstream, write `dist/`) and `catalog publish` (upload to S3) |
