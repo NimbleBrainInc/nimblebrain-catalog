@@ -1,0 +1,9 @@
+# Conversation starters for the amplitude plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: How is usage trending?
+  text: Show my key Amplitude metrics over the last 30 days and call out any notable changes.
+- title: Find a chart
+  text: Help me find an Amplitude chart or dashboard. Ask me what it measures, then search and show the
+    matches.
+- title: Explain a drop
+  text: Ask me which metric changed, then use Amplitude to break it down and suggest what drove it.

@@ -1,0 +1,6 @@
+# Conversation starters for the grafana plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Anything firing?
+  text: List the Grafana alerts firing right now, with their labels and since when.
+- title: Find a dashboard
+  text: Help me find a Grafana dashboard. Ask me what it shows, then search and show the matches.

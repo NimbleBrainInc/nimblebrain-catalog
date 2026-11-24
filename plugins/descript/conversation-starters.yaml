@@ -1,0 +1,7 @@
+# Conversation starters for the descript plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What are my projects?
+  text: List my recent Descript projects.
+- title: Edit a recording
+  text: Help me edit a Descript recording. Ask me which project and what to change, then describe the
+    edit and make it once I approve.

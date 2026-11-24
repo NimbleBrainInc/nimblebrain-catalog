@@ -1,0 +1,7 @@
+# Conversation starters for the cloudinary plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find an asset
+  text: Help me find an image or video in Cloudinary. Ask me what it shows, then search and show the matches.
+- title: Transform an image
+  text: Ask me which Cloudinary image and how to change it (size, crop, format), then give me the transformed
+    URL.

@@ -1,0 +1,8 @@
+# Conversation starters for the bitly plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Shorten a link
+  text: Ask me the URL, then shorten it with Bitly and give me the short link.
+- title: Which links got clicks?
+  text: List my Bitly links with the most clicks in the last 30 days.
+- title: Make a QR code
+  text: Ask me which link, then create a Bitly QR code for it.

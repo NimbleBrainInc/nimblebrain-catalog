@@ -1,0 +1,10 @@
+# Conversation starters for the whimsical plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find a board
+  text: Help me find something in Whimsical. Ask me what it's about, then search my workspace and show
+    the matches.
+- title: Make a flowchart
+  text: Help me make a Whimsical flowchart. Ask me the process it should show, then create it once I approve
+    the steps.
+- title: Mind-map a topic
+  text: Ask me a topic, then draft a Whimsical mind map of it and create it once I approve.

@@ -1,0 +1,6 @@
+# Conversation starters for the digitalocean plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What am I running?
+  text: List my DigitalOcean apps, Droplets, and databases with their status.
+- title: Why is my app failing?
+  text: Ask me which DigitalOcean app, then check its recent deployments and logs and explain the problem.

@@ -1,0 +1,8 @@
+# Conversation starters for the egnyte plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find a file
+  text: Help me find a file in Egnyte. Ask me what it's about, then search and show the matches.
+- title: Summarize a document
+  text: Ask me which Egnyte document, then summarize it.
+- title: Upload a file
+  text: Help me upload a file to Egnyte. Ask me the file and the folder, then upload it once I confirm.

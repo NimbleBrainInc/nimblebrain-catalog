@@ -1,0 +1,7 @@
+# Conversation starters for the honeycomb plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: How are my SLOs?
+  text: Show my Honeycomb SLOs and which ones are burning budget.
+- title: Investigate errors
+  text: Ask me which dataset, then use Honeycomb to find where errors rose recently and what they have
+    in common.

@@ -1,0 +1,6 @@
+# Conversation starters for the newrelic plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Anything on fire?
+  text: List the New Relic alerts and incidents open right now, most severe first.
+- title: Why is a service slow?
+  text: Ask me which service, then use New Relic to look at its latency, errors, and recent changes.

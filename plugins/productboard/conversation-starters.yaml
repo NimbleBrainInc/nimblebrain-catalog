@@ -1,0 +1,9 @@
+# Conversation starters for the productboard plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What are customers asking for?
+  text: Summarize recent customer feedback in Productboard, grouped by theme, with the most-requested
+    items first.
+- title: Find feedback on a topic
+  text: Ask me a topic, then find the Productboard feedback about it and summarize what customers said.
+- title: Review the roadmap
+  text: Summarize what's on my Productboard roadmap, by release or timeframe.

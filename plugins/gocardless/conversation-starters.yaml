@@ -1,0 +1,8 @@
+# Conversation starters for the gocardless plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Any failed payments?
+  text: List my GoCardless payments that failed or were charged back in the last 30 days.
+- title: Look up a customer
+  text: Ask me which customer, then show their GoCardless mandates, subscriptions, and recent payments.
+- title: What's being paid out?
+  text: Summarize my recent GoCardless payouts and what's scheduled next.

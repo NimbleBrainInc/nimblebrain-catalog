@@ -1,0 +1,8 @@
+# Conversation starters for the make plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What are my scenarios?
+  text: List my Make scenarios, with which are active and when each last ran.
+- title: Why did a scenario fail?
+  text: Ask me which Make scenario, then look at its recent runs and explain any errors.
+- title: Run a scenario
+  text: Ask me which Make scenario to run and with what input, then run it once I confirm.
