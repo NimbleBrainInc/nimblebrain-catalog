@@ -78,7 +78,7 @@ ZERO_SETUP_HEADER = (
 PORTABLE_AUTH = {None, "dcr"}
 AI_CATALOG_KEY = ".well-known/ai-catalog.json"
 # The AI Catalog spec version this catalog follows, which the spec requires it to state.
-# CI checks the built catalog against that version with ai-catalog-conformance.
+# CI checks the built catalog against that version with ai-catalog-check.
 AI_CATALOG_SPEC_VERSION = "0.9"
 
 # Agent Plugins 1.0 §5.5.
