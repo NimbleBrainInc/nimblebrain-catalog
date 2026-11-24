@@ -13,6 +13,10 @@
   server: com.ahrefs/mcp
 - name: airtable
   server: com.airtable/mcp
+- name: amplitude
+  server: com.amplitude/mcp-server
+- name: apify
+  server: com.apify/apify-mcp-server
 - name: apollo
   server: io.github.apolloio/apollo-mcp
 - name: asana
@@ -23,24 +27,42 @@
   server: com.basecamp/mcp
 - name: bassethound
   server: ai.bassethound/bassethound
+- name: beehiiv
+  server: com.beehiiv/beehiiv
+- name: bitly
+  server: com.bitly/mcp
 - name: box
   server: com.box/files
 - name: close
   server: com.close/mcp
 - name: cloudflare
   server: com.cloudflare/mcp
+- name: cloudinary
+  server: com.cloudinary/asset-management-mcp
+- name: descript
+  server: io.github.descriptinc/descript
+- name: digitalocean
+  server: com.digitalocean/mcp
 - name: dropbox
   server: com.dropbox/mcp
+- name: egnyte
+  server: com.egnyte/mcp-server
 - name: exa
   server: ai.exa/mcp
 - name: fathom
   server: ai.fathom.api/mcp
+- name: fibery
+  server: io.github.Fibery-inc/mcp
 - name: fireflies
   server: ai.fireflies/mcp
 - name: github
   server: com.github/repos
+- name: gitlab
+  server: com.gitlab/mcp
 - name: gmail
   server: com.google/gmail
+- name: gocardless
+  server: com.gocardless/gc-mcp
 - name: googlecalendar
   server: com.google/calendar
 - name: googledocs
@@ -51,16 +73,34 @@
   server: com.google/sheets
 - name: googleslides
   server: com.google/slides
+- name: grafana
+  server: io.github.grafana/mcp-grafana
 - name: granola
   server: ai.granola/mcp
+- name: guru
+  server: com.getguru/mcp-server
+- name: heygen
+  server: com.heygen/hyperframes
+- name: honeycomb
+  server: io.honeycomb/mcp
 - name: hubspot
   server: com.hubspot/mcp
+- name: huggingface
+  server: co.huggingface/hf-mcp-server
 - name: intacct
   server: com.intacct/mcp
+- name: jotform
+  server: com.jotform/mcp
+- name: kajabi
+  server: com.kajabi/kajabi
 - name: linear
   server: app.linear/mcp
 - name: linkedin
   server: com.linkedin/social
+- name: lucid
+  server: app.lucid.mcp/lucid
+- name: make
+  server: com.make/mcp-server
 - name: mercury
   server: com.mercury/mcp
 - name: microsoft-teams
@@ -71,30 +111,52 @@
   server: com.monday/monday.com
 - name: neon
   server: com.neon/mcp
+- name: newrelic
+  server: com.newrelic/mcp-server
 - name: notion
   server: com.notion/mcp
 - name: outlook
   server: com.microsoft/outlook
+- name: paddle
+  server: com.paddle/mcp
 - name: pandadoc
   server: com.pandadoc.mcp/mcp
+- name: parallel
+  server: ai.parallel/search-mcp
 - name: paypal
   server: com.paypal/mcp
+- name: plain
+  server: com.plain/mcp
 - name: posthog
   server: com.posthog/mcp
+- name: postman
+  server: com.postman/postman-mcp-server
+- name: productboard
+  server: com.productboard/productboard
 - name: quickbooks
   server: com.intuit/quickbooks
+- name: railway
+  server: com.railway/mcp
+- name: rocketreach
+  server: co.rocketreach/mcp
+- name: sanity
+  server: io.sanity.www/mcp
 - name: sentry
   server: com.sentry/mcp
 - name: slack
   server: com.slack/messaging
 - name: stripe
   server: com.stripe/mcp
+- name: supermetrics
+  server: com.supermetrics/supermetrics
 - name: todoist
   server: net.todoist/mcp
 - name: webflow
   server: com.webflow/mcp
 - name: whatsapp
   server: com.whatsapp/messaging
+- name: whimsical
+  server: com.whimsical/mcp
 - name: wix
   server: com.wix/mcp
 - name: zapier

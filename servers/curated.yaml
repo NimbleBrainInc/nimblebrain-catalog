@@ -505,6 +505,497 @@ servers:
         auth: dcr
         tags: [automation, productivity]
 
+  # Vendor-hosted servers that sign in by plain DCR with NimbleBrain's redirect
+  # (checked end to end with the runtime's check-catalog-dcr.ts). Each keeps the
+  # vendor's own registry name and version.
+
+  - name: app.lucid.mcp/lucid
+    title: "Lucid"
+    description: "Create, search, and edit Lucid diagrams and documents"
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/lucid/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.lucid.app/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [diagrams, design]
+
+  - name: com.whimsical/mcp
+    title: "Whimsical"
+    description: "Flowcharts, mind maps, wireframes, and docs in your Whimsical workspace"
+    version: "1.1.0"
+    websiteUrl: https://whimsical.com/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/whimsical/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.whimsical.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [diagrams, design]
+
+  - name: io.github.Fibery-inc/mcp
+    title: "Fibery"
+    description: "Query and update the databases in your Fibery workspace"
+    version: "1.1.0"
+    websiteUrl: https://developers.fibery.com/guides/mcp/overview
+    icons:
+      - src: https://static.nimblebrain.ai/logos/fibery/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.fibery.io/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [project-management, productivity]
+
+  - name: com.productboard/productboard
+    title: "Productboard"
+    description: "Customer feedback, features, and roadmaps in Productboard"
+    version: "1.0.0"
+    websiteUrl: https://developer.productboard.com/reference/mcp-server
+    icons:
+      - src: https://static.nimblebrain.ai/logos/productboard/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.productboard.com
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [product, feedback]
+
+  - name: co.rocketreach/mcp
+    title: "RocketReach"
+    description: "Find verified work emails and phone numbers for people and companies"
+    version: "0.0.153"
+    websiteUrl: https://docs.rocketreach.co/reference/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/rocketreach/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.rocketreach.co/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [sales, prospecting]
+
+  - name: com.amplitude/mcp-server
+    title: "Amplitude"
+    description: "Charts, dashboards, and product analytics from your Amplitude data"
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/amplitude/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.amplitude.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [analytics, product]
+
+  - name: com.supermetrics/supermetrics
+    title: "Supermetrics"
+    description: "Query marketing data from ad, analytics, and social platforms"
+    version: "1.14.20"
+    websiteUrl: https://mcp.supermetrics.com
+    icons:
+      - src: https://static.nimblebrain.ai/logos/supermetrics/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.supermetrics.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [marketing, analytics]
+
+  - name: com.beehiiv/beehiiv
+    title: "beehiiv"
+    description: "Newsletters, posts, subscribers, and analytics in beehiiv"
+    version: "0.1.0"
+    websiteUrl: https://www.beehiiv.com
+    icons:
+      - src: https://static.nimblebrain.ai/logos/beehiiv/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.beehiiv.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [newsletter, marketing]
+
+  - name: com.bitly/mcp
+    title: "Bitly"
+    description: "Shorten links, make QR codes, and track clicks in Bitly"
+    version: "1.0.0"
+    websiteUrl: https://dev.bitly.com/bitly-mcp/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/bitly/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://api-ssl.bitly.com/v4/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [links, marketing]
+
+  - name: com.jotform/mcp
+    title: "Jotform"
+    description: "Forms and submissions in your Jotform account"
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/jotform/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.jotform.com/
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [forms, productivity]
+
+  - name: com.gocardless/gc-mcp
+    title: "GoCardless"
+    description: "Payments, mandates, subscriptions, refunds, and payouts in GoCardless"
+    version: "1.0.0"
+    websiteUrl: https://mcp.gocardless.com
+    icons:
+      - src: https://static.nimblebrain.ai/logos/gocardless/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.gocardless.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [payments, billing]
+
+  - name: com.paddle/mcp
+    title: "Paddle"
+    description: "Pricing, subscriptions, payments, and revenue reports in Paddle Billing"
+    version: "0.1.2"
+    websiteUrl: https://mcp.paddle.com/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/paddle/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.paddle.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [payments, billing]
+
+  - name: com.kajabi/kajabi
+    title: "Kajabi"
+    description: "Products, pages, contacts, offers, and emails in Kajabi"
+    version: "1.0.0"
+    websiteUrl: https://kajabi.com
+    icons:
+      - src: https://static.nimblebrain.ai/logos/kajabi/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.kajabi.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [commerce, marketing]
+
+  - name: com.plain/mcp
+    title: "Plain"
+    description: "Customer support threads, customers, and workflows in Plain"
+    version: "0.0.4"
+    websiteUrl: https://www.plain.com/docs/integrations/mcp-server
+    icons:
+      - src: https://static.nimblebrain.ai/logos/plain/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.plain.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [support, customers]
+
+  - name: com.getguru/mcp-server
+    title: "Guru"
+    description: "Search and read your Guru knowledge base"
+    version: "1.0.2"
+    websiteUrl: https://developer.getguru.com/docs/guru-mcp-server-overview
+    icons:
+      - src: https://static.nimblebrain.ai/logos/guru/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.api.getguru.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [knowledge, docs]
+
+  - name: com.egnyte/mcp-server
+    title: "Egnyte"
+    description: "Search, read, and upload files in your Egnyte content"
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/egnyte/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp-server.egnyte.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [storage, files]
+
+  - name: com.make/mcp-server
+    title: "Make"
+    description: "Build, run, and debug Make automation scenarios"
+    version: "2.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/make/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.make.com/v2
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [automation, productivity]
+
+  - name: com.gitlab/mcp
+    title: "GitLab"
+    description: "Projects, issues, merge requests, and pipelines on GitLab.com"
+    version: "0.0.1"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/gitlab/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://gitlab.com/api/v4/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [dev, code]
+
+  - name: com.digitalocean/mcp
+    title: "DigitalOcean"
+    description: "Apps, Droplets, databases, and infrastructure on DigitalOcean"
+    version: "0.1.1"
+    websiteUrl: https://docs.digitalocean.com/reference/mcp/configure-mcp/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/digitalocean/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.digitalocean.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [infra, devops]
+
+  - name: com.railway/mcp
+    title: "Railway"
+    description: "Projects, services, deployments, and logs on Railway"
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/railway/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.railway.com/
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [infra, devops]
+
+  - name: com.postman/postman-mcp-server
+    title: "Postman"
+    description: "Workspaces, collections, environments, and APIs in Postman"
+    version: "2.15.0"
+    websiteUrl: https://www.postman.com/product/mcp-server/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/postman/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.postman.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [dev, api]
+
+  - name: com.newrelic/mcp-server
+    title: "New Relic"
+    description: "Metrics, logs, traces, and alerts from New Relic (paid plan, admin-enabled)"
+    version: "0.1.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/newrelic/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.newrelic.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [observability, errors]
+
+  - name: io.github.grafana/mcp-grafana
+    title: "Grafana Cloud"
+    description: "Dashboards, metrics, logs, and alerts in your Grafana Cloud stack"
+    version: "v2.3.0"
+    websiteUrl: https://grafana.com/docs/grafana-cloud/ai-tools/mcp-servers/cloud-mcp/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/grafana/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.grafana.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [observability, dashboards]
+
+  - name: io.honeycomb/mcp
+    title: "Honeycomb"
+    description: "Traces, events, SLOs, and triggers in Honeycomb"
+    version: "1.0.0"
+    websiteUrl: https://docs.honeycomb.io/integrations/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/honeycomb/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.honeycomb.io/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [observability, errors]
+
+  - name: co.huggingface/hf-mcp-server
+    title: "Hugging Face"
+    description: "Models, datasets, Spaces, and papers on the Hugging Face Hub"
+    version: "0.2.33"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/huggingface/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://huggingface.co/mcp?login
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [ai, research]
+
+  - name: io.sanity.www/mcp
+    title: "Sanity"
+    description: "Query and edit content in your Sanity projects"
+    version: "2.46.2"
+    websiteUrl: https://www.sanity.io/docs/ai/mcp-server
+    icons:
+      - src: https://static.nimblebrain.ai/logos/sanity/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.sanity.io
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [cms, content]
+
+  - name: com.apify/apify-mcp-server
+    title: "Apify"
+    description: "Scrape and extract data from websites with Apify Actors"
+    version: "0.22.0"
+    websiteUrl: https://docs.apify.com/platform/integrations/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/apify/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.apify.com/
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [scraping, research]
+
+  - name: ai.parallel/search-mcp
+    title: "Parallel Search"
+    description: "Web search built for AI agents, with sourced results"
+    version: "1.0.0"
+    websiteUrl: https://parallel.ai
+    icons:
+      - src: https://static.nimblebrain.ai/logos/parallel/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://search-mcp.parallel.ai/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [search, research]
+
+  - name: io.github.descriptinc/descript
+    title: "Descript"
+    description: "Edit video and audio in your Descript projects"
+    version: "1.0.0"
+    websiteUrl: https://www.descript.com/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/descript/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://api.descript.com/v2/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [video, media]
+
+  - name: com.heygen/hyperframes
+    title: "HeyGen HyperFrames"
+    description: "Edit video in chat: captions, motion graphics, and cuts"
+    version: "1.0.0"
+    websiteUrl: https://hyperframes.heygen.com/guides/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/heygen/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.heygen.com/mcp/hyperframes/
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [video, media]
+
+  - name: com.cloudinary/asset-management-mcp
+    title: "Cloudinary"
+    description: "Upload, search, organize, and transform images and video in Cloudinary"
+    version: "0.11.9"
+    websiteUrl: https://cloudinary.com/documentation/cloudinary_llm_mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/cloudinary/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://asset-management.mcp.cloudinary.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [media, storage]
+
   # The vendors' own servers for Atlassian and PostHog, replacing their Composio
   # toolkits: each signs in by plain DCR, so no broker and no API key.
   - name: com.atlassian/atlassian-mcp-server

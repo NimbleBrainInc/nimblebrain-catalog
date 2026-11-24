@@ -1,0 +1,10 @@
+# Conversation starters for the supermetrics plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What data can I query?
+  text: List the data sources connected to my Supermetrics account.
+- title: How are my campaigns doing?
+  text: Ask me which ad platform and date range, then use Supermetrics to report spend, clicks, and conversions
+    by campaign.
+- title: Compare channels
+  text: Ask me a date range, then use Supermetrics to compare performance across my connected marketing
+    channels.

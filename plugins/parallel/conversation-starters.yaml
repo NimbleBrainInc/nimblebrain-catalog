@@ -1,0 +1,4 @@
+# Conversation starters for the parallel plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Search the web
+  text: Ask me what to look up, then search with Parallel and answer with the sources.

@@ -1,0 +1,7 @@
+# Conversation starters for the heygen plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Caption a video
+  text: Ask me which video, then add captions to it with HeyGen and show me the result.
+- title: Edit a video
+  text: Help me edit a video with HeyGen. Ask me the video and what to change, then make the edit once
+    I approve the plan.
