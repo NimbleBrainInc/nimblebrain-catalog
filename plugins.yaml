@@ -17,6 +17,8 @@
   server: io.github.apolloio/apollo-mcp
 - name: asana
   server: io.asana/mcp
+- name: atlassian
+  server: com.atlassian/atlassian-mcp-server
 - name: basecamp
   server: com.basecamp/mcp
 - name: bassethound
@@ -55,8 +57,6 @@
   server: com.hubspot/mcp
 - name: intacct
   server: com.intacct/mcp
-- name: jira
-  server: com.atlassian/jira
 - name: linear
   server: app.linear/mcp
 - name: linkedin
@@ -80,7 +80,7 @@
 - name: paypal
   server: com.paypal/mcp
 - name: posthog
-  server: com.posthog/analytics
+  server: com.posthog/mcp
 - name: quickbooks
   server: com.intuit/quickbooks
 - name: sentry

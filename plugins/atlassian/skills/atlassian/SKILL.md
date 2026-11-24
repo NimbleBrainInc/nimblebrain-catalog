@@ -1,17 +1,27 @@
 ---
-name: jira
+name: atlassian
 description: >-
-  How to use the Jira connector's tools — searching issues with JQL, reading and
-  creating issues, editing fields, transitioning status, assigning, and commenting.
-  Use when the user works with Jira, issues, tickets, bugs, stories, epics,
-  sprints, boards, backlogs, or project tracking.
+  How to use the Atlassian connector's tools for Jira and Confluence — searching
+  issues with JQL, reading and creating issues, editing fields, transitioning
+  status, assigning, and commenting, and finding, reading, and writing Confluence
+  pages. Use when the user works with Jira, issues, tickets, bugs, stories, epics,
+  sprints, boards, backlogs, project tracking, Confluence, wiki pages, or spaces.
 metadata:
   nimblebrain:
-    server: jira
+    server: atlassian
 ---
 
-You are using the **Jira** connector (via Composio). Its tools act on the connected
-Jira site (projects, issues, boards). Apply this guidance whenever you touch Jira.
+You are using the **Atlassian** connector, Atlassian's own MCP server. Its tools act
+on the Atlassian sites the person signed in with: Jira (projects, issues, boards) and
+Confluence (spaces, pages). Apply this guidance whenever you touch either.
+
+## Resolve the site first
+
+- Most tools take the Atlassian **site** (cloud id) they act on. Call the tool that
+  lists the sites the person can access, pick the one they mean, and pass its id to
+  every later call. If they have several sites, ask which one rather than guessing.
+- Read each tool's schema from the live tool list before calling it; don't invent a
+  tool or a parameter from a name you remember.
 
 ## Find the target first
 
@@ -22,9 +32,6 @@ Jira site (projects, issues, boards). Apply this guidance whenever you touch Jir
   `status = "In Progress"`, `assignee = currentUser()`, `text ~ "login"`, with
   `ORDER BY created DESC`. Combine clauses (`project = PROJ AND status != Done
   ORDER BY updated DESC`) instead of fetching broadly and filtering yourself.
-- Prefer the **POST JQL search** tool for anything non-trivial — it carries the
-  query in the body and handles complex/long JQL more reliably than the simpler
-  search variant.
 - Reading an issue returns its summary, description, status, assignee, comments,
   and custom fields; pass a `fields` list to keep responses small on large issues.
 
@@ -58,6 +65,17 @@ Jira site (projects, issues, boards). Apply this guidance whenever you touch Jir
 - Boards and sprints are agile concepts layered on projects: list boards to find a
   board id, then list its sprints. Issues live in projects; sprint membership is a
   board-level view.
+
+## Confluence pages
+
+- Find pages by searching (CQL, Confluence's query language: `space = ENG AND title ~
+  "onboarding"`, `text ~ "pricing"`) or by listing a space's pages, then read a page by
+  its id. Don't guess page ids.
+- Page bodies can be long. Read the page, then summarize or quote the part that
+  answers the question rather than pasting it whole.
+- Creating or updating a page needs its space and, for an update, the current page
+  id. Edits are visible to everyone with access, so show the change and confirm
+  before writing.
 
 ## Care
 

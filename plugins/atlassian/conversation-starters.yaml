@@ -1,9 +1,11 @@
-# Conversation starters for the jira plugin: what a host offers a person who has it
+# Conversation starters for the atlassian plugin: what a host offers a person who has it
 # and does not know what to ask. A title is what they read; the text is sent.
 - title: What's on my plate?
   text: List my open Jira issues by priority, with their status and sprint.
 - title: Sprint status
   text: 'Summarize the current sprint in Jira: what''s done, in progress, and at risk.'
+- title: Find a Confluence page
+  text: Help me find a Confluence page. Ask me what it's about, then search and summarize the best match.
 - title: File a bug
   text: Help me file a Jira bug. Ask me what happened and in which project, then draft the issue for
     me to confirm.
