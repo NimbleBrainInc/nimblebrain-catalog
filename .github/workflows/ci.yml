@@ -17,6 +17,10 @@ jobs:
       # Builds against the live upstream registry, so a member that is missing or
       # malformed upstream fails here, before it reaches main.
       - run: uv run catalog build
+      # The built AI Catalog, checked against the spec.
+      - uses: NimbleBrainInc/ai-catalog-check@v0.1.0
+        with:
+          catalogs: dist/site/.well-known/ai-catalog.json
 
   # Every authored server checked with the runtime's own catalog validator, the one
   # the runtime runs when it loads these files. A tenant reads `servers/` straight
