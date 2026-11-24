@@ -21,6 +21,8 @@
   server: io.github.apolloio/apollo-mcp
 - name: asana
   server: io.asana/mcp
+- name: atlassian
+  server: com.atlassian/atlassian-mcp-server
 - name: basecamp
   server: com.basecamp/mcp
 - name: bassethound
@@ -87,8 +89,6 @@
   server: co.huggingface/hf-mcp-server
 - name: intacct
   server: com.intacct/mcp
-- name: jira
-  server: com.atlassian/jira
 - name: jotform
   server: com.jotform/mcp
 - name: kajabi
@@ -128,7 +128,7 @@
 - name: plain
   server: com.plain/mcp
 - name: posthog
-  server: com.posthog/analytics
+  server: com.posthog/mcp
 - name: postman
   server: com.postman/postman-mcp-server
 - name: productboard

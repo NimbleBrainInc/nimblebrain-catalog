@@ -12,18 +12,18 @@ metadata:
     server: posthog
 ---
 
-You are using the **PostHog** connector (via Composio). Its tools act on the
-connected PostHog account's analytics data. Apply this guidance whenever you
-touch PostHog. This is a **read-leaning** working set — most tools query and
-inspect; a few can mutate, called out under Care.
+You are using the **PostHog** connector, PostHog's own MCP server. Its tools act
+on the connected PostHog account's analytics data. Apply this guidance whenever
+you touch PostHog. Most tools query and inspect; some mutate, called out under
+Care.
 
 ## Trust the live tool list, not these names
 
-- This connector exposes many tools, all slugged `POSTHOG_*`. The exact slug
-  names vary and change — **look them up in your available tools** and read each
-  tool's schema before calling it. Don't invent a slug or a parameter from the
-  shape of a name you remember; match against the real list and confirm the
-  fields the schema asks for.
+- This connector exposes many tools, and their names change between releases.
+  **Look them up in your available tools** and read each tool's schema before
+  calling it. Don't invent a tool or a parameter from the shape of a name you
+  remember; match against the real list and confirm the fields the schema asks
+  for.
 
 ## Resolve the project first
 
@@ -66,7 +66,7 @@ inspect; a few can mutate, called out under Care.
 
 ## Care
 
-- This set is read-leaning, but some endpoints can **mutate** — deleting persons,
+- Some tools **mutate** — deleting persons,
   toggling or deleting feature flags, capturing events, editing annotations or
   insights. Default to the read path; only delete/modify when the user explicitly
   asks, and confirm scope first. **Deleting a person is irreversible**, and

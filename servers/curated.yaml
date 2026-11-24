@@ -995,3 +995,37 @@ servers:
       ai.nimblebrain/connector:
         auth: dcr
         tags: [media, storage]
+
+  # The vendors' own servers for Atlassian and PostHog, replacing their Composio
+  # toolkits: each signs in by plain DCR, so no broker and no API key.
+  - name: com.atlassian/atlassian-mcp-server
+    title: Atlassian
+    description: "Jira, Confluence, and Loom: search, create, and update issues and pages"
+    version: "2.0.0"
+    websiteUrl: https://support.atlassian.com/atlassian-rovo-mcp-server/docs/getting-started-with-the-atlassian-remote-mcp-server/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/atlassian/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.atlassian.com/v2/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [issues, project-management, docs]
+
+  - name: com.posthog/mcp
+    title: PostHog
+    description: Product analytics, feature flags, experiments, and error tracking
+    version: "1.0.0"
+    websiteUrl: https://posthog.com/docs/model-context-protocol
+    icons:
+      - src: https://static.nimblebrain.ai/logos/posthog/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.posthog.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        tags: [analytics, product]
