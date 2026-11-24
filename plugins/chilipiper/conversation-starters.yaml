@@ -1,0 +1,8 @@
+# Conversation starters for the chilipiper plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's booked?
+  text: List the meetings booked through Chili Piper this week, with who they're with and who owns them.
+- title: Review routing rules
+  text: 'Summarize my Chili Piper routing rules: which leads go to whom, and under what conditions.'
+- title: Change a team
+  text: Help me update a Chili Piper team. Ask me which team and what to change, then make it once I approve.

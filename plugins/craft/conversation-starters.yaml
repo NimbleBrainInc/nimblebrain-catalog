@@ -1,0 +1,9 @@
+# Conversation starters for the craft plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find a document
+  text: Help me find a Craft document. Ask me what it's about, then search and show the best matches.
+- title: Summarize a document
+  text: Ask me which Craft document, then summarize it with any decisions and open questions.
+- title: Draft a document
+  text: Help me draft a new Craft document. Ask me the topic and where it belongs, then create it once
+    I approve the outline.

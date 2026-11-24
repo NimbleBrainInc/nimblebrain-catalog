@@ -1,0 +1,8 @@
+# Conversation starters for the avalara plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Calculate tax
+  text: Ask me the items, amounts, and ship-to address, then use Avalara to calculate the tax.
+- title: Where do we have nexus?
+  text: List the jurisdictions where my Avalara company has nexus.
+- title: Look up a transaction
+  text: Ask me which transaction, then show its tax details from Avalara.
