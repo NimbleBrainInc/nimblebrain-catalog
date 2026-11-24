@@ -10,7 +10,7 @@ servers:
     description: Read & write workspace pages — shared workspace identity
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/notion.png
+      - src: https://static.nimblebrain.ai/logos/notion/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -25,7 +25,7 @@ servers:
     description: Issues, projects, and product roadmaps
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/linear.png
+      - src: https://static.nimblebrain.ai/logos/linear/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -46,7 +46,7 @@ servers:
     description: DNS, Workers, R2 storage, and account bindings
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/cloudflare.png
+      - src: https://static.nimblebrain.ai/logos/cloudflare/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -68,7 +68,7 @@ servers:
     description: Files, folders, and shared links
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/dropbox.png
+      - src: https://static.nimblebrain.ai/logos/dropbox/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -106,7 +106,7 @@ servers:
     description: Banking accounts, transactions, and balances (read-only)
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/mercury.png
+      - src: https://static.nimblebrain.ai/logos/mercury/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -121,7 +121,7 @@ servers:
     description: Serverless Postgres branches and queries
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/neon.png
+      - src: https://static.nimblebrain.ai/logos/neon/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -136,7 +136,7 @@ servers:
     description: Payments, invoices, and merchant accounts
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/paypal.png
+      - src: https://static.nimblebrain.ai/logos/paypal/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -151,7 +151,7 @@ servers:
     description: Errors, performance, and release tracking
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/sentry.png
+      - src: https://static.nimblebrain.ai/logos/sentry/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -166,7 +166,7 @@ servers:
     description: Payments, customers, and subscriptions
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/stripe.png
+      - src: https://static.nimblebrain.ai/logos/stripe/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -192,7 +192,7 @@ servers:
     description: Visual website builder and CMS
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/webflow.png
+      - src: https://static.nimblebrain.ai/logos/webflow/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -207,7 +207,7 @@ servers:
     description: Website builder and online store platform
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/wix.png
+      - src: https://static.nimblebrain.ai/logos/wix/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -238,7 +238,7 @@ servers:
     description: Web search, page fetching, and multi-step research agents
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/exa.png
+      - src: https://static.nimblebrain.ai/logos/exa/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
@@ -320,7 +320,7 @@ servers:
     description: Read-only accounting data — GL, AP, AR, and reports
     version: "1.0.0"
     icons:
-      - src: https://static.nimblebrain.ai/icons/mcp.png
+      - src: https://static.nimblebrain.ai/logos/mcp/light.svg
         sizes: ["any"]
     remotes:
       - type: streamable-http
