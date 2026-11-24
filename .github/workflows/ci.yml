@@ -18,7 +18,7 @@ jobs:
       # malformed upstream fails here, before it reaches main.
       - run: uv run catalog build
       # The built AI Catalog, checked against the spec.
-      - uses: NimbleBrainInc/ai-catalog-conformance@v0.1.0
+      - uses: NimbleBrainInc/ai-catalog-check@v0.1.0
         with:
           catalogs: dist/site/.well-known/ai-catalog.json
 
