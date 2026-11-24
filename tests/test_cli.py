@@ -89,7 +89,7 @@ def test_publish_uploads_with_content_types_and_invalidates_everything(
     assert puts["v0.1/servers"]["ContentType"] == "application/json"
     assert puts["index.html"]["ContentType"] == "text/html; charset=utf-8"
     assert puts["errors/404.json"]["ContentType"] == "application/problem+json"
-    assert puts["plugins/widget.zip"]["ContentType"] == "application/zip"
+    assert puts["plugins/widget.zip"]["ContentType"] == "application/agent-plugins+zip"
     assert puts["marketplace.json"]["ContentType"] == "application/json"
     assert puts[".well-known/ai-catalog.json"]["ContentType"] == "application/ai-catalog+json"
     assert puts["nimblebrain/connectors.yaml"]["ContentType"] == "application/yaml"
