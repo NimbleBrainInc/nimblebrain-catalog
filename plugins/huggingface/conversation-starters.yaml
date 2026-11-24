@@ -1,0 +1,8 @@
+# Conversation starters for the huggingface plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Find a model
+  text: Ask me the task I need a model for, then search Hugging Face and compare the top matches.
+- title: Find a dataset
+  text: Ask me what data I need, then search Hugging Face datasets and show the best matches.
+- title: Find a paper
+  text: Ask me a topic, then search papers on Hugging Face and summarize the most relevant ones.

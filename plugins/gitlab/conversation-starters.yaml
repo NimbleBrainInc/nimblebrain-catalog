@@ -1,0 +1,9 @@
+# Conversation starters for the gitlab plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What needs my review?
+  text: List the GitLab merge requests waiting on my review.
+- title: Why did a pipeline fail?
+  text: Ask me which GitLab project, then find its latest failed pipeline and explain what broke.
+- title: Open an issue
+  text: Help me open a GitLab issue. Ask me the project and the problem, then create it once I approve
+    the text.

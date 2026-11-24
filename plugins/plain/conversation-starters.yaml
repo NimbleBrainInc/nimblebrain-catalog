@@ -1,0 +1,8 @@
+# Conversation starters for the plain plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What needs a reply?
+  text: List my open Plain threads waiting on us, oldest first.
+- title: Look up a customer
+  text: Ask me which customer, then show their recent Plain threads and status.
+- title: Draft a reply
+  text: Ask me which Plain thread, then draft a reply for me to review before anything is sent.

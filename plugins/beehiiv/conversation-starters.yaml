@@ -1,0 +1,9 @@
+# Conversation starters for the beehiiv plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: How did my last post do?
+  text: Show the open rate, click rate, and top links for my most recent beehiiv post.
+- title: How is my list growing?
+  text: Summarize my beehiiv subscriber growth over the last 30 days.
+- title: Draft a post
+  text: Help me draft a beehiiv post. Ask me the topic and audience, then create it as a draft for me
+    to review.

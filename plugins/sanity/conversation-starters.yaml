@@ -1,0 +1,9 @@
+# Conversation starters for the sanity plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's in my project?
+  text: List my Sanity projects and the document types in each.
+- title: Find content
+  text: Ask me which Sanity project and what I'm looking for, then query it and show the matches.
+- title: Edit a document
+  text: Help me edit a Sanity document. Ask me which one and what changes, show me the edit, and make
+    it once I approve.

@@ -1,0 +1,6 @@
+# Conversation starters for the guru plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Ask the knowledge base
+  text: Ask me my question, then search Guru and answer from the cards you find, citing each one.
+- title: Find a card
+  text: Help me find a Guru card. Ask me what it's about, then search and show the matches.

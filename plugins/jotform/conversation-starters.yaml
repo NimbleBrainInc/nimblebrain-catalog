@@ -1,0 +1,9 @@
+# Conversation starters for the jotform plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What are my forms?
+  text: List my Jotform forms with how many submissions each has.
+- title: Summarize responses
+  text: Ask me which Jotform form, then summarize its recent submissions.
+- title: Build a form
+  text: Help me build a Jotform form. Ask me what it should collect, then create it once I approve the
+    fields.

@@ -1,0 +1,9 @@
+# Conversation starters for the kajabi plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: How are my offers selling?
+  text: Summarize sales of my Kajabi offers over the last 30 days.
+- title: Find a contact
+  text: Ask me who, then find them in Kajabi and show what they've bought.
+- title: Draft an email
+  text: Help me draft a Kajabi email. Ask me the audience and message, then create it as a draft for me
+    to review.

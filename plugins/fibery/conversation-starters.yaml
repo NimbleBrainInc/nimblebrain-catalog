@@ -1,0 +1,9 @@
+# Conversation starters for the fibery plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What's in my workspace?
+  text: List the spaces and databases in my Fibery workspace, with what each one tracks.
+- title: Find entities
+  text: Ask me what I'm looking for in Fibery, then search and show the matching entities.
+- title: Update an entity
+  text: Help me update a Fibery entity. Ask me which one and what changes, show me the edit, and make
+    it once I approve.
