@@ -240,7 +240,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     assert "category" not in everything["plugins"][1] and "tags" not in everything["plugins"][1]
 
     catalog = json.loads(out[AI_CATALOG_KEY])
-    assert catalog["specVersion"] == "1.0"
+    assert catalog["specVersion"] == "0.9"
     entry = catalog["entries"][0]
     assert entry["identifier"] == "urn:air:nimblebrain.ai:vendor:plugin"
     assert entry["type"] == "application/agent-plugins+zip"

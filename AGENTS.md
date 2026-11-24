@@ -151,14 +151,25 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 - **A failed build publishes nothing**, so the catalog keeps serving the last good copy
   when upstream is down or a member is missing. `publish` deletes keys under `v0.1/`
   and `plugins/` the build no longer produces, except a zip under its digest.
-- **Every site file's content type comes from its key**: the page and the 404 body by
-  name, `.json` as `application/json`, `.yaml` as `application/yaml`, `.zip` as
-  `application/zip`.
+- **Every site file's content type comes from its key**: the page, the 404 body, and
+  the AI Catalog (`application/ai-catalog+json`) by name, `.json` as
+  `application/json`, `.yaml` as `application/yaml`, `.zip` as `application/zip`.
 - **registry.nimblebrain.ai, the catalog's first host, redirects.** Every request
   gets a 301 to the same path on catalog.nimblebrain.ai, so old links and clients keep
   working. The bucket keeps that first host's name, since a bucket cannot be renamed.
 - The bucket, distribution, certificate, DNS, and the deploy role are managed outside
   this repo. The deploy role trusts only this repo's `main`.
+
+## The AI Catalog
+
+`.well-known/ai-catalog.json` follows the AI Catalog spec version in
+`AI_CATALOG_SPEC_VERSION` (`plugins.py`). CI and the deploy check the built file with
+[ai-catalog-check](https://github.com/NimbleBrainInc/ai-catalog-check)
+and fail on any MUST it breaks; a finding names the spec requirement by ID. The zips
+are served as `application/zip`, not the `application/agent-plugins+zip` their
+entries declare, which the suite reports as a warning (ENTRY-8): the install indexes
+name the same URLs, and changing what hosts download is its own change. To move to a newer spec, bump the action's tag and
+`AI_CATALOG_SPEC_VERSION` together.
 
 ## Commands
 
