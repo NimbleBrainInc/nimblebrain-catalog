@@ -1,0 +1,43 @@
+# The connector categories the catalog uses. Every authored server in servers/ names
+# exactly one, as display text, under `_meta["ai.nimblebrain/connector"].category`.
+#
+# The value is the text a reader shows, so no reader needs this file: a host shows a
+# connector's category when it has one and shows nothing when it does not. The same
+# shape as a Claude Code marketplace entry's free-form `category`, which the build also
+# writes. This file only keeps the catalog's own entries to one consistent set: the
+# build fails on a category not listed here.
+#
+# A category names the job a connector does, in a buyer's words, so a person can narrow
+# the catalog to what fits the work in front of them. Each connector has one, so a
+# category filter shows every connector once.
+#
+# Keep a category at three connectors or more, unless it is a named growth category
+# (Automation). When three connectors in one category share a narrower job, split it
+# out under one of the reserved names.
+
+categories:
+  - Communication & meetings
+  - Docs & files
+  - Projects & tasks
+  - Sales & support
+  - Marketing & websites
+  - Finance & payments
+  - Data & analytics
+  - Design & media
+  - Search & research
+  - Automation
+  - Developer tools
+
+# Names held for the next splits: Support (from Sales & support), HR & recruiting,
+# Commerce. Not offered until they have three connectors.
+reserved:
+  - Support
+  - HR & recruiting
+  - Commerce
+
+# `tags` are search keywords only: words a person might type that the title and
+# description do not already say ("crm", "wiki", "invoices"). These never belong there.
+forbiddenTags:
+  composio: how a connector signs in, which the build derives from its auth
+  google: a vendor, not a job
+  productivity: true of most connectors, so it narrows nothing

@@ -19,7 +19,10 @@ toolkits).
   under the name NimbleBrain installs it by. Otherwise it is authored in
   `servers/curated.yaml` (DCR or static OAuth) or `servers/composio.yaml` (brokered), as
   a `ServerDetail` with NimbleBrain's fields under `_meta["ai.nimblebrain/connector"]`.
-  It must be remote: the runtime connects to servers and never runs one.
+  It must be remote: the runtime connects to servers and never runs one. Those fields
+  include one `category`, the display text of a category listed in `categories.yaml`
+  (`"Finance & payments"`), and optional `tags`: search keywords the title and
+  description do not already contain. The build fails without a listed category.
 
 Every server in the catalog is also a plugin: add it to `plugins.yaml` with a short
 name, and write its skill, if it has one, in `plugins/<name>/skills/<name>/SKILL.md` with

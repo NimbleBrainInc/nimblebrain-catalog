@@ -345,6 +345,12 @@ def distribution(
         }
         if server.get("description"):
             entry["description"] = server["description"]
+        # Claude Code's marketplace entry fields: a free-form `category` to organize the
+        # catalog by, and `tags` for search. A reader shows them when present.
+        if connector(server).get("category"):
+            entry["category"] = connector(server)["category"]
+        if connector(server).get("tags"):
+            entry["tags"] = list(connector(server)["tags"])
         entries.append(entry)
         if portable(server):
             portable_entries.append(entry)

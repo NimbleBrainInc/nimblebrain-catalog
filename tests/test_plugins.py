@@ -34,7 +34,9 @@ DIRECT: dict[str, Any] = {
     "version": "1.0.0",
     "websiteUrl": "https://vendor.com",
     "remotes": [{"type": "streamable-http", "url": "https://mcp.vendor.com/mcp"}],
-    "_meta": {"ai.nimblebrain/connector": {"auth": "dcr", "tags": ["docs"]}},
+    "_meta": {
+        "ai.nimblebrain/connector": {"auth": "dcr", "category": "Docs & files", "tags": ["docs"]}
+    },
 }
 BROKERED: dict[str, Any] = {
     "name": "com.vendor/brokered",
@@ -231,7 +233,11 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
             "sha256": digest,
         },
         "description": "A vendor's server.",
+        "category": "Docs & files",
+        "tags": ["docs"],
     }
+    # A server with no category or tags gets neither field.
+    assert "category" not in everything["plugins"][1] and "tags" not in everything["plugins"][1]
 
     catalog = json.loads(out[AI_CATALOG_KEY])
     assert catalog["specVersion"] == "0.9"
