@@ -1122,7 +1122,7 @@ servers:
 
   - name: com.chilipiper/mcp
     title: "Chili Piper"
-    description: "Scheduling links, meetings, routing rules, and teams (admin accounts)"
+    description: "Scheduling links, meetings, routing rules, and teams (admin accounts, experimental)"
     version: "1.0.0"
     icons:
       - src: https://static.nimblebrain.ai/logos/chilipiper/light.svg
