@@ -32,7 +32,7 @@ jobs:
       - run: uv run catalog build
       # An hourly rebuild changes the catalog without a pull request, so it is
       # checked here too: a catalog that breaks the spec publishes nothing.
-      - uses: NimbleBrainInc/ai-catalog-check@v0.1.0
+      - uses: NimbleBrainInc/ai-catalog-check@v0.1.2
         with:
           catalogs: dist/site/.well-known/ai-catalog.json
       - uses: aws-actions/configure-aws-credentials@v6

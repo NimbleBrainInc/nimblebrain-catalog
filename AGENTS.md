@@ -153,7 +153,9 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
   and `plugins/` the build no longer produces, except a zip under its digest.
 - **Every site file's content type comes from its key**: the page, the 404 body, and
   the AI Catalog (`application/ai-catalog+json`) by name, `.json` as
-  `application/json`, `.yaml` as `application/yaml`, `.zip` as `application/zip`.
+  `application/json`, `.yaml` as `application/yaml`, `.zip` (a plugin bundle) as
+  `application/agent-plugins+zip`, the type its AI Catalog entry declares. Hosts
+  install a zip by URL and sha256, so the media type changes nothing they do.
 - **registry.nimblebrain.ai, the catalog's first host, redirects.** Every request
   gets a 301 to the same path on catalog.nimblebrain.ai, so old links and clients keep
   working. The bucket keeps that first host's name, since a bucket cannot be renamed.
@@ -165,11 +167,10 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 `.well-known/ai-catalog.json` follows the AI Catalog spec version in
 `AI_CATALOG_SPEC_VERSION` (`plugins.py`). CI and the deploy check the built file with
 [ai-catalog-check](https://github.com/NimbleBrainInc/ai-catalog-check)
-and fail on any MUST it breaks; a finding names the spec requirement by ID. The zips
-are served as `application/zip`, not the `application/agent-plugins+zip` their
-entries declare, which the suite reports as a warning (ENTRY-8): the install indexes
-name the same URLs, and changing what hosts download is its own change. To move to a newer spec, bump the action's tag and
-`AI_CATALOG_SPEC_VERSION` together.
+and fail on any MUST it breaks; a finding names the spec requirement by ID. To check
+the live catalog, including the media type each URL is served as, run
+`npx ai-catalog-check --fetch https://catalog.nimblebrain.ai`. To move to a newer spec,
+bump the action's tag and `AI_CATALOG_SPEC_VERSION` together.
 
 ## Commands
 

@@ -52,7 +52,9 @@ CONTENT_ADDRESSED = re.compile(r"^plugins/[^/]+/[0-9a-f]{64}\.zip$")
 SUFFIX_CONTENT_TYPES = {
     ".json": "application/json",
     ".yaml": "application/yaml",
-    ".zip": "application/zip",
+    # Every zip the catalog serves is a plugin bundle, served as the media type its
+    # AI Catalog entry declares. Hosts install it by URL and sha256, not media type.
+    ".zip": "application/agent-plugins+zip",
 }
 
 
