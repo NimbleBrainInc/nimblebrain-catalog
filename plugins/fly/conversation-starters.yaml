@@ -1,0 +1,6 @@
+# Conversation starters for the fly plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: What am I running?
+  text: List my Fly.io apps with their status and regions.
+- title: Why is my app failing?
+  text: Ask me which Fly.io app, then check its Machines and recent logs and explain the problem.

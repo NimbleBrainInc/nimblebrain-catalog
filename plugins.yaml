@@ -23,6 +23,8 @@
   server: io.asana/mcp
 - name: atlassian
   server: com.atlassian/atlassian-mcp-server
+- name: avalara
+  server: com.avalara/avatax
 - name: basecamp
   server: com.basecamp/mcp
 - name: bassethound
@@ -33,12 +35,16 @@
   server: com.bitly/mcp
 - name: box
   server: com.box/files
+- name: chilipiper
+  server: com.chilipiper/mcp
 - name: close
   server: com.close/mcp
 - name: cloudflare
   server: com.cloudflare/mcp
 - name: cloudinary
   server: com.cloudinary/asset-management-mcp
+- name: craft
+  server: do.craft.mcp/server
 - name: descript
   server: io.github.descriptinc/descript
 - name: digitalocean
@@ -55,6 +61,8 @@
   server: io.github.Fibery-inc/mcp
 - name: fireflies
   server: ai.fireflies/mcp
+- name: fly
+  server: io.fly/fly-mcp
 - name: github
   server: com.github/repos
 - name: gitlab
@@ -143,10 +151,14 @@
   server: io.sanity.www/mcp
 - name: sentry
   server: com.sentry/mcp
+- name: seranking
+  server: com.seranking/mcp
 - name: slack
   server: com.slack/messaging
 - name: stripe
   server: com.stripe/mcp
+- name: supabase
+  server: com.supabase/mcp
 - name: supermetrics
   server: com.supermetrics/supermetrics
 - name: todoist

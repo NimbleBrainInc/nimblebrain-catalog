@@ -1082,3 +1082,106 @@ servers:
         auth: dcr
         category: "Data & analytics"
         tags: [metrics, events, funnels]
+
+  # Vendor-hosted servers whose DCR metadata sits at a path-aware RFC 8414 location, behind
+  # OpenID Connect discovery, or on a separate auth host: sign-in finds it the way the
+  # MCP SDK does, as the runtime's check-catalog-dcr.ts now does too.
+
+  - name: do.craft.mcp/server
+    title: "Craft"
+    description: "Read, search, and edit your Craft documents"
+    version: "1.0.2"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/craft/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.craft.do/my/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        category: "Docs & files"
+        tags: [notes, wiki]
+
+  - name: com.seranking/mcp
+    title: "SE Ranking"
+    description: "SEO data: keywords, backlinks, rankings, site audits, and AI search visibility"
+    version: "2.13.0"
+    websiteUrl: https://seranking.com/api/integrations/mcp/
+    icons:
+      - src: https://static.nimblebrain.ai/logos/seranking/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://api.seranking.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        category: "Marketing & websites"
+        tags: [serp]
+
+  - name: com.chilipiper/mcp
+    title: "Chili Piper"
+    description: "Scheduling links, meetings, routing rules, and teams (admin accounts, experimental)"
+    version: "1.0.0"
+    icons:
+      - src: https://static.nimblebrain.ai/logos/chilipiper/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://fire.chilipiper.com/api/fire-edge/v1/org/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        category: "Sales & support"
+        tags: [booking, calendar]
+
+  - name: com.avalara/avatax
+    title: "Avalara AvaTax"
+    description: "Sales tax calculation, transactions, nexus, and compliance"
+    version: "1.0.1"
+    websiteUrl: https://developer.avalara.com/mcp-servers/avatax
+    icons:
+      - src: https://static.nimblebrain.ai/logos/avalara/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.avalara.com/avatax
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        category: "Finance & payments"
+
+  - name: com.supabase/mcp
+    title: "Supabase"
+    description: "Projects, databases, tables, and edge functions on Supabase"
+    version: "0.19.0"
+    websiteUrl: https://supabase.com/mcp
+    icons:
+      - src: https://static.nimblebrain.ai/logos/supabase/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.supabase.com/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        category: "Developer tools"
+        tags: [postgres, sql]
+
+  - name: io.fly/fly-mcp
+    title: "Fly.io"
+    description: "Apps, Machines, volumes, secrets, and Managed Postgres on Fly.io"
+    version: "0.1.0"
+    websiteUrl: https://mcp.fly.io
+    icons:
+      - src: https://static.nimblebrain.ai/logos/fly/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.fly.io
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        category: "Developer tools"
+        tags: [hosting, deploy, cloud]

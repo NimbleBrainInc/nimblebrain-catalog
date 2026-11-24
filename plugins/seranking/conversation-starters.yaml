@@ -1,0 +1,8 @@
+# Conversation starters for the seranking plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Audit a domain
+  text: Ask me which domain, then use SE Ranking to show its traffic, top keywords, and backlinks.
+- title: Find keyword ideas
+  text: Ask me a topic and country, then use SE Ranking to suggest keywords with their volume and difficulty.
+- title: Check my rankings
+  text: Show the tracked keyword rankings in my SE Ranking projects and what moved this week.
