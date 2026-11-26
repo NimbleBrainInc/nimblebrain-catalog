@@ -1,0 +1,11 @@
+# Conversation starters for the skillthis plugin: what a host offers a person who has it
+# and does not know what to ask. A title is what they read; the text is sent.
+- title: Turn my expertise into a skill
+  text: Ask me what I do and how I do it, draft an agent skill from my answers, then lint and grade it
+    with SkillThis and show me what to improve.
+- title: Grade a skill I wrote
+  text: Ask me for my SKILL.md, then lint and grade it with SkillThis and tell me the three changes that
+    would raise the grade most.
+- title: Publish a finished skill
+  text: Ask me which skill to publish, check that it lints clean and grades B- or better, and show me the
+    preview. Publish it on skillthis.ai only after I confirm.

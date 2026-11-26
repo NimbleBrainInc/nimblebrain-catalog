@@ -242,6 +242,23 @@ servers:
         category: "Sales & support"
         tags: [prospecting, company]
 
+  - name: ai.skillthis/skillthis
+    title: SkillThis
+    description: "Lint, grade, and publish agent skills against Anthropic's skill best practices."
+    version: "0.1.0"
+    websiteUrl: https://skillthis.ai
+    icons:
+      - src: https://static.nimblebrain.ai/logos/skillthis/light.svg
+        sizes: ["any"]
+    remotes:
+      - type: streamable-http
+        url: https://mcp.skillthis.ai/mcp
+    _meta:
+      ai.nimblebrain/connector:
+        auth: dcr
+        category: "Developer tools"
+        tags: [prompts, instructions]
+
   - name: ai.exa/mcp
     title: Exa
     description: Web search, page fetching, and multi-step research agents
