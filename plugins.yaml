@@ -153,6 +153,8 @@
   server: com.sentry/mcp
 - name: seranking
   server: com.seranking/mcp
+- name: skillthis
+  server: ai.skillthis/skillthis
 - name: slack
   server: com.slack/messaging
 - name: stripe
