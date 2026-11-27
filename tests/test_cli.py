@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -177,6 +178,11 @@ def test_build_lists_mirrored_and_every_authored_file(
     ]
     site = tmp_path / "dist" / "site"
     assert (site / "plugins" / "mirrored.zip").is_file()
+    # The zip carries its server exactly as the catalog serves it at /v0.1/servers.
+    with zipfile.ZipFile(site / "plugins" / "mirrored.zip") as archive:
+        carried = archive.read("ai.nimblebrain/servers/mirrored.json")
+    served = next(e["server"] for e in listing["servers"] if e["server"]["name"] == MIRRORED)
+    assert carried == (json.dumps(served, indent=2, ensure_ascii=False) + "\n").encode()
     marketplace = json.loads((site / "marketplace.json").read_text())
     assert [p["name"] for p in marketplace["plugins"]] == ["mirrored"]
     assert (site / ".well-known" / "ai-catalog.json").is_file()

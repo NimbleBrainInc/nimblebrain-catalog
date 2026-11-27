@@ -15,6 +15,7 @@ sets what the catalog is for.
 product repo server.json ──(product CI: mcp-publisher)──► official registry
 official registry + servers/*.yaml ──(catalog build)──► /v0.1/servers, the catalog page
 servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>[/<sha256>].zip, marketplace.json, nimblebrain/marketplace[/<sha256>].json, nimblebrain/connectors.yaml, .well-known/ai-catalog.json
+nimblebrain/marketplace/<sha256>.json ──(runtime pin)──► each plugin's zip by sha256 ──► its servers (ai.nimblebrain/servers/), skills, starters
 dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog.nimblebrain.ai
 ```
 
@@ -62,8 +63,18 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
   reads them. Keys in that extension are camelCase, as in MCP and Agent Plugins. Everything else restates the
   server, so the build generates it into the plugin's zip and the repo never stores it:
   `plugin.json` (with `extensions["ai.nimblebrain"].servers` naming the catalog
-  server), `mcp.json`, and Claude Code's `.mcp.json`. A Composio plugin has no MCP
-  config, since its remote is a placeholder only NimbleBrain can replace.
+  server), `mcp.json`, Claude Code's `.mcp.json`, and the server's catalog entry. A
+  Composio plugin has no MCP config, since its remote is a placeholder only NimbleBrain
+  can replace.
+- **A zip carries each server it names as `ai.nimblebrain/servers/<key>.json`**, where
+  `<key>` is the server's key in `extensions["ai.nimblebrain"].servers` (the plugin's
+  name). The file is the server's `ServerDetail` exactly as `/v0.1/servers` serves it,
+  mirrored or authored, with its `ai.nimblebrain/connector` and `ai.nimblebrain/host`
+  `_meta`. Every plugin carries it, Composio and `auth: static` ones included. A
+  reverse-domain folder is how Agent Plugins lets a host add its own files, so other
+  hosts ignore it. It makes the pinned NimbleBrain index a complete catalog root: one
+  digest pins every connector's entry, skills and starters, so a mirrored server's
+  upstream release changes its zip's digest and the index's.
 - **A plugin's name is short and unique in this catalog** (`notion`, installed as
   `notion@nimblebrain`). Claude Code requires the marketplace entry's name to equal the
   manifest's and prefixes each skill with it. Its global identifier is the AI Catalog's
@@ -91,7 +102,7 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
 - **A runtime pins the catalog by the digest of its NimbleBrain index.** Each build also
   writes `nimblebrain/marketplace.json`'s bytes to `nimblebrain/marketplace/<sha256>.json`.
   The runtime reads the index at the digest it is pinned to, and through it each
-  plugin's zip and the skill bound to its server. To move a runtime forward, take
+  plugin's zip: the server entries it carries, and the skill bound to its server. To move a runtime forward, take
   `sha256sum` of the live `nimblebrain/marketplace.json` and set the runtime's pin to it.
   `publish` never deletes a pinned index or a zip under its digest, since a runtime
   that has not moved its pin still reads them.
