@@ -28,6 +28,9 @@ it is generated here, never stored:
 - `nimblebrain/connectors.yaml`, the portable servers as a runtime catalog file
   (`{servers: [ServerDetail, ...]}`), which the runtime image ships as the catalog a
   fresh install starts with: every entry installs with nothing to configure.
+- `nimblebrain/connectors/<sha256>.yaml`, the same bytes as
+  `nimblebrain/connectors.yaml` under their own digest. A runtime pins the list by
+  that digest and reads it from there, so a later build does not change it.
 
 A plugin is portable when every server it names is reached by URL and signs in
 by dynamic client registration, or is mirrored from upstream with no NimbleBrain
@@ -67,6 +70,8 @@ NIMBLEBRAIN_MARKETPLACE_KEY = "nimblebrain/marketplace.json"
 # Where each NimbleBrain index is kept under its own sha256, for a runtime that pins it.
 PINNED_INDEX_PREFIX = "nimblebrain/marketplace/"
 ZERO_SETUP_CONNECTORS_KEY = "nimblebrain/connectors.yaml"
+# Where each zero-setup list is kept under its own sha256, for a runtime that pins it.
+PINNED_CONNECTORS_PREFIX = "nimblebrain/connectors/"
 ZERO_SETUP_HEADER = (
     "# The connectors a fresh NimbleBrain install starts with: the catalog's portable\n"
     "# servers, each of which installs with nothing to configure. Built by\n"
@@ -382,7 +387,7 @@ def distribution(
         portable_entries,
     )
     zero_setup = [servers[p.server] for p in plugins if portable(servers[p.server])]
-    out[ZERO_SETUP_CONNECTORS_KEY] = (
+    connectors = (
         ZERO_SETUP_HEADER
         + yaml.safe_dump(
             {"servers": [dict(s) for s in zero_setup]},
@@ -391,6 +396,8 @@ def distribution(
             width=100,
         )
     ).encode()
+    out[ZERO_SETUP_CONNECTORS_KEY] = connectors
+    out[f"{PINNED_CONNECTORS_PREFIX}{_sha256(connectors)}.yaml"] = connectors
     index = _marketplace(
         "Every connector NimbleBrain offers, each with the skill for using it,"
         " for the NimbleBrain runtime.",

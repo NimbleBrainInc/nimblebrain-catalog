@@ -45,8 +45,9 @@ CACHE_CONTROL = "public, max-age=300"
 # no longer produces. The site's fixed keys never go stale.
 MANAGED_PREFIXES = (f"{API_PREFIX}/", "plugins/")
 # A plugin zip under its digest is named by indexes a host may have pinned, so
-# `publish` keeps it after the build stops producing it. Pinned indexes live outside
-# the managed prefixes and are kept the same way.
+# `publish` keeps it after the build stops producing it. Pinned indexes and pinned
+# connector lists live under `nimblebrain/`, outside the managed prefixes, so `publish`
+# never deletes them.
 CONTENT_ADDRESSED = re.compile(r"^plugins/[^/]+/[0-9a-f]{64}\.zip$")
 
 SUFFIX_CONTENT_TYPES = {

@@ -15,6 +15,7 @@ from nimblebrain_catalog.plugins import (
     AI_CATALOG_KEY,
     MARKETPLACE_KEY,
     NIMBLEBRAIN_MARKETPLACE_KEY,
+    PINNED_CONNECTORS_PREFIX,
     PINNED_INDEX_PREFIX,
     ZERO_SETUP_CONNECTORS_KEY,
     Plugin,
@@ -204,6 +205,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     digest = hashlib.sha256(out["plugins/vendor.zip"]).hexdigest()
     brokered = hashlib.sha256(out["plugins/brokered.zip"]).hexdigest()
     index = hashlib.sha256(out[NIMBLEBRAIN_MARKETPLACE_KEY]).hexdigest()
+    connectors = hashlib.sha256(out[ZERO_SETUP_CONNECTORS_KEY]).hexdigest()
     assert set(out) == {
         "plugins/vendor.zip",
         f"plugins/vendor/{digest}.zip",
@@ -213,6 +215,7 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
         NIMBLEBRAIN_MARKETPLACE_KEY,
         f"{PINNED_INDEX_PREFIX}{index}.json",
         ZERO_SETUP_CONNECTORS_KEY,
+        f"{PINNED_CONNECTORS_PREFIX}{connectors}.yaml",
         AI_CATALOG_KEY,
     }
     assert out[f"plugins/vendor/{digest}.zip"] == out["plugins/vendor.zip"]
@@ -290,3 +293,11 @@ def test_zero_setup_file_lists_only_portable_servers(tmp_path: Path) -> None:
     body = out[ZERO_SETUP_CONNECTORS_KEY].decode()
     assert body.startswith("# The connectors a fresh NimbleBrain install starts with")
     assert yaml.safe_load(body) == {"servers": [DIRECT]}
+
+
+def test_zero_setup_file_is_also_served_under_its_own_digest(tmp_path: Path) -> None:
+    out = distribution(PLUGINS, SERVERS, tmp_path)
+    (key,) = [k for k in out if k.startswith(PINNED_CONNECTORS_PREFIX)]
+    body = out[key]
+    assert key == f"{PINNED_CONNECTORS_PREFIX}{hashlib.sha256(body).hexdigest()}.yaml"
+    assert body == out[ZERO_SETUP_CONNECTORS_KEY]

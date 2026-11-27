@@ -14,7 +14,7 @@ sets what the catalog is for.
 ```
 product repo server.json ──(product CI: mcp-publisher)──► official registry
 official registry + servers/*.yaml ──(catalog build)──► /v0.1/servers, the catalog page
-servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>[/<sha256>].zip, marketplace.json, nimblebrain/marketplace[/<sha256>].json, nimblebrain/connectors.yaml, .well-known/ai-catalog.json
+servers + plugins.yaml + plugins/*/skills ──(catalog build)──► plugins/<name>[/<sha256>].zip, marketplace.json, nimblebrain/marketplace[/<sha256>].json, nimblebrain/connectors[/<sha256>].yaml, .well-known/ai-catalog.json
 dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog.nimblebrain.ai
 ```
 
@@ -80,7 +80,9 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
 - **A fresh install starts with the portable servers.** The build writes them as a
   runtime catalog file, `nimblebrain/connectors.yaml` (`{servers: [...]}`), which the
   runtime image takes at build as its in-image catalog. Every entry installs with
-  nothing to configure, by the same `portable()` rule as `marketplace.json`.
+  nothing to configure, by the same `portable()` rule as `marketplace.json`. Each build
+  also writes its bytes to `nimblebrain/connectors/<sha256>.yaml`; a runtime that pins
+  the list's digest reads that key first, so its pin survives later builds.
 - **The zip is the install source, and its URL is pinned content.** This repo is
   private, so no host can clone it. Each zip is served at `plugins/<name>/<sha256>.zip`,
   a key that never changes, and the indexes and the AI Catalog name it there with its
@@ -93,8 +95,9 @@ dist/ ──(catalog publish)──► S3 ──► CloudFront ──► catalog
   The runtime reads the index at the digest it is pinned to, and through it each
   plugin's zip and the skill bound to its server. To move a runtime forward, take
   `sha256sum` of the live `nimblebrain/marketplace.json` and set the runtime's pin to it.
-  `publish` never deletes a pinned index or a zip under its digest, since a runtime
-  that has not moved its pin still reads them.
+  `publish` never deletes a pinned index, a pinned connector list, or a zip under its
+  digest, since a runtime that has not moved its pin still reads them: `nimblebrain/`
+  is outside the prefixes `publish` sweeps, and a zip under its digest is exempt.
 - **Instances read the catalog.** Hosted instances read `servers/`, the runtime image
   ships `nimblebrain/connectors.yaml`, and the runtime fetches each connector's skill
   from the pinned NimbleBrain index. A skill reaches a connector only when its plugin's
