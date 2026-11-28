@@ -20,6 +20,7 @@ from nimblebrain_catalog.plugins import (
     Plugin,
     claude_mcp_config,
     distribution,
+    icon_url,
     manifest,
     mcp_config,
     parse_plugins,
@@ -262,8 +263,18 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     assert entry["digest"] == f"sha256:{digest}"
     assert entry["url"] == f"https://catalog.nimblebrain.ai/plugins/vendor/{digest}.zip"
     assert entry["displayName"] == "Vendor"
-    assert "extensions" not in entry
-    assert catalog["entries"][1]["extensions"] == {"ai.nimblebrain": {"nimblebrainOnly": True}}
+    assert entry["extensions"] == {
+        "ai.nimblebrain": {
+            "category": "Docs & files",
+            "servers": {"vendor": {"name": "com.vendor/mcp", "auth": "dcr"}},
+        }
+    }
+    assert catalog["entries"][1]["extensions"] == {
+        "ai.nimblebrain": {
+            "nimblebrainOnly": True,
+            "servers": {"brokered": {"name": "com.vendor/brokered", "auth": "composio"}},
+        }
+    }
 
 
 STATIC: dict[str, Any] = {
@@ -339,3 +350,70 @@ def test_zero_setup_file_lists_only_portable_servers(tmp_path: Path) -> None:
     body = out[ZERO_SETUP_CONNECTORS_KEY].decode()
     assert body.startswith("# The connectors a fresh NimbleBrain install starts with")
     assert yaml.safe_load(body) == {"servers": [DIRECT]}
+
+
+MIRRORED: dict[str, Any] = {k: v for k, v in DIRECT.items() if k != "_meta"} | {
+    "name": "com.vendor/mirrored"
+}
+ICON = "https://static.nimblebrain.ai/logos/vendor/light.svg"
+
+
+@pytest.mark.parametrize(
+    ("server", "expected_auth"),
+    [
+        (DIRECT, "dcr"),
+        (STATIC, "static"),
+        (BROKERED, "composio"),
+        (MIRRORED, "none"),
+    ],
+)
+def test_ai_catalog_entry_lists_each_server_its_manifest_names_with_its_auth(
+    tmp_path: Path, server: dict[str, Any], expected_auth: str
+) -> None:
+    plugin = Plugin("p", server["name"])
+    out = distribution([plugin], {server["name"]: server}, tmp_path)
+    (entry,) = json.loads(out[AI_CATALOG_KEY])["entries"]
+    listing = entry["extensions"]["ai.nimblebrain"]
+    manifest_servers = json.loads(
+        zipfile.ZipFile(io.BytesIO(out["plugins/p.zip"])).read("plugin.json")
+    )["extensions"]["ai.nimblebrain"]["servers"]
+    # The same keys and registry names the plugin's manifest states.
+    assert {k: v["name"] for k, v in listing["servers"].items()} == manifest_servers
+    assert listing["servers"]["p"]["auth"] == expected_auth
+    # nimblebrainOnly is unchanged: set exactly when the plugin is not portable.
+    assert listing.get("nimblebrainOnly", False) is not portable(server)
+
+
+def test_ai_catalog_entry_carries_the_icon_and_category(tmp_path: Path) -> None:
+    server: dict[str, Any] = {**DIRECT, "icons": [{"src": ICON, "sizes": ["any"]}]}
+    out = distribution([Plugin("vendor", server["name"])], {server["name"]: server}, tmp_path)
+    (entry,) = json.loads(out[AI_CATALOG_KEY])["entries"]
+    listing = entry["extensions"]["ai.nimblebrain"]
+    assert listing["iconUrl"] == ICON
+    assert listing["category"] == "Docs & files"
+
+
+def test_ai_catalog_entry_omits_icon_and_category_when_the_server_has_none(
+    tmp_path: Path,
+) -> None:
+    out = distribution([Plugin("m", MIRRORED["name"])], {MIRRORED["name"]: MIRRORED}, tmp_path)
+    (entry,) = json.loads(out[AI_CATALOG_KEY])["entries"]
+    assert set(entry["extensions"]["ai.nimblebrain"]) == {"servers"}
+
+
+@pytest.mark.parametrize(
+    ("icons", "expected"),
+    [
+        ([], None),
+        ([{"src": "https://a/light.svg"}], "https://a/light.svg"),
+        (
+            [{"src": "https://a/dark.svg", "theme": "dark"}, {"src": "https://a/light.svg"}],
+            "https://a/light.svg",
+        ),
+        ([{"src": "https://a/dark.svg", "theme": "dark"}], "https://a/dark.svg"),
+    ],
+)
+def test_icon_url_prefers_an_icon_not_meant_for_a_dark_theme(
+    icons: list[dict[str, Any]], expected: str | None
+) -> None:
+    assert icon_url({**DIRECT, "icons": icons}) == expected
