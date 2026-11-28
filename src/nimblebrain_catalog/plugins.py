@@ -30,7 +30,9 @@ it is generated here, never stored:
   `nimblebrain/marketplace.json` under their own digest. A runtime pins the
   catalog by that digest and reads the plugins it lists from there.
 - `.well-known/ai-catalog.json`, the AI Catalog index for discovery. It lists
-  every plugin and marks the ones only NimbleBrain can run.
+  every plugin and marks the ones only NimbleBrain can run. Each entry also carries
+  what a host needs to show and gate the plugin without opening its zip: its icon,
+  its category, and each server it names with that server's auth.
 - `nimblebrain/connectors.yaml`, the portable servers as a runtime catalog file
   (`{servers: [ServerDetail, ...]}`), which the runtime image ships as the catalog a
   fresh install starts with: every entry installs with nothing to configure.
@@ -159,6 +161,26 @@ def _remote(server: Mapping[str, Any]) -> Mapping[str, Any] | None:
 def named_servers(plugin: Plugin, server: Mapping[str, Any]) -> dict[str, str]:
     """The servers a plugin names, key → registry name, as its manifest states them."""
     return {plugin.name: server["name"]}
+
+
+def auth(server: Mapping[str, Any]) -> str:
+    """The server's auth as a listing states it: its connector `auth`, else `none`.
+
+    `none` is a mirrored server whose entry states no NimbleBrain auth, which a host
+    connects as its vendor publishes it. A broker's auth is the broker's name.
+    """
+    return connector(server).get("auth") or "none"
+
+
+def icon_url(server: Mapping[str, Any]) -> str | None:
+    """The icon a host shows for the server: its first icon not meant for a dark theme.
+
+    A NimbleBrain-hosted logo's dark variant sits beside its light one, so a host
+    that themes derives it from this URL.
+    """
+    icons = [i for i in server.get("icons") or [] if i.get("src")]
+    light = [i for i in icons if i.get("theme") != "dark"]
+    return (light or icons or [{}])[0].get("src")
 
 
 def manifest(
@@ -383,8 +405,19 @@ def distribution(
         tags = connector(server).get("tags")
         if tags:
             item["tags"] = list(tags)
+        # What a host needs to show and gate the plugin without fetching its zip.
+        listing: dict[str, Any] = {}
         if not portable(server):
-            item["extensions"] = {EXTENSION: {"nimblebrainOnly": True}}
+            listing["nimblebrainOnly"] = True
+        if icon_url(server):
+            listing["iconUrl"] = icon_url(server)
+        if connector(server).get("category"):
+            listing["category"] = connector(server)["category"]
+        listing["servers"] = {
+            key: {"name": name, "auth": auth(servers[name])}
+            for key, name in named_servers(plugin, server).items()
+        }
+        item["extensions"] = {EXTENSION: listing}
         item["publisher"] = {
             "identifier": PUBLISHER,
             "displayName": OWNER["name"],

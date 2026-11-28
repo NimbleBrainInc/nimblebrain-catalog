@@ -175,7 +175,22 @@ To list a server, or to decide whether one belongs here: `docs/publishing.md`.
 
 ## The AI Catalog
 
-`.well-known/ai-catalog.json` follows the AI Catalog spec version in
+`.well-known/ai-catalog.json` lists every plugin, and a host can read it as its whole
+listing: it fetches a plugin's zip only to install it. So each entry carries, beside
+its identifier, name, description, tags, and pinned zip URL and digest, what a host
+needs to show and gate the plugin, under `extensions["ai.nimblebrain"]`:
+
+- `iconUrl`, the server's first icon not meant for a dark theme (omitted when it has
+  none). A NimbleBrain-hosted logo's dark variant sits beside it at the same path.
+- `category`, the server's category display text (omitted when it has none).
+- `servers`, `{<key>: {name, auth}}`, the same keys and registry names as the
+  manifest's `extensions["ai.nimblebrain"].servers`. `auth` is the server's
+  `ai.nimblebrain/connector` `auth` (`dcr`, `static`, or a broker such as `composio`),
+  or `none` for a mirrored server that states none.
+- `nimblebrainOnly: true` on a plugin only NimbleBrain can run, derived from the same
+  auth.
+
+It follows the AI Catalog spec version in
 `AI_CATALOG_SPEC_VERSION` (`plugins.py`). CI and the deploy check the built file with
 [ai-catalog-check](https://github.com/NimbleBrainInc/ai-catalog-check)
 and fail on any MUST it breaks; a finding names the spec requirement by ID. To check
