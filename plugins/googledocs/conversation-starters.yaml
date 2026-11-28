@@ -1,10 +1,11 @@
 # Conversation starters for the googledocs plugin: what a host offers a person who has it
 # and does not know what to ask. A title is what they read; the text is sent.
 - title: Summarize a doc
-  text: Ask me which Google Doc to read, then summarize it in a few bullet points with any decisions
+  text: Ask me for the link to a Google Doc, then summarize it in a few bullet points with any decisions
     and open questions.
-- title: Draft a doc
-  text: Help me draft a new Google Doc. Ask me the topic and audience, write an outline, and create
-    the doc once I approve it.
-- title: Find a doc
-  text: Help me find a Google Doc. Ask me what it's about, then search and show the best matches.
+- title: Edit a doc
+  text: Ask me for the link to a Google Doc and what to change, show me the edits you plan, and make
+    them once I approve.
+- title: Review comments
+  text: Ask me for the link to a Google Doc, then list its open comments and suggest a reply to each.
+    Don't post anything until I agree.

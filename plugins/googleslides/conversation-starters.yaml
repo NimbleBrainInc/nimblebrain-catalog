@@ -1,10 +1,10 @@
 # Conversation starters for the googleslides plugin: what a host offers a person who has it
 # and does not know what to ask. A title is what they read; the text is sent.
-- title: Draft a deck
-  text: Help me draft a Google Slides deck. Ask me the topic and audience, propose an outline, then
-    create the slides.
 - title: Summarize a deck
-  text: Ask me which Google Slides deck to read, then summarize it slide by slide.
-- title: Start from a template
-  text: Ask me which deck to use as a template and what the new one is for, then make a copy and fill
-    in the content.
+  text: Ask me for the link to a Google Slides deck, then summarize it slide by slide.
+- title: Fill in a deck
+  text: Ask me for the link to a Google Slides deck and what it is for, then propose text for each
+    slide. Update the deck once I approve.
+- title: Add a slide
+  text: Ask me for the link to a Google Slides deck and what the new slide should say, show me the
+    content, and add it once I approve.

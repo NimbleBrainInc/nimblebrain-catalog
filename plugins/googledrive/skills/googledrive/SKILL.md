@@ -1,71 +1,79 @@
 ---
 name: googledrive
 description: >-
-  How to use the Google Drive connector's tools — finding files and folders,
-  reading metadata, downloading content, creating text files and folders,
-  moving and copying, and sharing. Use when the user works with Google Drive,
-  Drive, Docs, Sheets, Slides, files, folders, or shared documents.
+  How to use the Google Drive connector's tools — searching for files and
+  folders, reading file text and comments, checking metadata and sharing,
+  creating files, folders, and blank Docs, Sheets, or Slides, and copying.
+  Use when the user works with Google Drive, files, folders, PDFs, Word files,
+  or shared documents.
 metadata:
   nimblebrain:
     server: googledrive
 ---
 
-You are using the **Google Drive** connector (via Composio). Its tools act on the
-connected user's Drive. Apply this guidance whenever you touch Drive.
+You are using the **Google Drive** connector, Google's own Drive MCP server. Its tools act on the connected user's Drive, including shared drives.
+Apply this guidance whenever you touch Drive.
 
 ## Find the file first
 
-- Resolve a human reference ("the Q3 deck", "the budget folder") into a **file id**
-  or **folder id** before reading, downloading, moving, copying, or sharing. Don't
-  guess ids — find, then act by id.
-- Use the **find/search** tool to locate files and the **find-folder** tool to
-  locate folders. Search supports Drive query syntax, not just keywords: filter on
-  `name` (`name contains 'budget'`, `name = 'Report'`), `mimeType`
-  (`mimeType = 'application/vnd.google-apps.document'`, `mimeType contains 'image/'`),
-  `fullText contains 'phrase'` for body content, plus `trashed = false`,
-  `sharedWithMe`, `starred`, and modified-date filters. Combine terms with `and`.
-  Escape single quotes in names with a backslash.
-- Scope to a folder when you can (pass the parent/folder id) instead of searching all
-  of Drive and filtering yourself. Multiple files can share a name — confirm the right
-  one (by parent, owner, or modified date) before acting.
+- Every tool after discovery needs a **file id**. Get it from `search_files`,
+  `list_recent_files`, or a pasted URL (`.../d/<id>/...`). Never guess one.
+- `search_files` takes a structured query: `title contains 'budget'`,
+  `fullText contains 'renewal'`, `mimeType = 'application/vnd.google-apps.spreadsheet'`,
+  `modifiedTime > '2026-01-01T00:00:00Z'`, `parentId = '<folderId>'` (direct children),
+  `'<folderId>' in ancestors` (anywhere below), `owner = 'me'`, `sharedWithMe = true`,
+  `starred = true`. Combine with `and`, `or`, `not`; quote strings with single quotes.
+- Put file types in a `mimeType` clause, never in the title words: search
+  `title contains 'Q3' and mimeType = 'application/vnd.google-apps.presentation'`, not
+  `title contains 'Q3 deck'`.
+- `orderBy: modifiedTime desc` sorts by recency; `list_recent_files` lists recent
+  files without a query. Set `excludeContentSnippets: true` when you only need names
+  and ids, and page with `pageToken`.
+- Several files can share a name. Disambiguate by folder, owner, or modified date
+  (`includeRichMetadata: true` adds owner and last editor) before acting.
 
-## Files, folders, and types
+## Reading content
 
-- A **folder** is just a file with mimeType `application/vnd.google-apps.folder`.
-  Use the create-folder tool for folders; reparent a file by **moving** it.
-- Google-native docs (Docs/Sheets/Slides, `application/vnd.google-apps.*`) have no
-  raw bytes — downloading them requires an **export** mimeType (e.g. PDF, DOCX,
-  CSV). Binary/uploaded files download directly. If a download fails on a native
-  doc, you likely need to specify an export format.
-- Get-metadata returns `mimeType`, `parents`, `trashed`, owners, and size — check it
-  to learn an item's type and where it lives before you act.
+- `read_file_content` returns a file as text: Google Docs as Markdown, plus Sheets,
+  Slides, PDF, Word (`.doc`, `.docx`), Excel, PowerPoint, OpenDocument, plain text,
+  images, and video with a transcript. It reads files in shared drives too.
+- If `textFormattingNotSupported` is true, the content is empty because Drive can't
+  render that type as text; say so instead of calling the file empty.
+- Long files are trimmed: about 50,000 characters reach you. For a long file, say you
+  read only the first part and summarize what you read; don't present it as the whole.
+- Emoji and other characters outside the Basic Multilingual Plane can come back
+  garbled in exported Docs. That is an export artifact, not file corruption.
+- `includeComments: true` adds comment threads (Docs, Sheets, and Slides only); use it
+  for feedback, action items, or open questions.
+- `download_file_content` returns raw base64 bytes, with `exportMimeType` for Google
+  files (`application/pdf`, `text/csv`). Prefer `read_file_content` for anything you
+  will read.
 
-## Creating and organizing
+## Metadata and sharing
 
-- Create text-backed files with the **create-file-from-text** tool (give it a name,
-  text content, and optionally a parent folder id). This connector's create surface
-  is text/upload — it does not author rich native Docs formatting.
-- **Move** changes a file's parent (it relocates, it does not duplicate). **Copy**
-  duplicates. Don't move when the user wanted a copy, or vice versa.
-- New files land in "My Drive" root unless you pass a parent id — set the parent at
-  creation rather than creating then moving.
+- `get_file_metadata` gives type, parents, size, and capabilities such as `canTrash`
+  and `canMoveItemWithinDrive`. `get_file_permissions` lists who has access.
+- This connector reads sharing but can't change it, and it has no move, rename, or
+  trash tool. Point the person to Drive for those, with the file's link.
 
-## Sharing
+## Creating
 
-- Sharing is done by **creating a permission** on a file id: a `type` (user, group,
-  domain, anyone) + `role` (reader, commenter, writer, owner) + the target
-  (email address or domain). `type: anyone` makes a file **publicly accessible** —
-  use it only when the user explicitly asks for a public/shareable link.
-- Granting `writer`/`owner` or domain-wide access is a meaningful exposure. Confirm
-  the recipient and role before sharing; prefer the least role that satisfies the ask.
+- `create_file` makes a folder (`application/vnd.google-apps.folder`), a blank Google
+  Doc, Sheet, or Slides file (its `application/vnd.google-apps.*` type, no content), or
+  uploads content: `textContent` for text, `base64Content` for binary, with
+  `contentMimeType` set. Text uploads convert to a Google Doc unless
+  `disableConversionToGoogleType` is true. Set `parentId` at creation.
+- `copy_file` duplicates a file, with an optional `title` and `parentId`; use it to
+  start from a template.
+- `upload_file_revision` replaces the content of an uploaded (non-Google) file. It
+  overwrites what is there, so confirm first.
 
 ## Care
 
-- **Moving and sharing are immediately visible** to others with access, and changing
-  ownership or revoking access can lock people out. Confirm the target file and the
-  scope before any move or permission change; never bulk-share or bulk-move without
-  explicit scope.
-- A file "not found" may simply not be shared with the connected account rather than
-  deleted — say so instead of inventing it.
-- Large Drives: page through search results rather than requesting everything, and
-  summarize. Match on parent/owner/date to disambiguate same-named files.
+- Creating and copying are visible to anyone with access to the folder. Confirm the
+  destination before writing, and never write to many files without explicit scope.
+- A file "not found" may not be shared with the connected account. Say so rather than
+  inventing its content.
+- Google may require the person's confirmation for high-impact actions. If a tool
+  returns an error saying a client capability is required, or suggests a safer
+  alternative, use the alternative and tell the person.

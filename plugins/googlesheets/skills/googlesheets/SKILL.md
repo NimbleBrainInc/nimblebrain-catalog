@@ -1,66 +1,65 @@
 ---
 name: googlesheets
 description: >-
-  How to use the Google Sheets connector's tools — reading and writing cell
-  values by A1 range, appending rows, clearing data, and creating spreadsheets
-  or tabs. Use when the user works with Google Sheets, a spreadsheet, tabs/
-  worksheets, cells, rows, columns, or wants to read/append/update tabular data.
+  How to use the Google Sheets connector's tools — reading tabs and cell ranges
+  in A1 notation, writing values and formulas, inserting rows and columns, and
+  structural edits such as adding tabs, formatting, sorting, and charts. Use
+  when the user works with Google Sheets, a spreadsheet, tabs, cells, rows, or
+  columns.
 metadata:
   nimblebrain:
     server: googlesheets
 ---
 
-You are using the **Google Sheets** connector (via Composio). Its tools act on the
-connected user's Google Sheets. Apply this guidance whenever you touch a sheet.
+You are using the **Google Sheets** connector, Google's own Sheets MCP server. Its tools act on the connected user's spreadsheets. Apply this guidance
+whenever you touch a sheet.
 
-## Identify the spreadsheet and its tabs first
+## Identify the spreadsheet and its tabs
 
-- Almost every tool needs a **spreadsheet id** — the long token in the sheet URL
-  (`docs.google.com/spreadsheets/d/<ID>/edit`), *not* the title. Extract it from
-  a pasted URL rather than guessing.
-- A spreadsheet contains one or more **sheets** (tabs/worksheets), each with its own
-  name. Before reading or writing a specific tab, list the tabs (`GET_SHEET_NAMES`)
-  or pull structure/metadata (`GET_SPREADSHEET_INFO`) so you reference a real tab
-  name and know its dimensions. A wrong tab name errors.
+- Every tool needs a `spreadsheetId`, the token in the URL
+  (`docs.google.com/spreadsheets/d/<id>/edit`). Take it from a pasted link. This
+  connector can't search; if the Google Drive connector is connected, find the file
+  with its `search_files`, otherwise ask for the link.
+- Call `get_spreadsheet` with `fields: ["sheets.properties"]` to list the tabs, with
+  each tab's `title`, numeric `sheetId`, and grid size. Leave out `includeGridData`
+  unless you need formatting: it returns every cell.
+- Ranges use **A1 notation** qualified by tab title: `Sheet1!A1:C10`, `Sheet1!A:A`,
+  `'Q3 Plan'!2:2` (quote titles with spaces). Tools that work on structure
+  (`insert_dimension`, most `update_spreadsheet` requests) take the numeric `sheetId`
+  and 0-based indexes instead.
 
-## Ranges use A1 notation
+## Reading
 
-- Ranges are **A1 notation**, qualified by tab: `Sheet1!A1:C10`, `Sheet1!A:A`
-  (whole column), `Sheet1!2:2` (whole row). An unqualified range hits the first tab.
-- Read with `BATCH_GET` — it takes **multiple ranges** at once, so fetch everything
-  you need in one call instead of looping. Values come back as a grid of rows.
+- `get_values` reads one range as rows of cells. Read the header row first, then only
+  the rows you need; summarize rather than echoing a large sheet.
+- `get_spreadsheet` with `ranges` reads several ranges in one call.
 
-## Writing: update vs. append
+## Writing
 
-- **Update** (`VALUES_UPDATE`) overwrites the cells in the given range in place —
-  the values you send map onto the range top-left to bottom-right. Use it when you
-  know exactly where the data goes.
-- **Append** (`SPREADSHEETS_VALUES_APPEND`) adds rows **after the last row of the
-  existing table** near the given range — use it to log/add rows without computing
-  the next empty row yourself. Don't use update for "add a new row"; you'll clobber.
-- **`valueInputOption`** controls parsing: `USER_ENTERED` interprets input as if
-  typed in the UI (so `=SUM(...)` becomes a formula, `5/1` may become a date),
-  while `RAW` stores strings verbatim. Default to `USER_ENTERED` for human-style
-  data and formulas; use `RAW` when you must preserve exact text (ids, codes).
-- Send values as **rows of cells** (a list of lists). A flat list is one row.
-- Prefer `VALUES_UPDATE` over `BATCH_UPDATE` — the latter is **deprecated** here and
-  also writes only a single range despite the name.
-
-## Creating structure
-
-- `CREATE_GOOGLE_SHEET1` creates a **new spreadsheet** (returns a new id); `ADD_SHEET`
-  adds a **tab** to an existing spreadsheet. Pick based on whether the container
-  already exists — don't create a whole new file when the user wanted a new tab.
+- `update_values` writes a 2D array (rows of cells) to a range, overwriting what is
+  there. Values are strings, numbers, or booleans; `""` clears a cell, a null skips it.
+- `update_formulas` writes formulas (`[["=SUM(B2:B10)"]]`). Use it, not
+  `update_values`, for anything starting with `=`.
+- There is no append tool. To add rows, read the column to find the last used row, then
+  `update_values` the rows below it, or send an `appendCells` request through
+  `update_spreadsheet`.
+- `insert_dimension` inserts empty rows or columns (`ROWS`/`COLUMNS`, 0-based
+  `startIndex` inclusive, `endIndex` exclusive) so you can write into the gap.
+- `update_spreadsheet` takes a `spreadsheets.batchUpdate` list of `requests`: `addSheet`
+  (new tab), `updateSheetProperties` (rename, freeze rows), `repeatCell` (format),
+  `sortRange`, `setBasicFilter`, `addChart`, `findReplace`, `deleteDimension`,
+  `deleteSheet`, comments, and more. Requests in one call apply together.
+- This connector can't create a spreadsheet. With Google Drive connected, create a
+  blank one with its `create_file` (`application/vnd.google-apps.spreadsheet`), then
+  add tabs and headers here.
 
 ## Care
 
-- Writes are **immediate and shared** with everyone who has access, and there is no
-  undo through the API. Confirm the target tab and range before writing; never
-  overwrite a populated range you haven't read.
-- `CLEAR_VALUES` removes cell **content** (formatting and notes survive) over the
-  given range — it is destructive to data. Scope the range tightly; never clear a
-  whole tab without explicit confirmation.
-- Read before you overwrite: pull the current values so you can preserve headers and
-  existing rows, and so you can report what changed.
-- Large sheets: request only the ranges you need and summarize rather than dumping
-  every cell back to the user.
+- Writes are live for everyone with access and the API has no undo. Read a range
+  before overwriting it, keep headers intact, and show the person the rows or the
+  change before writing.
+- `deleteSheet`, `deleteDimension`, `deleteRange`, and broad `findReplace` remove data.
+  Scope them tightly and get explicit confirmation first.
+- Google may require the person's confirmation for high-impact actions. If a tool
+  returns an error saying a client capability is required, or suggests a safer
+  alternative, use the alternative and tell the person.
