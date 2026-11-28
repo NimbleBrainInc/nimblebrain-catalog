@@ -159,13 +159,22 @@ def test_direct_server_gets_both_mcp_configs() -> None:
 def test_brokered_server_has_no_mcp_config(tmp_path: Path) -> None:
     plugin = Plugin("brokered", BROKERED["name"])
     assert mcp_config(plugin, BROKERED) is None
-    assert set(plugin_files(plugin, BROKERED, tmp_path)) == {"plugin.json"}
+    assert set(plugin_files(plugin, BROKERED, tmp_path)) == {
+        "plugin.json",
+        "ai.nimblebrain/servers/brokered.json",
+    }
 
 
 def test_plugin_files_carry_its_skills(tmp_path: Path) -> None:
     write_skill(tmp_path, "vendor", "vendor")
     files = plugin_files(Plugin("vendor", DIRECT["name"]), DIRECT, tmp_path)
-    assert set(files) == {"plugin.json", "mcp.json", ".mcp.json", "skills/vendor/SKILL.md"}
+    assert set(files) == {
+        "plugin.json",
+        "mcp.json",
+        ".mcp.json",
+        "ai.nimblebrain/servers/vendor.json",
+        "skills/vendor/SKILL.md",
+    }
 
 
 @pytest.mark.parametrize(
@@ -218,7 +227,13 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     assert out[f"plugins/vendor/{digest}.zip"] == out["plugins/vendor.zip"]
     assert out[f"{PINNED_INDEX_PREFIX}{index}.json"] == out[NIMBLEBRAIN_MARKETPLACE_KEY]
     names = zipfile.ZipFile(io.BytesIO(out["plugins/vendor.zip"])).namelist()
-    assert sorted(names) == [".mcp.json", "mcp.json", "plugin.json", "skills/vendor/SKILL.md"]
+    assert sorted(names) == [
+        ".mcp.json",
+        "ai.nimblebrain/servers/vendor.json",
+        "mcp.json",
+        "plugin.json",
+        "skills/vendor/SKILL.md",
+    ]
 
     marketplace = json.loads(out[MARKETPLACE_KEY])
     assert marketplace["name"] == "nimblebrain"
@@ -249,6 +264,40 @@ def test_distribution_serves_zips_marketplace_and_catalog(tmp_path: Path) -> Non
     assert entry["displayName"] == "Vendor"
     assert "extensions" not in entry
     assert catalog["entries"][1]["extensions"] == {"ai.nimblebrain": {"nimblebrainOnly": True}}
+
+
+STATIC: dict[str, Any] = {
+    **DIRECT,
+    "name": "com.vendor/static",
+    "_meta": {
+        "ai.nimblebrain/connector": {"auth": "static", "category": "Docs & files"},
+        "ai.nimblebrain/host": {"placements": [{"slot": "sidebar"}]},
+    },
+}
+
+
+@pytest.mark.parametrize(
+    ("plugin", "server"),
+    [("vendor", DIRECT), ("brokered", BROKERED), ("static", STATIC)],
+)
+def test_each_zip_carries_a_file_per_named_server_equal_to_its_detail(
+    tmp_path: Path, plugin: str, server: dict[str, Any]
+) -> None:
+    out = distribution([Plugin(plugin, server["name"])], {server["name"]: server}, tmp_path)
+    archive = zipfile.ZipFile(io.BytesIO(out[f"plugins/{plugin}.zip"]))
+    named = json.loads(archive.read("plugin.json"))["extensions"]["ai.nimblebrain"]["servers"]
+    carried = {
+        n.removeprefix("ai.nimblebrain/servers/").removesuffix(".json"): json.loads(archive.read(n))
+        for n in archive.namelist()
+        if n.startswith("ai.nimblebrain/servers/")
+    }
+    # One file per key the manifest names, holding the ServerDetail it names, _meta and all.
+    assert set(carried) == set(named) == {plugin}
+    assert all(carried[k]["name"] == named[k] for k in named)
+    assert carried[plugin] == server
+    # The index entry stays marketplace fields only.
+    (entry,) = json.loads(out[NIMBLEBRAIN_MARKETPLACE_KEY])["plugins"]
+    assert set(entry) <= {"name", "source", "description", "category", "tags"}
 
 
 def test_distribution_is_the_same_bytes_every_build(tmp_path: Path) -> None:

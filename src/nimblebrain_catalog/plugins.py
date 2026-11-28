@@ -11,6 +11,12 @@ it is generated here, never stored:
   read by any Agent Plugins host. NimbleBrain's link from the plugin to its
   catalog server, and its conversation starters, sit in `extensions["ai.nimblebrain"]`.
 - `.mcp.json`, the same server in Claude Code's own plugin format.
+- `ai.nimblebrain/servers/<key>.json` for each server the plugin names, where
+  `<key>` is its key in `extensions["ai.nimblebrain"].servers`: the server's
+  `ServerDetail` exactly as `/v0.1/servers` serves it, NimbleBrain `_meta`
+  included. A reverse-domain folder is how Agent Plugins lets a host add files.
+  It makes the pinned NimbleBrain index the runtime's whole catalog: one digest
+  pins every plugin's servers, skills and starters.
 - one zip per plugin, which is the plugin's install source: the catalog repo is
   private, so no host can clone it. It is served at `plugins/<name>.zip`, which
   moves with the plugin, and at `plugins/<name>/<sha256>.zip`, which never changes
@@ -56,6 +62,8 @@ PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
 MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
 EXTENSION = "ai.nimblebrain"
 CONNECTOR_META_KEY = "ai.nimblebrain/connector"
+# Where a plugin's zip carries each server it names, by its key in the manifest.
+SERVER_FILE_DIR = f"{EXTENSION}/servers"
 
 MARKETPLACE = "nimblebrain"
 PUBLISHER = "nimblebrain.ai"
@@ -148,6 +156,11 @@ def _remote(server: Mapping[str, Any]) -> Mapping[str, Any] | None:
     return (preferred or remotes or [None])[0]
 
 
+def named_servers(plugin: Plugin, server: Mapping[str, Any]) -> dict[str, str]:
+    """The servers a plugin names, key → registry name, as its manifest states them."""
+    return {plugin.name: server["name"]}
+
+
 def manifest(
     plugin: Plugin,
     server: Mapping[str, Any],
@@ -163,7 +176,7 @@ def manifest(
     tags = connector(server).get("tags")
     if tags:
         out["keywords"] = list(tags)
-    extension: dict[str, Any] = {"servers": {plugin.name: server["name"]}}
+    extension: dict[str, Any] = {"servers": named_servers(plugin, server)}
     if conversation_starters:
         extension["conversationStarters"] = conversation_starters
     out["extensions"] = {EXTENSION: extension}
@@ -280,6 +293,9 @@ def plugin_files(plugin: Plugin, server: Mapping[str, Any], root: Path) -> dict[
     files = {
         "plugin.json": _json(manifest(plugin, server, read_conversation_starters(plugin, root)))
     }
+    # Keyed as the manifest keys it, so a reader of `servers` finds each server's file.
+    for key in named_servers(plugin, server):
+        files[f"{SERVER_FILE_DIR}/{key}.json"] = _json(server)
     mcp = mcp_config(plugin, server)
     if mcp is not None:
         files["mcp.json"] = _json(mcp)
